@@ -3474,10 +3474,29 @@ source, and the committed CSV was regenerated with the standard REGEN command.
 | `bsee_operation` | 2 (MC-822-20050315-1500, VK-989-20060111-0121) |
 | every other column | 0 |
 
-The plan's earlier figure of 464 operator cells was wrong; 1,212 is the measured
-count. Four of the operator cells are OCR-garbled (`REPRESENTATIVE'`,
+The plan's earlier figure of 464 was mislabelled, not wrong: 464 is the number
+of operator cells that contained a phone pattern in the old file (operation: 2),
+not the number of cells the scrub changes. The scrub also drops labels, names and
+city/state, so 1,212 operator cells change. Four of the operator cells are OCR-garbled (`REPRESENTATIVE'`,
 `TELEPHONE'`, a comma where the colon should be); label terminators `:`, `'`,
 `’` and `,` are all accepted, and those four now reduce to the company name.
+
+**Phone-bearing cells, before → after** (pattern `\(\d{3}\)\s*\d{3}-\d{4}|\b\d{3}-\d{3}-\d{4}\b`;
+before = `git show e0e9ed1:data/processed/e19/bsee_unmapped.csv`, after = the
+committed file): `bsee_operator` 464 → 0, `bsee_operation` 2 → 0, every other
+`bsee_*` column 0 → 0. Reproduce:
+
+```bash
+uv run python - <<'PY'
+import io, subprocess, pandas as pd
+ph = r'\(\d{3}\)\s*\d{3}-\d{4}|\b\d{3}-\d{3}-\d{4}\b'
+old = pd.read_csv(io.StringIO(subprocess.check_output(
+    ['git', 'show', 'e0e9ed1:data/processed/e19/bsee_unmapped.csv']).decode()), dtype=str, keep_default_na=False)
+new = pd.read_csv('data/processed/e19/bsee_unmapped.csv', dtype=str, keep_default_na=False)
+for c in ('bsee_operator', 'bsee_operation'):
+    print(c, old[c].str.contains(ph).sum(), '->', new[c].str.contains(ph).sum())
+PY
+```
 
 **Scope.** The full scrub runs on `bsee_operator` and `bsee_operation` only. Every
 other `bsee_*` text column gets phone-number removal alone (HEAD had no
@@ -3486,11 +3505,15 @@ bare form label `REPRESENTATIVE/SUPERVISOR` followed by checkbox text; a
 segment rule would delete real content there (a first attempt changed 28
 `bsee_type_checkboxes` cells that way), so those cells are left alone. A bare
 `REPRESENTATIVE/SUPERVISOR` label with no value or terminator can therefore
-remain; it carries no person data.
+remain; it carries no person data. One cell outside the R10 scope has a
+`TELEPHONE` label: `bsee_type_checkboxes` for SM-160-20240921-1630. The label is
+followed only by checkbox words, with no value, and the cell is unchanged.
 
 **Side effect.** The `bsee_operation` rule deletes from the label to the end of
 the cell, so MC-822-20050315-1500 also loses its trailing sign-off date
-(10-MAY-2005). Accepted.
+(10-MAY-2005). Accepted. Both changed `bsee_operation` cells also keep the
+dangling label words "OPERATOR" and "CONTRACTOR" where the representative
+segment began.
 
 **Wording.** After this change `bsee_operator` and `bsee_operation` are
 "verbatim except contact blocks removed". Narrative prose such as "the
@@ -3501,9 +3524,14 @@ case-sensitively. "SEA STATE: n FT." is untouched.
 - The removed values remain in public git history. Decision D5 (2026-10-19):
   history is not rewritten. The same contact blocks are public in the source
   PDFs on bsee.gov.
-- No code consumes these columns (checked by search of `src/` and `tests/`;
-  the only reader is the prefix-rule test in `tests/test_conventions.py`, which
-  reads the header).
+- No code reads `bsee_operator` or `bsee_operation`. Two modules do load the
+  sidecar: `src/psm/crosswalk.py:396` (reads `bsee_property_damaged` and
+  `bsee_sha256`) and `src/psm/evidence.py:301` (reads `bsee_property_damaged`),
+  and `tests/test_conventions.py:62` reads its header. None of those columns
+  changed (0 cells). Check, from the repo root:
+  `grep -rnE "bsee_operator|bsee_operation|bsee_unmapped" src tests`
+  (hits outside `project.py` and `tests/test_projection.py`: the three loaders
+  above, none naming the two columns).
 
 Pinned by `tests/test_projection.py`: unit tests on `scrub_contacts` /
 `scrub_phones`, and a test over the committed sidecar that finds no phone number
