@@ -14,13 +14,15 @@ import pytest
 
 pytest.importorskip("sklearn")
 
+from psm import baseline
 from psm.baseline import run_baseline
 
 REPO = Path(__file__).resolve().parents[1]
 TASK_CSV = REPO / "data" / "processed" / "e19" / "cause_task.csv"
 
 # Measured by `uv run python -m psm.baseline` (seed 20261018, n_boot 1000).
-PINNED = {"n": 374, "accuracy": 0.471, "macro_f1": 0.349}
+PINNED = {"n": 374, "accuracy": 0.471, "macro_f1": 0.349,
+          "ci": (0.293, 0.399)}
 
 
 @pytest.fixture(scope="module")
@@ -54,3 +56,33 @@ def test_pinned(res):
     assert res["n"] == PINNED["n"]
     assert res["accuracy"] == pytest.approx(PINNED["accuracy"], abs=0.02)
     assert res["macro_f1"] == pytest.approx(PINNED["macro_f1"], abs=0.02)
+    lo, hi = res["macro_f1_ci"]
+    assert lo == pytest.approx(PINNED["ci"][0], abs=0.03)
+    assert hi == pytest.approx(PINNED["ci"][1], abs=0.03)
+
+
+def test_main_refuses_dirty_inputs(tmp_path):
+    out = tmp_path / "baseline.md"
+
+    def dirty(*args):
+        return " M src/psm/baseline.py\n" if args[0] == "status" else "abc1234\n"
+
+    with pytest.raises(RuntimeError, match="uncommitted"):
+        baseline.main(out=out, git=dirty)
+    assert not out.exists()
+
+
+def test_main_stamps_last_input_commit(tmp_path):
+    out = tmp_path / "baseline.md"
+    calls = []
+
+    def clean(*args):
+        calls.append(args)
+        return "" if args[0] == "status" else "abc1234\n"
+
+    baseline.main(out=out, git=clean)
+    text = out.read_text(encoding="utf-8")
+    assert "Inputs last changed at commit `abc1234`" in text
+    assert baseline.STAMP_COMMAND in text
+    # Both git lookups are scoped to exactly the baseline's inputs.
+    assert all(a[-2:] == baseline.INPUTS for a in calls)

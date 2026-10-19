@@ -38,6 +38,10 @@ REPO = Path(__file__).resolve().parents[2]
 TASK_CSV = REPO / "data" / "processed" / "e19" / "cause_task.csv"
 DEFAULT_OUT = REPO / "docs" / "baseline.md"
 COMMAND = "uv run python -m psm.baseline"
+# The files whose content determines baseline.md. main() stamps the last commit
+# that touched them, and refuses to write while either has uncommitted changes.
+INPUTS = ("src/psm/baseline.py", "data/processed/e19/cause_task.csv")
+STAMP_COMMAND = "git log -1 --format=%h -- " + " ".join(INPUTS)
 
 DEFAULT_SEED = 20261018
 
@@ -118,12 +122,12 @@ def run_baseline(task_csv: Path, regime: str | None = "modern_six",
     }
 
 
-def _git_head() -> str:
-    return subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=REPO, check=True,
-                          capture_output=True, text=True).stdout.strip()
+def _git(*args: str) -> str:
+    return subprocess.run(["git", *args], cwd=REPO, check=True,
+                          capture_output=True, text=True).stdout
 
 
-def render(res: dict, head: str, regime: str = "modern_six", n_boot: int = 1000,
+def render(res: dict, stamp: str, regime: str = "modern_six", n_boot: int = 1000,
            seed: int = DEFAULT_SEED) -> str:
     lo, hi = res["macro_f1_ci"]
     out = [
@@ -176,10 +180,8 @@ def render(res: dict, head: str, regime: str = "modern_six", n_boot: int = 1000,
         COMMAND,
         "```",
         "",
-        (f"Generated at repository HEAD `{head}` (from `git rev-parse --short HEAD`). This "
-         "is the code commit the numbers were produced from: the commit that adds this file "
-         "and `src/psm/baseline.py` sits directly on top of it, and this file cannot name "
-         "its own commit."),
+        (f"Inputs last changed at commit `{stamp}` (`{STAMP_COMMAND}`). Re-running at any "
+         "later commit reproduces this file byte-for-byte unless those inputs change."),
         "",
         "## Not comparable to earlier figures",
         "",
@@ -190,9 +192,15 @@ def render(res: dict, head: str, regime: str = "modern_six", n_boot: int = 1000,
     return "\n".join(out)
 
 
-def main(out: Path = DEFAULT_OUT) -> None:
+def main(out: Path = DEFAULT_OUT, git=_git) -> None:
+    """Write the report. ``git`` is injectable so the guard is testable."""
+    if git("status", "--porcelain", "--", *INPUTS).strip():
+        raise RuntimeError(
+            "refusing to write baseline.md: uncommitted changes in "
+            + ", ".join(INPUTS) + " (commit them first, so the stamp is valid)")
+    stamp = git("log", "-1", "--format=%h", "--", *INPUTS).strip()
     res = run_baseline(TASK_CSV)
-    out.write_text(render(res, _git_head()), encoding="utf-8")
+    out.write_text(render(res, stamp), encoding="utf-8")
     lo, hi = res["macro_f1_ci"]
     print(f"n={res['n']} classes={res['n_classes']} acc={res['accuracy']:.3f} "
           f"macroF1={res['macro_f1']:.3f} [{lo:.3f}, {hi:.3f}] "

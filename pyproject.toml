@@ -25,6 +25,7 @@ dependencies = [
 [project.optional-dependencies]
 # psm.baseline only (the reproducible cause-classification baseline).
 ml = [
+    "numpy",
     "scikit-learn>=1.5",
 ]
 dev = [
