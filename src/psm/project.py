@@ -63,6 +63,47 @@ RE_REC_ITEM = re.compile(r"\n\s*(?:\d{1,2}\s*[.)]|[a-h]\s*\)|[\u2022\u25cf\u25aa
 NIL_RETURN = {"none", "n/a", "na", "no", "nil", "none.", "n/a.", "no recommendations"}
 
 
+# --- contact-block scrubbing --------------------------------------------------
+# The sidecar carries BSEE form fields verbatim. Field 8 (operation) and the
+# operator field embed the "REPRESENTATIVE ... CITY ... STATE ... TELEPHONE"
+# blocks. Those labels are upper-case form labels, so they match
+# case-sensitively: narrative prose ("the operator's representative stated:")
+# is left alone. Company names stay; people, cities and phone numbers go.
+# OCR sometimes turns a label's colon into ' or , so those terminate a label too.
+_T = r"[:'\u2019,]"
+_RE_REP_SEGMENT = re.compile(
+    r"REPRESENTATIVE[^:'\u2019,]*" + _T + r".*?(?=CONTRACTOR" + _T + r"|$)", re.DOTALL)
+_RE_CITY = re.compile(r"\bCITY:.*?(?=STATE:|TELEPHONE" + _T + r"|CONTRACTOR" + _T + r"|REPRESENTATIVE|$)",
+                      re.DOTALL)
+_RE_STATE = re.compile(r"(?<!SEA )\bSTATE:\s*\w+")      # not "SEA STATE: 8 FT."
+_RE_PHONE_LABEL = re.compile(r"\bTELEPHONE" + _T)
+_RE_PHONE = re.compile(r"\(\d{3}\)\s*\d{3}-\d{4}|\b\d{3}-\d{3}-\d{4}\b")
+_RE_PLACEHOLDER_CONTRACTOR = re.compile(
+    r"CONTRACTOR" + _T + r"[\s\-\xad\x01]*(?=CONTRACTOR" + _T + r"|$)")
+# Only these two fields embed contact blocks; every other bsee_ text column gets
+# phone numbers removed and nothing else (their checkbox grids spill past the
+# bare labels, so a segment rule would delete real content). The URL and hash
+# are left untouched.
+SIDECAR_CONTACT_FIELDS = {"bsee_operator", "bsee_operation"}
+SIDECAR_UNSCRUBBED = {"bsee_source_url", "bsee_sha256"}
+
+
+def scrub_phones(text: str) -> str:
+    """Remove phone numbers only."""
+    return " ".join(_RE_PHONE.sub(" ", text).split())
+
+
+def scrub_contacts(text: str) -> str:
+    """Remove representative / city / state / telephone blocks from a BSEE form field."""
+    text = _RE_REP_SEGMENT.sub(" ", text)
+    text = _RE_CITY.sub(" ", text)
+    text = _RE_STATE.sub(" ", text)
+    text = _RE_PHONE_LABEL.sub(" ", text)
+    text = _RE_PHONE.sub(" ", text)
+    text = _RE_PLACEHOLDER_CONTRACTOR.sub(" ", text)
+    return " ".join(text.split())
+
+
 def split_recommendations(text: str) -> list[str]:
     """One string per recommendation. Empty list for a nil return."""
     body = (text or "").strip()
@@ -406,6 +447,10 @@ def build(interim: Path, manifest: Path, labels: dict, proj: dict) -> dict:
             side[item["as"]] = (field(rec, frm) if frm.startswith("f")
                                 else str(rec.get(frm, mrow.get(frm, "")) or ""))
             side[item["as"]] = " ".join(side[item["as"]].split())
+            if item["as"] in SIDECAR_CONTACT_FIELDS:
+                side[item["as"]] = scrub_contacts(side[item["as"]])
+            elif item["as"] not in SIDECAR_UNSCRUBBED:
+                side[item["as"]] = scrub_phones(side[item["as"]])
         sidecar_rows.append(side)
 
     for lab, spec in mapping.items():

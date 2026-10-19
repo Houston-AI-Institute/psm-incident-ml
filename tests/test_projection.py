@@ -13,6 +13,7 @@ column in the earlier hand-built attempt.
 from __future__ import annotations
 
 import csv
+import re
 
 import pytest
 
@@ -25,6 +26,8 @@ from psm.project import (
     label_groups,
     load_yaml,
     pseudonym,
+    scrub_contacts,
+    scrub_phones,
 )
 
 
@@ -247,3 +250,66 @@ class TestRecommendationGrain:
         assert max(per.values()) > 1, "every incident has exactly one recommendation"
         assert len({r["Recommendation Number"] for r in rows}) > 1, \
             "Recommendation Number is constant"
+
+
+def test_scrub_keeps_companies_drops_people():
+    raw = ("BP Exploration & Production REPRESENTATIVE: Jane Doe TELEPHONE: (555) 555-0100 "
+           "CONTRACTOR: Transocean Offshore REPRESENTATIVE: John Roe TELEPHONE: (555) 555-0101")
+    assert scrub_contacts(raw) == "BP Exploration & Production CONTRACTOR: Transocean Offshore"
+
+
+def test_scrub_placeholder_contractor():
+    raw = "Shell Offshore Inc. REPRESENTATIVE: TELEPHONE: CONTRACTOR: - REPRESENTATIVE: TELEPHONE:"
+    assert scrub_contacts(raw) == "Shell Offshore Inc."
+
+
+def test_scrub_supervisor_block():
+    raw = ("DRILLING REPRESENTATIVE/ SUPERVISOR ON SITE AT TIME OF INCIDENT: Mr. A Person "
+           "CITY: Houma STATE: LA TELEPHONE: (555) 555-0100")
+    assert scrub_contacts(raw) == "DRILLING"
+
+
+def test_scrub_labels_are_case_sensitive_and_prose_survives():
+    raw = "the operator's representative stated: the crane failed."
+    assert scrub_contacts(raw) == raw
+
+
+def test_scrub_standalone_city_state_and_phones():
+    raw = "Lead CITY: Houma STATE: LA TELEPHONE: 555-555-0100 call (555) 555-0101 now"
+    assert scrub_contacts(raw) == "Lead call now"
+
+
+def test_scrub_ocr_garbled_labels():
+    raw = "Acme Oil Co. REPRESENTATIVE' TELEPHONE' CONTRACTOR, REPRESENTATIVE' TELEPHONE'"
+    assert scrub_contacts(raw) == "Acme Oil Co."
+    assert scrub_contacts(raw.replace("'", "\u2019")) == "Acme Oil Co."
+
+
+def test_scrub_garbled_label_with_lowercase_trailing_word():
+    raw = "Acme Oil Co. REPRESENTATIVE, toolpusher TELEPHONE'"
+    assert scrub_contacts(raw) == "Acme Oil Co."
+
+
+def test_scrub_phones_only_leaves_labels_and_checkbox_text():
+    raw = "X PRODUCTION REPRESENTATIVE/SUPERVISOR DRILLING call (555) 555-0100 or 555-555-0101"
+    assert scrub_phones(raw) == "X PRODUCTION REPRESENTATIVE/SUPERVISOR DRILLING call or"
+
+
+def test_scrub_keeps_sea_state():
+    assert scrub_contacts("SPEED: 1 M.P.H. SEA STATE: 8 FT.") == "SPEED: 1 M.P.H. SEA STATE: 8 FT."
+
+
+@pytest.mark.skipif(not (DEFAULT_OUT / "bsee_unmapped.csv").exists(),
+                    reason="run `python -m psm.project` first")
+def test_committed_sidecar_has_no_contacts():
+    with open(DEFAULT_OUT / "bsee_unmapped.csv", encoding="utf-8", newline="") as f:
+        rows = list(csv.DictReader(f))
+    for r in rows:
+        for col, v in r.items():
+            if col.startswith("bsee_") and col not in ("bsee_source_url", "bsee_sha256"):
+                assert not re.search(r"\(\d{3}\)\s*\d{3}-\d{4}|\b\d{3}-\d{3}-\d{4}\b", v), (col, r["Incident Number"])
+                if col in ("bsee_operator", "bsee_operation"):
+                    # A bare REPRESENTATIVE/SUPERVISOR form label with no terminator may remain.
+                    assert not re.search(r"REPRESENTATIVE[^:]*:", v), (col, r["Incident Number"])
+                    assert not re.search(r"REPRESENTATIVE['\u2019,]", v), (col, r["Incident Number"])
+                    assert "TELEPHONE" not in v, (col, r["Incident Number"])

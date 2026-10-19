@@ -3457,3 +3457,55 @@ for making provenance portable inside the workbook itself: embedded
 token-per-cell, per-column provenance-count comments on every header cell,
 and an About-sheet warning addressed to extraction/AI consumers —
 implemented concurrently in `src/psm/export_e19.py`.
+
+## 2026-10-19 — Contact blocks removed from the BSEE sidecar
+
+`data/processed/e19/bsee_unmapped.csv` carried each report's operator and
+contractor representative blocks (name, city, state, telephone) inside
+`bsee_operator`, and, in two reports, inside `bsee_operation`. The sidecar is
+built in `src/psm/project.py`; `scrub_contacts()` now removes those blocks at
+source, and the committed CSV was regenerated with the standard REGEN command.
+
+**Measured, before vs after (cells changed against `HEAD`, n=1,214 rows):**
+
+| column | cells changed |
+|---|---|
+| `bsee_operator` | 1,212 |
+| `bsee_operation` | 2 (MC-822-20050315-1500, VK-989-20060111-0121) |
+| every other column | 0 |
+
+The plan's earlier figure of 464 operator cells was wrong; 1,212 is the measured
+count. Four of the operator cells are OCR-garbled (`REPRESENTATIVE'`,
+`TELEPHONE'`, a comma where the colon should be); label terminators `:`, `'`,
+`’` and `,` are all accepted, and those four now reduce to the company name.
+
+**Scope.** The full scrub runs on `bsee_operator` and `bsee_operation` only. Every
+other `bsee_*` text column gets phone-number removal alone (HEAD had no
+phone-like match outside those two columns). The checkbox columns contain the
+bare form label `REPRESENTATIVE/SUPERVISOR` followed by checkbox text; a
+segment rule would delete real content there (a first attempt changed 28
+`bsee_type_checkboxes` cells that way), so those cells are left alone. A bare
+`REPRESENTATIVE/SUPERVISOR` label with no value or terminator can therefore
+remain; it carries no person data.
+
+**Side effect.** The `bsee_operation` rule deletes from the label to the end of
+the cell, so MC-822-20050315-1500 also loses its trailing sign-off date
+(10-MAY-2005). Accepted.
+
+**Wording.** After this change `bsee_operator` and `bsee_operation` are
+"verbatim except contact blocks removed". Narrative prose such as "the
+operator's representative stated:" is untouched, because the labels match
+case-sensitively. "SEA STATE: n FT." is untouched.
+
+**What this does not do.**
+- The removed values remain in public git history. Decision D5 (2026-10-19):
+  history is not rewritten. The same contact blocks are public in the source
+  PDFs on bsee.gov.
+- No code consumes these columns (checked by search of `src/` and `tests/`;
+  the only reader is the prefix-rule test in `tests/test_conventions.py`, which
+  reads the header).
+
+Pinned by `tests/test_projection.py`: unit tests on `scrub_contacts` /
+`scrub_phones`, and a test over the committed sidecar that finds no phone number
+in any `bsee_*` column and, in operator and operation, no `REPRESENTATIVE`
+followed by a value label or OCR terminator and no `TELEPHONE`.
