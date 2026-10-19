@@ -33,6 +33,15 @@ Pooled over all folds. No per-fold per-class scores are reported: some elements 
 | 15 | 104 | 0.610 |
 | 17 | 28 | 0.170 |
 
+## Other regimes
+
+Descriptive only: no model was trained or scored on these regimes. n is the number of cause rows, classes is the number of distinct elements, and majority rate is the share of rows that carry the most common element in that regime. Regime boundaries were drawn where the label vocabulary changed, so a difference in label mix between regimes is not a finding.
+
+| regime | n | classes | majority rate |
+|---|---|---|---|
+| ad_hoc | 19 | 3 | 0.474 |
+| human_error | 13 | 2 | 0.846 |
+
 ## Reproduce
 
 ```bash
@@ -40,7 +49,7 @@ uv sync --extra dev
 uv run python -m psm.baseline
 ```
 
-Inputs last changed at commit `78a2fd1` (`git log -1 --format=%h -- src/psm/baseline.py data/processed/e19/cause_task.csv`). Re-running at any later commit reproduces this file byte-for-byte unless those inputs change.
+Inputs last changed at commit `715c3f0` (`git log -1 --format=%h -- src/psm/baseline.py data/processed/e19/cause_task.csv`). Re-running at any later commit reproduces this file byte-for-byte unless those inputs change.
 
 ## Not comparable to earlier figures
 
