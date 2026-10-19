@@ -890,11 +890,11 @@ def test_readme_counts_say_which_figure_they_report(b):
 
 
 def test_baseline_is_run_on_the_bundled_task(b):
-    from psm.baseline import render, run_baseline
+    from psm.baseline import regime_summary, render, run_baseline
     short = b.name.rsplit("-", 1)[1]
     res = run_baseline(b / "core/cause_task.csv")
     text = (b / "BASELINE.md").read_text(encoding="utf-8")
-    assert text.startswith(render(res, short))
+    assert text.startswith(render(res, short, regime_summary(b / "core/cause_task.csv")))
     assert f"| n (rows scored) | {res['n']} |" in text
     assert res["n"] <= 374
 

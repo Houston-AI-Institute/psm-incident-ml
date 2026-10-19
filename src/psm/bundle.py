@@ -43,7 +43,7 @@ from pathlib import Path
 import yaml
 
 from psm import scenario
-from psm.baseline import render, run_baseline
+from psm.baseline import regime_summary, render, run_baseline
 from psm.content import (CONTACT_RE, HONORIFIC_RE, fatal_incidents, flags, redact,
                          titled_name_words)
 from psm.provenance import TOKENS
@@ -491,7 +491,8 @@ def _baseline_md(full_task_bytes: bytes, short: str, text_light: bool) -> str:
         p = Path(tmp) / "cause_task.csv"
         p.write_bytes(full_task_bytes)
         res = run_baseline(p)
-    text = render(res, short)
+        others = regime_summary(p)
+    text = render(res, short, others)
     note = [
         "## About this copy",
         "",

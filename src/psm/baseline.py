@@ -122,13 +122,32 @@ def run_baseline(task_csv: Path, regime: str | None = "modern_six",
     }
 
 
+def regime_summary(task_csv: Path) -> list[dict]:
+    """Descriptive counts for every non-blank regime other than ``modern_six``.
+
+    One dict per regime, sorted by regime name: ``regime``, ``n`` (rows),
+    ``n_classes`` (distinct ``xw_element`` labels) and ``majority_rate`` (the share
+    of rows that carry the most common label). No model is trained and nothing is
+    scored.
+    """
+    labels: dict[str, list[str]] = defaultdict(list)
+    with Path(task_csv).open(encoding="utf-8", newline="") as f:
+        for r in csv.DictReader(f):
+            reg = r["syn_regime"].strip()
+            if reg and reg != "modern_six":
+                labels[reg].append(r["xw_element"])
+    return [{"regime": reg, "n": len(v), "n_classes": len(set(v)),
+             "majority_rate": max(Counter(v).values()) / len(v)}
+            for reg, v in sorted(labels.items())]
+
+
 def _git(*args: str) -> str:
     return subprocess.run(["git", *args], cwd=REPO, check=True,
                           capture_output=True, text=True).stdout
 
 
-def render(res: dict, stamp: str, regime: str = "modern_six", n_boot: int = 1000,
-           seed: int = DEFAULT_SEED) -> str:
+def render(res: dict, stamp: str, others: list[dict], regime: str = "modern_six",
+           n_boot: int = 1000, seed: int = DEFAULT_SEED) -> str:
     lo, hi = res["macro_f1_ci"]
     out = [
         "# Cause-classification baseline",
@@ -173,6 +192,21 @@ def render(res: dict, stamp: str, regime: str = "modern_six", n_boot: int = 1000
     out += [f"| {lab} | {v['n']} | {v['f1']:.3f} |" for lab, v in res["per_class"].items()]
     out += [
         "",
+        "## Other regimes",
+        "",
+        ("Descriptive only: no model was trained or scored on these regimes. n is the number of "
+         "cause rows, classes is the number of distinct elements, and majority rate is the share "
+         "of rows that carry the most common element in that regime. Regime boundaries were "
+         "drawn where the label vocabulary changed, so a difference in label mix between "
+         "regimes is not a finding."),
+        "",
+        "| regime | n | classes | majority rate |",
+        "|---|---|---|---|",
+    ]
+    out += [f"| {g['regime']} | {g['n']} | {g['n_classes']} | {g['majority_rate']:.3f} |"
+            for g in others]
+    out += [
+        "",
         "## Reproduce",
         "",
         "```bash",
@@ -200,7 +234,7 @@ def main(out: Path = DEFAULT_OUT, git=_git) -> None:
             + ", ".join(INPUTS) + " (commit them first, so the stamp is valid)")
     stamp = git("log", "-1", "--format=%h", "--", *INPUTS).strip()
     res = run_baseline(TASK_CSV)
-    out.write_text(render(res, stamp), encoding="utf-8")
+    out.write_text(render(res, stamp, regime_summary(TASK_CSV)), encoding="utf-8")
     lo, hi = res["macro_f1_ci"]
     print(f"n={res['n']} classes={res['n_classes']} acc={res['accuracy']:.3f} "
           f"macroF1={res['macro_f1']:.3f} [{lo:.3f}, {hi:.3f}] "
