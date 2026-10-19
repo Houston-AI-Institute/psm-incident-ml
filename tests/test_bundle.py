@@ -448,6 +448,132 @@ def test_name_check_catches_an_unredacted_cell(b):
     assert fired >= 3
 
 
+# R28. Names are redacted per incident, not per cell: a surname that follows a title in one
+# cell must not survive bare in another cell of the same incident. This test's own copy of the
+# function-word stoplist (words that start a sentence after a nameless title); it deliberately
+# does not import psm.content. test_stoplist_copy_matches_content keeps the two in step.
+_STOP = {w.lower() for w in (
+    "The", "There", "This", "That", "These", "Those", "Then", "Thus", "A", "An", "In", "On", "At",
+    "It", "Its", "He", "She", "They", "We", "I", "You", "And", "But", "Or", "If", "When", "While",
+    "After", "Before", "During", "As", "For", "From", "By", "With", "Of", "To", "Was", "Were",
+    "Is", "Are", "Not", "No", "Also", "However", "Investigation", "Personnel",
+    "Moreover", "Furthermore", "Additionally", "Therefore", "Although", "Because", "Since",
+    "Once", "Upon", "Following", "According", "Both", "All", "Each", "Another", "Other",
+    "Within", "Without", "Between", "Through", "Per", "Via")}
+_TITLE_ANY = re.compile(r"\b(?:mr|mrs|ms|miss|dr)\b\.?", re.I)
+
+
+def original_name_words(text: str) -> set[str]:
+    """Words after Mr/Mrs/Ms/Miss/Dr (any case, period optional); same stop rule as titled_words
+    (stop at a lowercase word or after a word ending in punctuation), plus: a word that opens with
+    a bracket or quote ends the run, e.g. "Mr. A B (Acme operator)" does not take Acme as a name.
+    Initials carry no identity."""
+    out = set()
+    for m in _TITLE_ANY.finditer(text):
+        for nxt in text[m.end():].split()[:3]:
+            if not nxt[0].isalpha() or not nxt[0].isupper():
+                break                       # lowercase, or an opening bracket/quote: a new clause
+            w = nxt.strip(".,;:()\"")
+            if len(w) > 1 and w.lower() not in _STOP:
+                out.add(w)
+            if nxt[-1] in ".,;:)":
+                break
+    return out
+
+
+def survivors(original: dict[str, list[str]], bundled: dict[str, list[str]]) -> list[tuple[str, int]]:
+    """(incident, n distinct words) where a title-following word of ANY original cell of the
+    incident occurs as a whole word in ANY bundled cell of the same incident. Words never printed."""
+    bad = []
+    for inc, cells in original.items():
+        words = set().union(*(original_name_words(c) for c in cells)) if cells else set()
+        if not words:
+            continue
+        alt = "|".join(re.escape(w) for w in sorted(words))
+        rx = re.compile(rf"(?<![A-Za-z])(?:{alt})(?![A-Za-z])")
+        hit = {w for c in bundled.get(inc, []) for w in rx.findall(c)}
+        if hit:
+            bad.append((inc, len(hit)))
+    return sorted(bad)
+
+
+def _cells_by_incident(files) -> dict[str, list[str]]:
+    out: dict[str, list[str]] = {}
+    for f in files:
+        with open(f, encoding="utf-8", newline="") as fh:
+            for r in csv.DictReader(fh):
+                if "Incident Number" in r:
+                    out.setdefault(r["Incident Number"], []).extend(v for v in r.values() if v)
+    return out
+
+
+def test_no_title_following_word_survives_in_any_cell_of_its_incident(b):
+    original = _cells_by_incident(p for p, _ in value_pairs().values())
+    bundled = _cells_by_incident(sorted(b.rglob("*.csv")))
+    assert sum(1 for cells in original.values() if any(original_name_words(c) for c in cells)) > 20
+    assert survivors(original, bundled) == []
+
+
+def test_survivor_check_can_fail():
+    """Planted: a titled name in one cell, the bare surname in another cell of the same incident."""
+    orig = {"I1": ["Mr. Zorblax slipped on the deck", "Zorblax was taken ashore"], "I2": ["Dr. Quimby arrived"]}
+    assert survivors(orig, orig) == [("I1", 1), ("I2", 1)]
+    # the cell that carries the title is masked, the other cell is not: still caught
+    half = {"I1": ["[name] slipped on the deck", "Zorblax was taken ashore"], "I2": ["[name] arrived"]}
+    assert survivors(orig, half) == [("I1", 1)]
+    # fully masked, and a same-text word in another incident, are both fine
+    ok = {"I1": ["[name] slipped on the deck", "[name] was taken ashore"], "I2": ["[name] arrived"],
+          "I3": ["Zorblax is an unrelated word here"]}
+    assert survivors(orig, ok) == []
+    # titles in either case, with or without a period; sentence-start words are not names
+    assert original_name_words("MR. QUILLEN and mrs Baxter and dr. Pell. The end") == {"QUILLEN", "Baxter", "Pell"}
+    assert original_name_words("Mr. The crane tipped. Ms There") == set()
+    assert original_name_words("Mr. Aa Bb (Cc operator) said") == {"Aa", "Bb"}
+
+
+def test_planted_names_are_masked_across_cells_of_one_incident():
+    """The production path on a synthetic incident: title in one cell, bare surname in the other
+    cell, in different tables of the same scope; a second incident keeps the same word."""
+    inc_cols = ["Incident Number", "What happened?  ", "What was the outcome?"]
+    cause_cols = ["Incident Number", "Cause number", "Cause Description"]
+    inc = _tbl("incidents", inc_cols, [
+        {"Incident Number": "I1", "What happened?  ": "Mr. Zorblax slipped.", "What was the outcome?": "Zorblax was hurt."},
+        {"Incident Number": "I2", "What happened?  ": "A crew met.", "What was the outcome?": "Zorblax Marine won."}])
+    cause = _tbl("causes", cause_cols, [
+        {"Incident Number": "I1", "Cause number": "1", "Cause Description": "Poor grip, said Zorblax."}])
+    got = bundle.redact_scope([inc, cause], {inc.rel: inc.cols, cause.rel: cause.cols})
+    assert inc.rows[0]["What was the outcome?"] == "[name] was hurt."
+    assert cause.rows[0]["Cause Description"] == "Poor grip, said [name]."
+    assert inc.rows[1]["What was the outcome?"] == "Zorblax Marine won."      # other incident: untouched
+    assert {(g["Incident Number"], g["column"]) for g in got} == {
+        ("I1", "What happened?  "), ("I1", "What was the outcome?"), ("I1", "Cause Description")}
+
+
+def test_stoplist_words_are_not_collected_and_cell_still_masks_its_own_title():
+    cols = ["Incident Number", "What happened?  ", "What was the outcome?"]
+    t = _tbl("incidents", cols, [{"Incident Number": "I1", "What happened?  ": "Mr. The crane tipped.",
+                                  "What was the outcome?": "The deck was wet. There was a crew. This held."}])
+    bundle.redact_scope([t], {t.rel: t.cols})
+    assert t.rows[0]["What was the outcome?"] == "The deck was wet. There was a crew. This held."
+
+
+def test_redact_names_argument():
+    from psm import content
+    # names=None is the original per-cell rule, stop words and all
+    assert content.redact("Mr. The crane tipped. The end") == "[name] crane tipped. [name] end"
+    assert content.redact("Mr. Zorblax left. Zorblax won") == "[name] left. [name] won"
+    # with names: the incident's words mask here too; the stoplist is never collected
+    assert content.redact("Zorblax won", {"Zorblax"}) == "[name] won"
+    assert content.redact("Mr. The crane tipped. The end", set()) == "[name] crane tipped. The end"
+    assert content.titled_name_words("Mr. The crane. Dr. Zorblax Q. Vee, said") == {"Zorblax", "Vee"}
+    assert content.titled_name_words("THE end. MR. THE crane. MRS. ZORBLAX") == {"ZORBLAX"}
+
+
+def test_stoplist_copy_matches_content():
+    from psm import content
+    assert _STOP == {w.lower() for w in content.NAME_STOPWORDS}
+
+
 # ---- structure -------------------------------------------------------------
 
 def test_bsee_unmapped_columns(any_b):
@@ -639,11 +765,20 @@ def test_zip_times_come_from_commit_time(b):
 
 
 def test_text_light_has_no_narrative(b_light, b):
-    dropped = set(NARRATIVE) | {"Cause Description", "src_text_stripped"}
+    dropped = set(NARRATIVE) | {"Cause Description", "src_text_stripped", "Recommendation Description"}
     for f in b_light.rglob("*.csv"):
         assert not (set(header(f)) & dropped), f
     # control: the full bundle does carry them
     assert "Cause Description" in header(b / "core/enriched/causes.csv")
+    assert "Recommendation Description" in header(b / "core/real_only/recommendations.csv")
+    assert "Recommendation Description" in header(b / "companies/northstar/recommendations.csv")
+    # R29: the recommendations value and provenance files lose the column together
+    for rel in ("companies/northstar/recommendations.csv", "companies/northstar/recommendations_provenance.csv",
+                "core/real_only/recommendations.csv"):
+        assert "Recommendation Description" not in header(b_light / rel), rel
+    assert header(b_light / "companies/northstar/recommendations.csv") == header(
+        b_light / "companies/northstar/recommendations_provenance.csv")
+    assert nrows(b_light / "core/real_only/recommendations.csv") == nrows(b / "core/real_only/recommendations.csv")
     assert "src_text_stripped" in header(b / "core/cause_task.csv")
     assert "What happened?  " in header(b / "core/enriched/incidents.csv")
     for rel in ("core/enriched/incidents.csv", "core/enriched/provenance.csv"):
@@ -716,6 +851,40 @@ def test_readme_filled(b, b_nocomp, b_light):
     assert "companies/" not in (b_nocomp / "README_FIRST.md").read_text(encoding="utf-8")
     assert "Narrative text" not in (b_light / "README_FIRST.md").read_text(encoding="utf-8")
     assert "Company tables" in (b_light / "README_FIRST.md").read_text(encoding="utf-8")
+
+
+def _changed_cells(b: Path):
+    """(cells whose bundled text differs from the repo cell, in tables with / without a provenance
+    file), counted by comparing every shipped value table with its source by row key."""
+    with_prov = without = 0
+    for rel, (src, _prov) in value_pairs().items():
+        if rel.endswith("bsee_unmapped.csv"):
+            continue                                   # column reduction, not redaction
+        orig = {key_of(rel, r): r for r in rows(src)}
+        for r in rows(b / rel):
+            o = orig[key_of(rel, r)]
+            n = sum(1 for c, v in r.items() if v != o[c])
+            if bundle_prov(rel):
+                with_prov += n
+            else:
+                without += n
+    return with_prov, without
+
+
+def test_readme_counts_say_which_figure_they_report(b):
+    text = (b / "README_FIRST.md").read_text(encoding="utf-8")
+    with_prov, without = _changed_cells(b)
+    m = re.search(r"Total shipped: (\d+) cell copies\. (\d+) of them are in tables with no provenance "
+                  r"file.*?the other (\d+) are in tables with a provenance file", text, re.S)
+    assert m, "the counts note is missing"
+    assert (int(m[1]), int(m[2]), int(m[3])) == (with_prov + without, without, with_prov)
+    assert "counts cell copies" in text
+    # the table column sums to the same total
+    col = sum(int(x) for x in re.findall(r"^\| `[^`]+` \| \d+ \| (?:\d+|-) \| (\d+|-) \|$", text, re.M) if x != "-")
+    assert col == int(m[1])
+    # and redactions.csv lists exactly the no-provenance cells (distinct table/row/column)
+    red = rows(b / "core/redactions.csv")
+    assert len({(r["table"], r["row_key"], r["column"]) for r in red}) == without
 
 
 def test_baseline_is_run_on_the_bundled_task(b):
@@ -845,7 +1014,7 @@ def test_main_flags(monkeypatch):
 # ---- redaction rule, on synthetic tables (real data has no titled name outside src cells) ----
 
 def _tbl(kind, cols, rows, prov=None):
-    return bundle.Tbl(bundle.Spec("t/x.csv", "x", kind), cols, rows, prov)
+    return bundle.Tbl(bundle.Spec(f"t/{kind}.csv", "x", kind), cols, rows, prov)
 
 
 def test_redaction_touches_only_src_and_mod_cells():
@@ -869,3 +1038,37 @@ def test_redaction_without_provenance_lists_name_and_contact_rows():
     assert [(g["row_key"], g["column"], g["kind"]) for g in got] == [
         ("I1|2", "Cause Description", "name"), ("I1|2", "Cause Description", "contact")]
     assert rs[0]["Cause Description"] == "[name] rang [contact]" and rs[1]["Cause Description"] == "nothing to hide"
+
+
+# ---- the source list -------------------------------------------------------
+
+def _bad_source_paths(paths):
+    return [p for p in paths if "_pilot" in p or "_smoketest" in p]
+
+
+def test_source_paths_cover_inputs_and_exclude_scratch_folders():
+    paths = bundle.source_paths(bundle._specs(True))
+    assert paths == sorted(set(paths))
+    for co in COMPANIES:
+        for n in ("incidents", "causes", "recommendations", "closeout", "provenance",
+                  "causes_provenance", "recommendations_provenance", "closeout_provenance"):
+            assert f"data/companies/{co}/{n}.csv" in paths, (co, n)
+    for rel in ("real_only/incidents.csv", "enriched/incidents.csv", "enriched/provenance.csv",
+                "enriched/causes_provenance.csv", "enriched/causes_confidence.csv",
+                "cause_task.csv", "causes_source_field.csv", "bsee_unmapped.csv", "real_only/splits.json"):
+        assert f"data/processed/e19/{rel}" in paths, rel
+    for n in ("crosswalk", "e19_disposition", "synth_rules", "xw_cause_qualifiers",
+              "xw_consequence_tiers", "xw_incident_type", "xw_outcome"):
+        assert f"schema/{n}.yaml" in paths, n
+    for rel in ("schema/data_dictionary_notes.yaml", "schema/bundle_exclusions.yaml",
+                "docs/release/TERMS.md", "docs/release/PARTICIPANT_GUIDE.md"):
+        assert rel in paths, rel
+    assert _bad_source_paths(paths) == []
+    assert not [p for p in bundle.source_paths(bundle._specs(False)) if p.startswith("data/companies/")]
+
+
+def test_scratch_folder_check_can_fail():
+    assert _bad_source_paths(["data/processed/e19/_pilot_haiku/incidents.csv",
+                              "data/processed/e19/_smoketest/x.csv", "data/processed/e19/enriched/incidents.csv"]) == [
+        "data/processed/e19/_pilot_haiku/incidents.csv", "data/processed/e19/_smoketest/x.csv"]
+

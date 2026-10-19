@@ -32,18 +32,56 @@ def fatal_incidents(rows: list[dict]) -> set[str]:
             if any(r.get(c) == "Injury Fatality" for c in _TYPE_COLS)}
 
 
-def redact(text: str) -> str:
+# Closed list of function words (and a few sentence openers seen after a nameless title).
+# Why it exists: the source text has titles whose name was already removed upstream, so a
+# title can be followed by the first word of the next sentence ("... Mr. The crane ...").
+# Collected as a "name", such a word would be masked wherever it recurs in the incident.
+# Matched case-insensitively. Used only when redacting with incident-scoped names (see
+# `titled_name_words` and `redact(names=...)`); plain `redact(text)` is unchanged.
+NAME_STOPWORDS = frozenset({
+    "The", "There", "This", "That", "These", "Those", "Then", "Thus", "A", "An", "In", "On", "At",
+    "It", "Its", "He", "She", "They", "We", "I", "You", "And", "But", "Or", "If", "When", "While",
+    "After", "Before", "During", "As", "For", "From", "By", "With", "Of", "To", "Was", "Were",
+    "Is", "Are", "Not", "No", "Also", "However", "Investigation", "Personnel",
+    "Moreover", "Furthermore", "Additionally", "Therefore", "Although", "Because", "Since",
+    "Once", "Upon", "Following", "According", "Both", "All", "Each", "Another", "Other",
+    "Within", "Without", "Between", "Through", "Per", "Via",
+})
+_STOP_LOWER = frozenset(w.lower() for w in NAME_STOPWORDS)
+
+
+def _span_words(span: str) -> set[str]:
+    """The name words of one matched title span (initials carry no identity)."""
+    return {tok for tok in span.split()[1:] if not tok.endswith(".")}
+
+
+def titled_name_words(text: str) -> set[str]:
+    """Words that follow a title in ``text`` (same spans `redact` finds), minus NAME_STOPWORDS."""
+    out: set[str] = set()
+    for m in HONORIFIC_RE.finditer(text):
+        out |= {w for w in _span_words(m.group(0)) if w.lower() not in _STOP_LOWER}
+    return out
+
+
+def redact(text: str, names: set[str] | None = None) -> str:
     """Replace titled names with [name] (full span, then each collected word
-    wherever it recurs alone), then contact details with [contact]."""
+    wherever it recurs alone), then contact details with [contact].
+
+    ``names=None``: only words collected from this text recur-mask (the original rule).
+    With ``names`` (the incident's name words from `titled_name_words` over all of its
+    cells): those words, plus this text's own non-stopword words, recur-mask here too, so
+    a surname that follows a title in one cell is masked in the other cells of the incident.
+    """
     words: set[str] = set()
 
     def _span(m: re.Match) -> str:
-        for tok in m.group(0).split()[1:]:
-            if not tok.endswith("."):          # initials carry no identity
-                words.add(tok)
+        found = _span_words(m.group(0))
+        words.update(found if names is None else {w for w in found if w.lower() not in _STOP_LOWER})
         return "[name]"
 
     text = HONORIFIC_RE.sub(_span, text)
+    if names:
+        words |= names
     if words:
         alt = "|".join(re.escape(w) for w in sorted(words, key=lambda w: (-len(w), w)))
         text = re.sub(rf"\b(?:{alt})\b", "[name]", text)

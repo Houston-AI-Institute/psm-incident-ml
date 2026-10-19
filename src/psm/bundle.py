@@ -44,7 +44,8 @@ import yaml
 
 from psm import scenario
 from psm.baseline import render, run_baseline
-from psm.content import CONTACT_RE, HONORIFIC_RE, fatal_incidents, flags, redact
+from psm.content import (CONTACT_RE, HONORIFIC_RE, fatal_incidents, flags, redact,
+                         titled_name_words)
 from psm.provenance import TOKENS
 
 csv.field_size_limit(10**8)
@@ -319,7 +320,7 @@ def _drop_cols(kind: str, text_light: bool) -> set[str]:
         drop |= DROP_COLUMNS
         if text_light:
             drop |= set(NARRATIVE)
-    elif text_light and kind in ("causes", "cause_task"):
+    elif text_light and kind in ("causes", "cause_task", "recommendations"):
         drop |= set(REDACT_COLS[kind])
     return drop
 
@@ -338,17 +339,37 @@ def _row_key(t: Tbl, row: dict) -> str:
     return "|".join(row[k] for k in KEY_COLS[t.kind])
 
 
-def _redact_table(t: Tbl, cols: list[str]) -> list[dict]:
-    """Redact in place. Returns redactions.csv rows (only for tables with no provenance)."""
+def _is_real_text(t: Tbl, i: int, c: str) -> bool:
+    """A cell redaction may touch: tagged src or mod, or in a table with no provenance file."""
+    return t.prov is None or t.prov[i][c] in ("src", "mod")
+
+
+def _incident_names(tbls: list[Tbl], cols_of: dict[str, list[str]]) -> dict[str, set[str]]:
+    """R27. Per Incident Number, the words that follow a title in ANY redactable free-text
+    cell of that incident, across every table of the scope (passed in by the caller)."""
+    names: dict[str, set[str]] = {}
+    for t in tbls:
+        for i, row in enumerate(t.rows):
+            for c in cols_of[t.rel]:
+                if row[c] and _is_real_text(t, i, c):
+                    found = titled_name_words(row[c])
+                    if found:
+                        names.setdefault(row["Incident Number"], set()).update(found)
+    return names
+
+
+def _redact_table(t: Tbl, cols: list[str], names: dict[str, set[str]] | None = None) -> list[dict]:
+    """Redact in place. Returns redactions.csv rows (only for tables with no provenance).
+    ``names`` maps Incident Number to the incident's name words (see `_incident_names`);
+    without it each cell is redacted on its own words only."""
     out = []
     for i, row in enumerate(t.rows):
+        scoped = names.get(row["Incident Number"]) if names else None
         for c in cols:
             old = row[c]
-            if not old:
-                continue
-            if t.prov is not None and t.prov[i][c] not in ("src", "mod"):
+            if not old or not _is_real_text(t, i, c):
                 continue                                   # xw/syn/key/pseud/llm pass through
-            new = redact(old)
+            new = redact(old, scoped) if names is not None else redact(old)
             if new == old:
                 continue
             row[c] = new
@@ -360,6 +381,16 @@ def _redact_table(t: Tbl, cols: list[str]) -> list[dict]:
             for k in kinds or ["name"]:
                 out.append({"table": t.rel, "Incident Number": row["Incident Number"],
                             "row_key": _row_key(t, row), "column": c, "kind": k})
+    return out
+
+
+def redact_scope(tbls: list[Tbl], shipped: dict[str, list[str]]) -> list[dict]:
+    """Redact every table of ONE scope (core, or one company), with incident-scoped names."""
+    cols_of = {t.rel: [c for c in REDACT_COLS.get(t.kind, ()) if c in shipped[t.rel]] for t in tbls}
+    names = _incident_names(tbls, cols_of)
+    out = []
+    for t in tbls:
+        out += _redact_table(t, cols_of[t.rel], names)
     return out
 
 
@@ -429,9 +460,18 @@ def _fence(text: str, name: str, keep: bool) -> str:
     return pat.sub((lambda m: m.group(1)) if keep else "", text)
 
 
-def _counts_table(rows: list[tuple[str, int, str, str]]) -> str:
+def _counts_table(rows: list[tuple[str, int, str, str]], copies: int, listed: int, marked: int) -> str:
     lines = ["| table | rows | dropped (fatality rows) | redacted cells |", "|---|---|---|---|"]
     lines += [f"| `{r[0]}` | {r[1]} | {r[2]} | {r[3]} |" for r in rows]
+    lines += [
+        "",
+        (f"The redacted-cells column counts cell copies: a cell that ships in two tables "
+         f"(`real_only` and `enriched`) is counted once per table. Total shipped: {copies} cell "
+         f"copies. {listed} of them are in tables with no provenance file and are listed, one row "
+         f"per kind, in `core/redactions.csv` (that file has more rows than cells if a cell had "
+         f"two kinds); the other {marked} are in tables with a provenance file and are marked "
+         f"`mod` there."),
+    ]
     return "\n".join(lines)
 
 
@@ -535,9 +575,8 @@ def build_bundle(out_root: Path = Path("deliverables/release"),
 
     # 3. redact (shipped columns only)
     redaction_rows = []
-    for t in tbls:
-        cols = [c for c in REDACT_COLS.get(t.kind, ()) if c in shipped[t.rel]]
-        redaction_rows += _redact_table(t, cols)
+    for scope in dict.fromkeys(t.spec.scope for t in tbls):
+        redaction_rows += redact_scope([t for t in tbls if t.spec.scope == scope], shipped)
 
     # the full-text cause task, for the baseline (identical to the shipped one unless text-light)
     task = by_rel["core/cause_task.csv"]
@@ -582,7 +621,12 @@ def build_bundle(out_root: Path = Path("deliverables/release"),
         ("core/redactions.csv", redaction_rows), ("core/data_dictionary.csv", dd))]
     files["README_FIRST.md"] = _readme(
         (repo / GUIDE).read_text(encoding="utf-8"), label=label,
-        commit_date=time.strftime("%Y-%m-%d", gm), counts=_counts_table(counts_rows),
+        commit_date=time.strftime("%Y-%m-%d", gm),
+        counts=_counts_table(
+            counts_rows,
+            copies=sum(sum(t.redacted.values()) for t in tbls),
+            listed=sum(sum(t.redacted.values()) for t in tbls if t.prov is None),
+            marked=sum(sum(t.redacted.values()) for t in tbls if t.prov is not None)),
         include_companies=include_companies, text_light=text_light).encode("utf-8")
     files["BASELINE.md"] = _baseline_md(full_task, short, text_light).encode("utf-8")
     files["SHA256SUMS"] = _sha_lines(files)
