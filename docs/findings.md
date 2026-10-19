@@ -3615,3 +3615,50 @@ Regeneration: the full chain was re-run with `psm.cause_task` appended; the only
 data change is the new `cause_task.csv`. Pinned by `tests/test_cause_task.py`
 (row count, columns, one-to-one relabel, fold hash, regime from `splits.json`,
 committed file equals a fresh build).
+
+### Correction to the entry above (2026-10-19, fix round 1)
+
+The A-vs-B comparison above was not like-for-like: the 462/25 figure for A was
+measured with the phrase loop but without stems. Restated under identical
+conditions (rows, modern_six, out-of-fold sentinel hits; `ab.py` below):
+
+| stripping loop | A (literal) | B (shipped) |
+|---|---|---|
+| none | 463 rows, 414 m6, 35 hits (7.56%) | 408, 375, 16 (3.92%) |
+| phrases only (own head, recurring subcategories) | 462, 413, 25 (5.41%) | 407, 374, 11 (2.70%) |
+| phrases and 2-3 word stems (shipped) | 461, 413, 9 (1.95%) | **406, 374, 8 (1.97%)** |
+
+**The sentinel does not separate A from B once stems are stripped** (9 vs 8
+hits, both under 2%). B is adopted on two other grounds: the spec defines the
+111-row leak as the rows whose entire remainder is the parsed subcategory (56
+short or recurring spans plus 55 long once-seen sentences with nothing after
+them), and B is the reading that lands N inside the plan's 380-413 range (A
+gives 461).
+
+**Loop counts.** Over the 524 labelled statements the whole loop (own head,
+recurring phrases, stems) changes **82** outputs; the stem step alone drives
+**69** of those.
+
+**Placement.** The first sentence of the entry says `psm.cause_task` is "now the
+last step of the regeneration chain". The chain in `README.md` lists it after
+`psm.ledger --real-only` and before `psm.cluster`; it was run last in this
+session's REGEN, which is a different thing. The README position is the
+documented one.
+
+**Data change is checkable.** `git show --stat e4a9b0a` lists seven files; the
+only one under `data/` is `data/processed/e19/cause_task.csv` (407 lines, 406
+rows plus header). Every other regenerated file was byte-identical.
+
+**Known residuals, left as is (they are source-verbatim).**
+* MC-474A-20210607 cause 1: a second category head follows a `\x81` bullet
+  (a font glyph with no mapping), which `second_head` does not match as a
+  boundary. 1 row.
+* 5 rows have C0/C1 control characters in `src_text_stripped`
+  (GB-426-20211210, GB-426A-20211123 x2, MC-474A-20210607, MC-503-20201031).
+
+Reproduce the table: build the three variants by editing `strip_category`
+(drop `or not st.description` for A; return before `phrases = sorted(` for no
+loop; set `stems = frozenset()` for phrases-only), point
+`psm.cause_task.strip_category` at each, and count
+`len(build_cause_task(REAL_ONLY))`, modern_six rows, and `_lookup_hits` from
+`tests/test_cause_task.py`.

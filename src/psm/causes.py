@@ -315,6 +315,7 @@ def subcategory_counts(causes_csv) -> dict[str, int]:
     """Lower-cased parsed subcategory -> occurrences over every statement in
     ``causes_csv`` (labelled or not)."""
     import csv
+    csv.field_size_limit(10 ** 9)
     counts: dict[str, int] = {}
     with open(causes_csv, encoding="utf-8", newline="") as fh:
         for row in csv.DictReader(fh):
@@ -363,6 +364,10 @@ def strip_category(raw: str, sub_counts: dict[str, int] | None = None) -> str:
     repeatedly: the row's own category head, a recurring subcategory phrase, or
     a 2-3 word stem shared by two or more distinct subcategories. Untyped prose
     is returned as is.
+
+    ``sub_counts`` is the output of :func:`subcategory_counts`. Without it, the
+    counts are lazily loaded from ``data/processed/e19/real_only/causes.csv`` on
+    first use and memoized for the life of the process.
     """
     st = parse_statement(raw or "")
     if st.category is None:

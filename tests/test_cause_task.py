@@ -179,8 +179,8 @@ def test_folds_grouped_and_populated(task):
     cells = Counter((r["syn_fold"], r["xw_element"]) for r in m6)
     for fold in "01234":
         for el in {r["xw_element"] for r in m6}:
-            # >= 1, not >= 3: elements 6 and 9 are sparse in modern_six (28 and
-            # 31 rows over five folds), so a floor of 3 per fold is not reachable
+            # >= 1, not >= 3: elements 6 and 9 are sparse in modern_six (27 and
+            # 26 rows over five folds), so a floor of 3 per fold is not reachable
             # without changing the salt. Every fold still sees every class.
             assert cells[(fold, el)] >= 1, (fold, el)
 
