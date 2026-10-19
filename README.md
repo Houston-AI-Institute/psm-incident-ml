@@ -74,6 +74,7 @@ no time. All 1,214 are unique.
 | `syn` | fabricated -- in `enriched/`, by `src/psm/synth.py` under `schema/synth_rules.yaml`; in `filled/`, also by `src/psm/fill.py` under the same rules file |
 | `key` | constructed join identifier (e.g. `Incident Number`); BSEE publishes no incident id, the whole column is built by this repo |
 | `pseud` | salted pseudonym of a real value (`Investigation leader`/`Approver` name columns); a stable privacy transform of a real person's name -- de-amplification, not fabrication |
+| `mod` | real source text that this project altered: dates shifted, or a company name, person name or contact detail masked; otherwise verbatim. May only replace `src` |
 | empty | not filled; see `gap_policy` in `schema/e19_disposition.yaml` |
 
 `key` and `pseud` are classified by column purpose (`src/psm/provenance.py`),

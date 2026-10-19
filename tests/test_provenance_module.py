@@ -10,8 +10,14 @@ from psm import provenance as pv
 
 def test_token_set_is_exactly_the_documented_closed_set():
     assert pv.TOKENS == frozenset(
-        {"", "src", "xw", "llm", "gold", "syn", "key", "pseud"}
+        {"", "src", "xw", "llm", "gold", "syn", "key", "pseud", "mod"}
     )
+
+
+def test_mod_fill_colour_is_distinct_from_every_other_colour():
+    assert pv.FILL_COLORS["mod"] == "FCE4D6"
+    others = [c for t, c in pv.FILL_COLORS.items() if t != "mod"]
+    assert pv.FILL_COLORS["mod"] not in others
 
 
 def test_fill_colors_and_unshaded_are_disjoint_and_inside_the_closed_set():
@@ -61,3 +67,12 @@ def test_export_and_convention_tests_import_from_here():
 
     assert load("test_conventions").PROVENANCE_TOKENS == pv.TOKENS
     assert load("test_fill_outputs").TOKENS == pv.TOKENS
+
+
+def test_readme_provenance_table_documents_mod():
+    from pathlib import Path
+
+    readme = (Path(__file__).resolve().parents[1] / "README.md").read_text(
+        encoding="utf-8"
+    )
+    assert "| `mod` |" in readme
