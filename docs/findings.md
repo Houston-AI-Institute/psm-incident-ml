@@ -3537,3 +3537,81 @@ Pinned by `tests/test_projection.py`: unit tests on `scrub_contacts` /
 `scrub_phones`, and a test over the committed sidecar that finds no phone number
 in any `bsee_*` column and, in operator and operation, no `REPRESENTATIVE`
 followed by a value label or OCR terminator and no `TELEPHONE`.
+
+## 2026-10-19 — Leak-free cause-classification task file
+
+`data/processed/e19/cause_task.csv` (built by `src/psm/cause_task.py`, run as
+`uv run python -m psm.cause_task`, now the last step of the regeneration chain)
+is the cause-classification target with the label removed from the input.
+Columns: `Incident Number, Cause number, src_year, src_category,
+src_text_stripped, xw_element, syn_regime, syn_fold`. Score against `xw_element`
+from `src_text_stripped`; `syn_fold` is a grouped 5-fold split
+(`sha256(f"{inc}|cause-task-v1")[:8] % 5`, every cause of an incident in one
+fold). `xw_element` is read from `schema/crosswalk.yaml` (alias to
+`primary_element`); the build raises if it disagrees with the labelled
+` Failed PSM Framework Element`.
+
+**The leak this fixes.** Every labelled cause (524 of 524 in
+`real_only/causes.csv`; labelled means ` Failed PSM Framework Element` is
+non-blank, which here equals "the head is a crosswalk alias") opens with its own
+category head. 421 also carry a parsed subcategory. **111** are head plus
+subcategory and nothing else: 56 where the span is short or recurs, 55 where it
+is a long, once-seen sentence. Measured with `parse_statement` on each labelled
+`Cause Description`, counting rows where `subcategory` is set and `description`
+is not. The plan's figure was 111; the measurement is also 111.
+
+**A vs B.** `strip_category` has one judgment in it. A (literal): a long
+once-seen span is "kept as description", so the 55 keep their sentence, which is
+the subcategory. B (adopted, owner ruling R17): a span with no description after
+it is the subcategory whatever its length, so those 55 strip to empty and are
+excluded; a long once-seen span that IS followed by a description (the
+sprag-clutch pattern, 29 labelled rows) is kept. Under A: 462 rows, sentinel 25
+hits (5.4%). Under B: the 111 = 56 + 55 are removed and the file lands at 406.
+
+**Remaining label vocabulary.** After the main strip, a loop drops any leading
+text that is the row's own category head, a recurring subcategory (seen 2+
+times), or a 2-3 word stem shared by 2+ distinct parsed subcategories (stems
+computed from the data: 84 of them). It changed 69 labelled statements and can
+leave a fragment. Single-word stems were tried and dropped: "the", "a", "not"
+and "did" head 34 distinct subcategories, and removing them rewrote 231 of 524
+statements with the same sentinel result (8 hits). `STEM_MIN_WORDS = 1` restores
+them.
+
+**Rows.** N = **406** (modern_six 374, ad_hoc 19, human_error 13; free_prose
+none). Excluded from 524 labelled: **116 too_short** (fewer than 3 words after
+stripping), **2 multi_category** (a second category head after a sentence or dash
+boundary), 0 in both = 118. Elements: 3: 145, 15: 114, 8: 66, 17: 28, 6: 27,
+9: 26.
+
+**Sentinel (out-of-fold lookup).** Learn first-3-words to modal `xw_element` on
+four folds, apply to the fifth, count rows where the lookup fires and is right:
+**8 of 406 = 1.97%** (limit 2%, i.e. 8.12). Pinned by
+`test_subcategory_lookup_sentinel`; a companion test plants a subcategory head
+per class and shows the sentinel trips. The margin is one row, so any change to
+the stripping rule needs this re-measured.
+
+**Fold by class, modern_six (n = 374).** Rows are folds, columns are elements:
+
+```
+fold   3   6   8   9  15  17
+0     20   4   9   1  25   4
+1     16   5   8   6  26   6
+2     26   3  14   6  16   3
+3     39  10  19   9  24   9
+4     24   5  14   4  13   6
+```
+
+Min cell = **1** (fold 0, element 9). The assertion is `>= 1` (owner ruling R19):
+elements 6 and 9 are sparse (27 and 26 rows over five folds), so a floor of 3 per
+fold cannot hold without changing the salt, which was left alone. Fold 3 is
+larger (110 rows against about 65) because several multi-cause incidents hash
+there. Small cells make per-fold, per-class scores noisy; report n.
+
+**Decision: `src/psm/cluster.py` is unchanged.** It keeps its current behaviour
+and does not call `strip_category`; the six-category partition check there reads
+the head on purpose.
+
+Regeneration: the full chain was re-run with `psm.cause_task` appended; the only
+data change is the new `cause_task.csv`. Pinned by `tests/test_cause_task.py`
+(row count, columns, one-to-one relabel, fold hash, regime from `splits.json`,
+committed file equals a fresh build).

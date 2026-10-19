@@ -182,6 +182,7 @@ uv run python -m psm.extract     # PDFs -> data/interim/*.json
 uv run python -m psm.project     # interim -> data/processed/e19/  (verbatim only)
 uv run python -m psm.crosswalk   # + xw and syn -> enriched/
 uv run python -m psm.ledger --real-only
+uv run python -m psm.cause_task  # real_only/ -> cause_task.csv (leak-free cause classification)
 uv run python -m psm.cluster     # the six-category partition check
 ```
 
