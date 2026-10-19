@@ -15,8 +15,10 @@ nothing else under ``data/`` can reach the bundle. Transforms, in this order:
                  a row in ``redactions.csv``;
 4. reduce        withheld columns and the ``bsee_unmapped`` reduction.
 
-The builder refuses to run on a dirty or untracked input tree, and while
-``docs/release/TERMS.md`` is a placeholder. Time comes only from the commit
+The builder refuses to run on a dirty or untracked input tree, while
+``docs/release/TERMS.md`` is a placeholder, and while the Choosing tools section of the
+participant guide still holds the organiser placeholder comment (``allow_placeholder_terms``
+lifts both for a preview, and the comment is then dropped from README_FIRST.md). Time comes only from the commit
 (``git log -1 --format=%ct``), converted with ``time.gmtime``; the output is
 byte-identical for the same commit and mode.
 
@@ -61,6 +63,7 @@ EXCLUSIONS = "schema/bundle_exclusions.yaml"
 DISPOSITION = "schema/e19_disposition.yaml"
 SPLITS = f"{E19}/real_only/splits.json"
 PLACEHOLDER_FIRST_LINE = "PLACEHOLDER — terms pending organiser"
+GUIDE_PLACEHOLDER = "<!-- organiser text: under-18 tool guidance -->"
 
 # Columns withheld from incidents tables (and their provenance files) until Task 10 is
 # committed; Task 10 empties the set.
@@ -202,6 +205,17 @@ def check_terms(text: str, allow_placeholder: bool) -> None:
     if first == PLACEHOLDER_FIRST_LINE and not allow_placeholder:
         raise SystemExit(f"refusing to build: {TERMS} is still the placeholder "
                          "(the organiser's terms have not been supplied)")
+
+
+def guide_text(repo: Path = REPO) -> str:
+    return (repo / GUIDE).read_text(encoding="utf-8")
+
+
+def check_guide(text: str, allow_placeholder: bool) -> None:
+    """Refuse while the guide's Choosing-tools section still holds the organiser placeholder."""
+    if GUIDE_PLACEHOLDER in text and not allow_placeholder:
+        raise SystemExit(f"refusing to build: the Choosing tools section of {GUIDE} is still the "
+                         "placeholder (the organiser's under-18 tool guidance has not been supplied)")
 
 
 def load_exclusions(repo: Path = REPO) -> list[str]:
@@ -480,7 +494,8 @@ def _readme(template: str, *, label: str, commit_date: str, counts: str,
     for ph in ("{version}", "{commit}", "{commit_date}", "{counts}"):
         if ph not in template:
             raise SystemExit(f"{GUIDE}: template lacks the placeholder {ph}")
-    text = _fence(template, "companies", include_companies)
+    text = template.replace(GUIDE_PLACEHOLDER + "\n\n", "").replace(GUIDE_PLACEHOLDER, "")
+    text = _fence(text, "companies", include_companies)
     text = _fence(text, "text", not text_light)
     return (text.replace("{version}", VERSION).replace("{commit}", label)
             .replace("{commit_date}", commit_date).replace("{counts}", counts))
@@ -541,6 +556,8 @@ def build_bundle(out_root: Path = Path("deliverables/release"),
                  allow_dirty: bool = False, allow_placeholder_terms: bool = False) -> Path:
     repo = REPO
     check_terms(terms_text(repo), allow_placeholder_terms)
+    guide = guide_text(repo)
+    check_guide(guide, allow_placeholder_terms)
     specs = _specs(include_companies)
     sources = source_paths(specs)
     problems = input_problems(repo, sources)
@@ -621,7 +638,7 @@ def build_bundle(out_root: Path = Path("deliverables/release"),
         ("core/cells_long.csv", cells), ("core/content_flags.csv", flag_rows),
         ("core/redactions.csv", redaction_rows), ("core/data_dictionary.csv", dd))]
     files["README_FIRST.md"] = _readme(
-        (repo / GUIDE).read_text(encoding="utf-8"), label=label,
+        guide, label=label,
         commit_date=time.strftime("%Y-%m-%d", gm),
         counts=_counts_table(
             counts_rows,
