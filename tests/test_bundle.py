@@ -760,6 +760,8 @@ def test_zip_times_come_from_commit_time(b):
                             capture_output=True, text=True).stdout)
     import time
     want = time.gmtime(ct)[:6]
+    # ZIP stores seconds at 2-second resolution: an odd commit second reads back one lower.
+    want = (*want[:5], want[5] - want[5] % 2)
     with zipfile.ZipFile(zip_path(b)) as z:
         assert {i.date_time for i in z.infolist()} == {want}
 
