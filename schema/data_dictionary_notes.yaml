@@ -1,0 +1,32 @@
+# Notes and meanings that src/psm/bundle.py adds to the bundled data_dictionary.csv.
+#
+# `notes` is keyed by column name and applies to every bundled table that has the
+# column (or that withholds it from this release). `meanings` gives a one-line
+# meaning for columns that schema/e19_disposition.yaml does not describe.
+
+notes:
+  "Approval Date": "synthetic: provenance token syn, not a real approval date"
+  "Description": "withheld or sparse: not shipped in this release, and where BSEE text exists it is partial"
+  "Investigation leader - Name": "pseudonyms are per field string, not per person: the same real person can map to different pseudonyms in different fields"
+  "Investigation Acceptor/Approver (Owner) - Name": "pseudonyms are per field string, not per person: the same real person can map to different pseudonyms in different fields"
+  "Health & Safety  - Consequence": "consequence tiers come from an assumed matrix (schema/xw_consequence_tiers.yaml), not from BSEE"
+  "Environment & Reputation  - Consequence": "consequence tiers come from an assumed matrix (schema/xw_consequence_tiers.yaml), not from BSEE"
+  "Financial Cost & Business Interruption  - Consequence": "consequence tiers come from an assumed matrix (schema/xw_consequence_tiers.yaml), not from BSEE"
+  "Cause Description": "cause text can drop words (median recall ≈0.98; 8 of 61 sampled below 0.80); in causes.csv it begins with its own category, so use cause_task.csv for classification"
+  "src_text_stripped": "cause text can drop words (median recall ≈0.98; 8 of 61 sampled below 0.80); the category head is removed, so this is the text to classify"
+  "bsee_operator": "contact blocks (representative, telephone, contractor labels and their values) have been removed"
+  "syn_regime": "derived from a real year (src_year) via the splits in core/real_only/splits.json"
+
+meanings:
+  bsee_operator: "operator name as printed on the BSEE form, with contact blocks removed"
+  bsee_water_depth: "water depth as printed on the BSEE form"
+  bsee_panel_formed: "whether an accident investigation panel was formed: YES, NO or blank (parsed from the form text)"
+  bsee_source_url: "URL of the BSEE report PDF the row was extracted from"
+  bsee_source_field: "which BSEE form field the cause statement came from"
+  xw_human_factor_confidence: "confidence grade of the human-factor crosswalk where a mapping is graded"
+  xw_secondary_elements: "secondary EI PSM elements from the cause qualifiers crosswalk"
+  src_year: "year of the incident, from the report"
+  src_category: "the BSEE cause category head removed from the text (the label source)"
+  xw_element: "EI PSM element the crosswalk assigns to src_category (agreement with the investigator's category, not PSM-element correctness)"
+  syn_regime: "cause-vocabulary regime of the incident year: free_prose, human_error, ad_hoc or modern_six"
+  syn_fold: "cross-validation fold, a hash of the Incident Number, grouped by incident"

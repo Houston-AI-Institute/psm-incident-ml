@@ -58,10 +58,10 @@ def test_committed_register_is_byte_identical_to_a_fresh_generate(company, tmp_p
 def test_engine_has_no_wall_clock_or_random_dependence():
     import psm.export_companies, psm.kpi, psm.provenance, psm.quantiles
     import psm.scenario, psm.templates
-    import psm.content, psm.cause_task, psm.causes
+    import psm.bundle, psm.content, psm.cause_task, psm.causes
     for mod in (psm.scenario, psm.quantiles, psm.kpi, psm.templates,
                 psm.export_companies, psm.provenance, psm.content,
-                psm.cause_task, psm.causes):
+                psm.cause_task, psm.causes, psm.bundle):
         src = Path(mod.__file__).read_text(encoding="utf-8")
         for banned in ("date.today", "datetime.now(", "datetime.today",
                        "utcnow", "time.time(", "import random",

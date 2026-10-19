@@ -1,0 +1,6 @@
+# Incident Numbers withheld from the release bundle in addition to every fatality
+# incident (Incident Type A-D = "Injury Fatality"), which the builder always drops.
+# An id listed here is dropped from every core table; a company incident whose donor
+# is listed is dropped from that company's tables too. The builder refuses to build
+# if a listed id is not an enriched incident.
+incidents: []
