@@ -40,7 +40,7 @@ uv sync --extra dev
 uv run python -m psm.baseline
 ```
 
-Generated at repository HEAD `795bd1b` (from `git rev-parse --short HEAD`). This is the code commit the numbers were produced from: the commit that adds this file and `src/psm/baseline.py` sits directly on top of it, and this file cannot name its own commit.
+Inputs last changed at commit `78a2fd1` (`git log -1 --format=%h -- src/psm/baseline.py data/processed/e19/cause_task.csv`). Re-running at any later commit reproduces this file byte-for-byte unless those inputs change.
 
 ## Not comparable to earlier figures
 
