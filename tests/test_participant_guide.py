@@ -7,9 +7,10 @@ has a companion test that commits a real violation and shows it is caught.
 from __future__ import annotations
 
 import contextlib
+import csv
 import io
-import os
 import re
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -17,9 +18,11 @@ import pytest
 from psm import bundle
 from psm.provenance import TOKENS
 
+csv.field_size_limit(10**8)
+
 REPO = Path(__file__).resolve().parents[1]
-# RED-phase hook: lets the template tests be pointed at another copy of the guide.
-GUIDE = Path(os.environ.get("PSM_GUIDE_UNDER_TEST", REPO / "docs/release/PARTICIPANT_GUIDE.md"))
+GUIDE = REPO / "docs/release/PARTICIPANT_GUIDE.md"
+FIRST_GUIDE_COMMIT = "d37ce7a"      # the guide before fix round 1: it had the mode-truth defects
 
 HEADINGS = [
     "What this is", "Content note", "Choosing tools", "Folders", "Provenance tokens",
@@ -56,7 +59,7 @@ DEFECT_PHRASES = {
     "Financial Cost & Business Interruption  - Consequence": "xw_consequence_tiers",
     "Cause Description": "begins with its own category",
     "src_text_stripped": "src_text_stripped",
-    "bsee_operator": "contact blocks",
+    "bsee_operator": "telephone blocks",
     "syn_regime": "src_year",
 }
 
@@ -73,7 +76,7 @@ def section(text: str, name: str) -> str:
 
 def fences_balanced(text: str) -> bool:
     """Each fence name opens and closes alternately, never nested, never left open."""
-    for name in ("companies", "text"):
+    for name in ("companies", "text", "no-text"):
         marks = re.findall(rf"<!-- (/?){name} -->", text)
         if [m == "/" for m in marks] != [False, True] * (len(marks) // 2) or len(marks) % 2:
             return False
@@ -105,6 +108,17 @@ def b_nocomp(tmp_path_factory):
 @pytest.fixture(scope="module")
 def b_light(tmp_path_factory):
     return _make(tmp_path_factory, "light", text_light=True)
+
+
+@pytest.fixture(scope="module")
+def b_light_nocomp(tmp_path_factory):
+    return _make(tmp_path_factory, "light_nocomp", text_light=True, include_companies=False)
+
+
+@pytest.fixture(scope="module")
+def modes(b, b_nocomp, b_light, b_light_nocomp):
+    """name -> built bundle, for the four modes (companies x text-light)."""
+    return {"core": b_nocomp, "text-light": b_light_nocomp, "companies": b, "text-light+companies": b_light}
 
 
 def readme(b: Path) -> str:
@@ -238,8 +252,33 @@ def test_report_section_has_four_parts():
         assert must in text, must
 
 
-def test_the_word_accuracy_is_not_used():
-    assert not re.search(r"accura", template(), re.I)
+NEVER_ACCURACY = "Never call it accuracy."
+
+
+def test_the_word_accuracy_appears_only_in_the_prohibition():
+    """D2/R39: 'accuracy' never labels a metric. The one allowed use is the exact prohibition."""
+    text = template()
+    assert text.count(NEVER_ACCURACY) == 1
+    assert NEVER_ACCURACY in section(text, "Tracks")
+    assert not re.search(r"accura", text.replace(NEVER_ACCURACY, ""), re.I)
+    assert re.search(r"accura", text.replace(NEVER_ACCURACY, "") + " the model accuracy is high", re.I)
+
+
+def test_template_claims_that_were_false():
+    text = template()
+    assert "It says nothing about any company or person" not in text
+    assert "makes no claims about any operator or person" in text
+    assert "The reports name real operators, so do not judge them." in text
+    gl = section(text, "Glossary")
+    assert "`real_only` holds only real values" not in gl
+    for must in ("`xw`", "`pseud`", "`key`", "generated cells left blank", "only `enriched` has provenance files"):
+        assert must in gl, must
+    assert "recommendations with no close-out" not in text
+    assert "Tracks 3 and 4" in section(text, "Folders")
+    assert "very small n (19 and 13)" in section(text, "Tracks")
+    assert "None in this bundle." in section(text, "Provenance tokens").split("`llm`")[1].split("\n")[0]
+    folders = section(text, "Folders")
+    assert "no provenance file" in folders and "marked `mod`" in folders
 
 
 def test_template_is_short():
@@ -255,37 +294,72 @@ def test_length_cap_catches_a_long_guide():
 
 # ---- stamped ---------------------------------------------------------------
 
-def test_stamped_readme_has_no_placeholder(b, b_nocomp, b_light):
-    for bd in (b, b_nocomp, b_light):
+def test_stamped_readme_has_no_placeholder(modes):
+    for name, bd in modes.items():
         text = readme(bd)
-        assert not re.search(r"\{[A-Za-z_]+\}", text), bd.name
-        assert "STUB" not in text and "<!--" not in text and "-->" not in text
+        assert not re.search(r"\{[A-Za-z_]+\}", text), name
+        assert "STUB" not in text and "<!--" not in text and "-->" not in text, name
 
 
-def test_stamped_readme_is_within_three_pages(b, b_nocomp, b_light):
-    for bd in (b, b_nocomp, b_light):
-        assert prose_words(readme(bd)) <= MAX_WORDS, (bd.name, prose_words(readme(bd)))
+def test_stamped_readme_is_within_three_pages(modes):
+    for name, bd in modes.items():
+        assert prose_words(readme(bd)) <= MAX_WORDS, (name, prose_words(readme(bd)))
 
 
-def test_stamped_readme_headings(b, b_nocomp, b_light):
-    assert re.findall(r"^## (.+)$", readme(b), re.M) == HEADINGS
-    assert re.findall(r"^## (.+)$", readme(b_light), re.M) == HEADINGS
-    assert re.findall(r"^## (.+)$", readme(b_nocomp), re.M) == [h for h in HEADINGS if h != "About the companies"]
+def test_stamped_readme_headings(modes):
+    for name, bd in modes.items():
+        want = HEADINGS if "companies" in name else [h for h in HEADINGS if h != "About the companies"]
+        assert re.findall(r"^## (.+)$", readme(bd), re.M) == want, name
 
 
-def test_fences_follow_the_mode(b, b_nocomp, b_light):
-    full, nocomp, light = readme(b), readme(b_nocomp), readme(b_light)
-    assert "Alder, Hazel and Hornbeam" in full and "Alder" not in nocomp and "Hornbeam" not in nocomp
-    assert "Company register audit" in full and "Company register audit" not in nocomp
-    assert "LLM structured extraction" in full and "LLM structured extraction" not in light
-    assert "Company register audit" in light
-    assert "companies/" not in nocomp and "companies/" in full
+def test_fences_follow_the_mode(modes):
+    r = {k: readme(v) for k, v in modes.items()}
+    for name, text in r.items():
+        has_co, has_text = "companies" in name, not name.startswith("text-light")
+        assert ("Company register audit" in text) is has_co, name
+        assert ("companies/" in text) is has_co, name
+        assert ("Alder" in text) is has_co, name
+        assert ("Treating the fictional companies" in text) is has_co, name
+        assert ("LLM structured extraction" in text) is has_text, name
+        assert ("Cause classification" in text) is has_text, name
+        assert ("Era drift" in text) is has_text, name
+        assert ("Narrative text" in text) is has_text, name
+        assert ("Tracks 3 and 4" in text) is has_text, name
+        assert ("src_text_stripped" in text) is has_text, name
+        assert ("Cause Description" in text) is has_text, name
+        assert ("Text-light bundle" in text) is (not has_text), name
+        assert ("The narrative and cause text are withheld in this bundle." in text) is (not has_text), name
+        assert ("Their narratives are real BSEE text" in text) is (has_co and has_text), name
+        assert ("unmasked narratives appear in" in text) is (has_co and has_text), name
+        assert ("no text" in text) is (not has_text), name
 
 
-def test_content_note_survives_stamping(b, b_nocomp, b_light):
-    for bd in (b, b_nocomp, b_light):
+def test_content_note_survives_stamping(modes):
+    for bd in modes.values():
         assert "> " + CONTENT_NOTE in readme(bd)
         assert GOLD_SENTENCE in readme(bd)
+
+
+# ---- the preview line ------------------------------------------------------
+
+PREVIEW = "PREVIEW BUILD: organiser text not final. Not for distribution."
+
+
+def test_a_flag_built_bundle_says_it_is_a_preview(modes):
+    for name, bd in modes.items():            # every fixture is built with allow_placeholder_terms=True
+        assert readme(bd).split("\n")[0] == PREVIEW, name
+        assert readme(bd).split("\n")[2].startswith("# PSM incident dataset"), name
+
+
+def test_a_build_without_the_flag_has_no_preview_line(tmp_path, monkeypatch):
+    """Organiser text and terms supplied (stand-ins), no flag: it builds, with no preview line."""
+    guide = bundle.GUIDE_PLACEHOLDER_RE.sub("The organiser's own tool guidance.", template())
+    monkeypatch.setattr(bundle, "terms_text", lambda *a, **k: REAL_TERMS)
+    monkeypatch.setattr(bundle, "guide_text", lambda *a, **k: guide)
+    out = bundle.build_bundle(tmp_path / "x", include_companies=False, allow_dirty=True)
+    text = readme(out)
+    assert "PREVIEW" not in text and "The organiser's own tool guidance." in text
+    assert text.startswith("# PSM incident dataset")
 
 
 # ---- the Choosing-tools placeholder guard ----------------------------------
@@ -308,11 +382,11 @@ def test_the_same_flag_that_allows_placeholder_terms_allows_the_guide_placeholde
 
 
 def test_check_guide():
-    with_ph = f"x\n{PLACEHOLDER}\ny\n"
+    with_ph = _guide_with(f"Some rules.\n{PLACEHOLDER}")
     with pytest.raises(SystemExit):
         bundle.check_guide(with_ph, allow_placeholder=False)
     bundle.check_guide(with_ph, allow_placeholder=True)
-    bundle.check_guide("x\nThe organiser's own text.\ny\n", allow_placeholder=False)
+    bundle.check_guide(_guide_with("The organiser's own text."), allow_placeholder=False)
 
 
 # ---- the pandas quick start must run ----------------------------------------
@@ -354,3 +428,204 @@ def test_snippet_check_catches_a_broken_snippet(b, monkeypatch):
     with pytest.raises(KeyError):
         with contextlib.redirect_stdout(io.StringIO()):
             exec(compile(broken, "<broken>", "exec"), {})
+
+
+# ---- check_guide variants --------------------------------------------------
+
+def _guide_with(choosing_body: str) -> str:
+    return f"# T\n\n## What this is\n\nx\n\n## Choosing tools\n\n{choosing_body}\n\n## Folders\n\ny\n"
+
+
+@pytest.mark.parametrize("comment", [
+    "<!-- organiser text: under-18 tool guidance -->",
+    "<!--organiser text: under-18 tool guidance-->",
+    "<!--   ORGANISER   Text: under-18 tool guidance -->",
+    "<!--\n  Organiser text:\n  under-18 tool guidance\n-->",
+])
+def test_check_guide_refuses_every_spelling_of_the_placeholder(comment):
+    """Deliberate violations: case, spacing and line breaks inside the comment."""
+    text = _guide_with("Under-18 participants do not use Google AI Studio.\n\n" + comment)
+    with pytest.raises(SystemExit, match="placeholder"):
+        bundle.check_guide(text, allow_placeholder=False)
+    bundle.check_guide(text, allow_placeholder=True)
+
+
+@pytest.mark.parametrize("comment", [
+    "<!--organiser text-->", "<!--   ORGANISER   Text: x -->", "<!--\n Organiser text\n-->"])
+def test_every_spelling_is_dropped_from_the_stamped_readme(comment):
+    tpl = _guide_with("Real sentence.\n\n" + comment) + "{version} {commit} {commit_date} {counts}"
+    out = bundle._readme(tpl, label="abc", commit_date="d", counts="c",
+                         include_companies=True, text_light=False)
+    assert "<!--" not in out and "organiser text" not in out.lower() and "Real sentence." in out
+
+
+@pytest.mark.parametrize("body", ["", "<!-- organiser text: x -->", "<!-- a -->\n\n<!-- b -->"])
+def test_check_guide_refuses_a_section_with_no_text_even_with_the_flag(body):
+    """Deliberate violation: Choosing tools holds nothing but comments."""
+    for allow in (False, True):
+        with pytest.raises(SystemExit, match="no text"):
+            bundle.check_guide(_guide_with(body), allow_placeholder=allow)
+
+
+def test_check_guide_refuses_a_missing_section():
+    with pytest.raises(SystemExit, match="no text"):
+        bundle.check_guide("# T\n\n## What this is\n\nx\n", allow_placeholder=True)
+
+
+def test_check_guide_accepts_supplied_text():
+    bundle.check_guide(_guide_with("The organiser's own rules."), allow_placeholder=False)
+
+
+# ---- mode truth: everything the README names exists in that bundle ----------
+
+# Backticked tokens that are neither a file or folder in the bundle nor a column in a bundled
+# CSV header. Each entry says why it is allowed. None of them may be a real file or column
+# name (see test_the_token_allowlist_hides_nothing).
+TOKEN_ALLOWLIST = {
+    # provenance tokens (cell values)
+    "src": "provenance token", "xw": "provenance token", "llm": "provenance token",
+    "gold": "provenance token", "syn": "provenance token", "key": "provenance token",
+    "pseud": "provenance token", "mod": "provenance token",
+    # redaction placeholders shown as examples in the content note and About the companies
+    "[name]": "redaction placeholder", "[company]": "redaction placeholder",
+    # track tags
+    "[no-code ok]": "track tag", "[code]": "track tag", "[AI tool]": "track tag",
+    # cell values and protocol text
+    "modern_six": "a syn_regime value", "syn_regime == modern_six": "the filter, as code",
+    # named in Known defects as not shipped
+    "Description": "withheld column; the known-defect bullet says it is not shipped",
+}
+HASH = re.compile(r"[0-9a-f]{7}(\+dirty)?")        # the commit label in "Built from commit"
+
+
+def bundle_paths(b: Path) -> set[str]:
+    out = set()
+    for p in b.rglob("*"):
+        out.add(p.relative_to(b).as_posix())
+    return out
+
+
+def bundle_headers(b: Path) -> set[str]:
+    cols: set[str] = set()
+    for f in b.rglob("*.csv"):
+        with f.open(encoding="utf-8", newline="") as fh:
+            cols |= set(next(csv.reader(fh), []))
+    return cols
+
+
+def backticked(text: str) -> list[str]:
+    text = re.sub(r"```.*?```", "", text, flags=re.S)
+    return re.findall(r"`([^`\n]+)`", text)
+
+
+def unknown_tokens(text: str, b: Path) -> list[str]:
+    """Backticked names in ``text`` that are not in bundle ``b``: not a path or a path suffix
+    (a file, a folder, a name inside a folder), not a CSV column, not an allowlisted token."""
+    paths, cols = bundle_paths(b), bundle_headers(b)
+    bad = []
+    for tok in backticked(text):
+        p = tok.rstrip("/")
+        in_paths = any(x == p or x.endswith("/" + p) for x in paths)
+        if in_paths or tok in cols or tok in TOKEN_ALLOWLIST or HASH.fullmatch(tok):
+            continue
+        bad.append(tok)
+    return bad
+
+
+def test_every_name_in_the_readme_exists_in_that_bundle(modes):
+    for name, bd in modes.items():
+        assert unknown_tokens(readme(bd), bd) == [], name
+
+
+def test_the_token_allowlist_hides_nothing(modes):
+    for name, bd in modes.items():
+        paths, cols = bundle_paths(bd), bundle_headers(bd)
+        for tok in TOKEN_ALLOWLIST:
+            assert tok not in cols, (name, tok)
+            assert not any(x == tok or x.endswith("/" + tok) for x in paths), (name, tok)
+
+
+def test_mode_truth_check_catches_planted_violations(modes):
+    """Deliberate violations: a folder, a column and a file that the bundle does not have."""
+    core, light = modes["core"], modes["text-light"]
+    assert unknown_tokens(readme(core), core) == []
+    assert unknown_tokens(readme(core) + "\nSee `companies/`.", core) == ["companies/"]
+    assert unknown_tokens(readme(light) + "\nUse `src_text_stripped` and `Cause Description`.", light) == [
+        "src_text_stripped", "Cause Description"]
+    assert unknown_tokens("`no_such_file.csv` and `core/nope.csv`", core) == ["no_such_file.csv", "core/nope.csv"]
+    # the same names are fine where they do ship
+    assert unknown_tokens("`companies/` `src_text_stripped` `Cause Description`", modes["companies"]) == []
+
+
+def test_mode_truth_check_would_have_caught_the_first_guide(tmp_path, monkeypatch):
+    """The guide of d37ce7a named src_text_stripped and Cause Description in every mode. Built
+    text-light, the check flags both."""
+    old = subprocess.run(["git", "show", f"{FIRST_GUIDE_COMMIT}:docs/release/PARTICIPANT_GUIDE.md"],
+                         cwd=REPO, check=True, capture_output=True, text=True).stdout
+    monkeypatch.setattr(bundle, "guide_text", lambda *a, **k: old)
+    out = bundle.build_bundle(tmp_path / "old", include_companies=False, text_light=True,
+                              allow_dirty=True, allow_placeholder_terms=True)
+    bad = unknown_tokens(readme(out), out)
+    assert {"src_text_stripped", "Cause Description"} <= set(bad), bad
+
+
+# ---- claims the guide makes about the data ----------------------------------
+
+def test_no_llm_or_gold_cells_in_any_mode(modes):
+    for name, bd in modes.items():
+        for f in sorted(bd.rglob("*provenance.csv")):
+            with f.open(encoding="utf-8", newline="") as fh:
+                toks = {v for row in csv.reader(fh) for v in row}
+            assert not ({"llm", "gold"} & toks), (name, f.name)
+        with (bd / "core/cells_long.csv").open(encoding="utf-8", newline="") as fh:
+            assert not ({"llm", "gold"} & {r["provenance"] for r in csv.DictReader(fh)}), name
+        with (bd / "core/data_dictionary.csv").open(encoding="utf-8", newline="") as fh:
+            for r in csv.DictReader(fh):
+                for k in ("pct_llm", "pct_gold"):
+                    assert r[k] in ("n/a", "0.0"), (name, r["table"], r["column"], k)
+
+
+def test_real_only_holds_no_generated_cells(b_nocomp):
+    """The glossary: real_only has real, xw, pseud and key cells; generated cells are blank;
+    only enriched has provenance files."""
+    def rd(rel):
+        with (b_nocomp / rel).open(encoding="utf-8", newline="") as fh:
+            return list(csv.DictReader(fh))
+    for real, prov in (("core/real_only/incidents.csv", "core/enriched/provenance.csv"),):
+        ro, pv = rd(real), rd(prov)
+        assert len(ro) == len(pv)
+        seen = set()
+        for r, p in zip(ro, pv):
+            for c, v in r.items():
+                if v:
+                    seen.add(p[c])
+                else:
+                    assert p[c] in ("", "syn"), (c, p[c])
+                if p[c] == "syn":
+                    assert v == "", c
+        assert seen <= {"src", "mod", "xw", "pseud", "key"}, seen
+        assert {"xw", "pseud", "key"} <= seen
+    assert not list((b_nocomp / "core/real_only").glob("*provenance*"))
+    assert (b_nocomp / "core/enriched/provenance.csv").exists()
+
+
+def test_the_small_regime_numbers_in_track_4_are_the_bundles(b_nocomp):
+    from psm.baseline import regime_summary
+    ns = sorted(g["n"] for g in regime_summary(b_nocomp / "core/cause_task.csv"))
+    assert ns == [13, 19]
+    assert "(19 and 13)" in section(template(), "Tracks")
+
+
+def test_track_6_gaps_exist_in_every_company(b):
+    """The guide names two gaps: close-outs marked Behind, and incidents with no recommendation.
+    Both must exist in all three companies in the bundle."""
+    def rd(rel):
+        with (b / rel).open(encoding="utf-8", newline="") as fh:
+            return list(csv.DictReader(fh))
+    assert '"Behind"' in section(template(), "Tracks") and "incidents with no recommendations" in template()
+    for co in sorted(p.name for p in (b / "companies").iterdir()):
+        inc = {r["Incident Number"] for r in rd(f"companies/{co}/incidents.csv")}
+        rec = {r["Incident Number"] for r in rd(f"companies/{co}/recommendations.csv")}
+        behind = [r for r in rd(f"companies/{co}/closeout.csv") if r["Schedule Status"] == "Behind"]
+        assert behind, co
+        assert inc - rec, co

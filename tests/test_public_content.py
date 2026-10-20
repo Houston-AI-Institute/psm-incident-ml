@@ -9,12 +9,15 @@ ALLOWLIST defined here.
 from __future__ import annotations
 
 import re
+import sys
 from pathlib import Path
 from typing import Iterable, NamedTuple
 
 import pytest
 
 from psm import bundle
+
+REPO = Path(__file__).resolve().parent.parent
 
 # (label, compiled pattern). Verbatim from Task 12. Everything is case-insensitive except
 # the abbreviation HAI, which would otherwise match the word "hai" inside other text.
@@ -28,12 +31,11 @@ PATTERNS: tuple[tuple[str, re.Pattern], ...] = (
 )
 
 # (file name, exact text to excuse). The text is cut out of a line of that file before the
-# line is scanned, so the rest of the line is still checked. The existing disclaimer in
-# DATA_SOURCES.md says "commercially"; the Task 12 diff scan needs this entry, the bundle
-# scan does not.
-ALLOWLIST: tuple[tuple[str, re.Pattern], ...] = (
-    ("DATA_SOURCES.md", re.compile(r"Do your own diligence before relying on any of this commercially\.")),
-)
+# line is scanned, so the rest of the line is still checked. Each entry must be live:
+# `allowlist_problems` fails an entry whose text is not in its file, or whose text no pattern
+# would flag. The one entry this module had, for "commercially" in DATA_SOURCES.md, was dead:
+# \bcommercial\b does not match "commercially". It was removed. Task 12 may add entries here.
+ALLOWLIST: tuple[tuple[str, re.Pattern], ...] = ()
 
 # The authored files of the bundle, relative to its root (glob patterns).
 AUTHORED = ("README_FIRST.md", "TERMS.md", "BASELINE.md", "core/data_dictionary.csv",
@@ -54,6 +56,24 @@ def excuse(source: str, line: str) -> str:
         if name == fname:
             line = rx.sub("", line)
     return line
+
+
+def allowlist_problems(allowlist, files: dict[str, str]) -> list[str]:
+    """Entries that are dead. ``files`` maps a file name to its text. An entry is dead if its
+    file is not given, its text is on no line of the file, or no pattern flags the text it
+    excuses (so excusing it changes nothing)."""
+    out = []
+    for fname, rx in allowlist:
+        text = files.get(fname)
+        if text is None:
+            out.append(f"{fname}: file not found")
+            continue
+        found = [m.group(0) for line in text.splitlines() for m in [rx.search(line)] if m]
+        if not found:
+            out.append(f"{fname}: text not in file: {rx.pattern}")
+        elif not any(prx.search(f) for f in found for _, prx in PATTERNS):
+            out.append(f"{fname}: no pattern flags the excused text: {rx.pattern}")
+    return out
 
 
 def scan_lines(source: str, lines: Iterable[str]) -> list[Hit]:
@@ -128,16 +148,38 @@ def test_a_planted_violation_in_a_built_bundle_file_is_caught(b, tmp_path):
     assert [(h.source, h.pattern) for h in hits] == [("README_FIRST.md", "consult(ing|ancy|ant)")]
 
 
-def test_allowlist_excuses_only_the_named_file_and_line():
-    line = "> Do your own diligence before relying on any of this commercially."
-    assert not any(rx.search(line) for _, rx in PATTERNS)       # 'commercially' is not 'commercial'
-    # a pattern hit on the allowlisted line is excused only in the allowlisted file
-    excused = "Do your own diligence before relying on any of this commercially."
-    assert excuse("DATA_SOURCES.md", excused) == ""
-    assert excuse("README_FIRST.md", excused) == excused
+FIXTURE_ENTRY = ("NOTES.md", re.compile(r"Our client list is private\."))
+
+
+def test_every_allowlist_entry_is_live():
+    """Each entry's text is in the file it excuses, and a pattern would flag it."""
+    files = {}
+    for fname, _ in ALLOWLIST:
+        path = REPO / fname
+        files[fname] = path.read_text(encoding="utf-8") if path.exists() else None
+    files = {k: v for k, v in files.items() if v is not None}
+    assert allowlist_problems(ALLOWLIST, files) == []
+
+
+def test_dead_allowlist_entries_are_caught():
+    """Deliberate violations: text absent, file absent, and text no pattern flags."""
+    live = {"NOTES.md": "intro\nOur client list is private.\n"}
+    assert allowlist_problems((FIXTURE_ENTRY,), live) == []
+    assert "text not in file" in allowlist_problems((FIXTURE_ENTRY,), {"NOTES.md": "nothing here"})[0]
+    assert "file not found" in allowlist_problems((FIXTURE_ENTRY,), {})[0]
+    old = ("DATA_SOURCES.md", re.compile(r"Do your own diligence before relying on any of this commercially\."))
+    p = allowlist_problems((old,), {"DATA_SOURCES.md": "> Do your own diligence before relying on any of this commercially."})
+    assert "no pattern flags" in p[0]
+
+
+def test_allowlist_excuses_only_the_named_file_and_line(monkeypatch):
+    monkeypatch.setattr(sys.modules[__name__], "ALLOWLIST", (FIXTURE_ENTRY,))
+    excused = "Our client list is private."
+    assert [h.pattern for h in scan_text("x/NOTES.md", excused)] == []
+    assert [h.pattern for h in scan_text("README_FIRST.md", excused)] == [r"\bclients?\b"]
     both = excused + " A commercial client."
-    assert {h.pattern for h in scan_text("DATA_SOURCES.md", both)} == {r"\bclients?\b", r"\bcommercial\b"}
-    assert scan_text("DATA_SOURCES.md", "an unrelated client line") != []
+    assert {h.pattern for h in scan_text("NOTES.md", both)} == {r"\bclients?\b", r"\bcommercial\b"}
+    assert scan_text("NOTES.md", "an unrelated client line") != []
 
 
 def test_scan_lines_takes_any_line_source():

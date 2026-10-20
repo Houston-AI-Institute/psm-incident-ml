@@ -18,7 +18,8 @@ nothing else under ``data/`` can reach the bundle. Transforms, in this order:
 The builder refuses to run on a dirty or untracked input tree, while
 ``docs/release/TERMS.md`` is a placeholder, and while the Choosing tools section of the
 participant guide still holds the organiser placeholder comment (``allow_placeholder_terms``
-lifts both for a preview, and the comment is then dropped from README_FIRST.md). Time comes only from the commit
+lifts both for a preview; the comment is then dropped and README_FIRST.md starts with a
+PREVIEW BUILD line). Time comes only from the commit
 (``git log -1 --format=%ct``), converted with ``time.gmtime``; the output is
 byte-identical for the same commit and mode.
 
@@ -64,6 +65,9 @@ DISPOSITION = "schema/e19_disposition.yaml"
 SPLITS = f"{E19}/real_only/splits.json"
 PLACEHOLDER_FIRST_LINE = "PLACEHOLDER — terms pending organiser"
 GUIDE_PLACEHOLDER = "<!-- organiser text: under-18 tool guidance -->"
+# Any comment that starts "organiser text", whatever its case or spacing, is a placeholder.
+GUIDE_PLACEHOLDER_RE = re.compile(r"<!--\s*organiser\s+text\b.*?-->", re.S | re.I)
+PREVIEW_LINE = "PREVIEW BUILD: organiser text not final. Not for distribution."
 
 # Columns withheld from incidents tables (and their provenance files) until Task 10 is
 # committed; Task 10 empties the set.
@@ -211,9 +215,21 @@ def guide_text(repo: Path = REPO) -> str:
     return (repo / GUIDE).read_text(encoding="utf-8")
 
 
+def _choosing_tools_body(text: str) -> str | None:
+    m = re.search(r"^## Choosing tools[ \t]*\n(.*?)(?=^## |\Z)", text, re.S | re.M)
+    return None if m is None else m.group(1)
+
+
 def check_guide(text: str, allow_placeholder: bool) -> None:
-    """Refuse while the guide's Choosing-tools section still holds the organiser placeholder."""
-    if GUIDE_PLACEHOLDER in text and not allow_placeholder:
+    """Refuse while the guide's Choosing-tools section still holds the organiser placeholder.
+
+    The placeholder is matched case-insensitively and across any spacing. A guide whose
+    Choosing-tools section is missing, or holds nothing but comments, is refused even with
+    ``allow_placeholder``: the flag lifts the placeholder, not an empty section."""
+    body = _choosing_tools_body(text)
+    if body is None or not re.sub(r"<!--.*?-->", "", body, flags=re.S).strip():
+        raise SystemExit(f"refusing to build: {GUIDE} has no text in its Choosing tools section")
+    if GUIDE_PLACEHOLDER_RE.search(text) and not allow_placeholder:
         raise SystemExit(f"refusing to build: the Choosing tools section of {GUIDE} is still the "
                          "placeholder (the organiser's under-18 tool guidance has not been supplied)")
 
@@ -490,13 +506,16 @@ def _counts_table(rows: list[tuple[str, int, str, str]], copies: int, listed: in
 
 
 def _readme(template: str, *, label: str, commit_date: str, counts: str,
-            include_companies: bool, text_light: bool) -> str:
+            include_companies: bool, text_light: bool, preview: bool = False) -> str:
     for ph in ("{version}", "{commit}", "{commit_date}", "{counts}"):
         if ph not in template:
             raise SystemExit(f"{GUIDE}: template lacks the placeholder {ph}")
-    text = template.replace(GUIDE_PLACEHOLDER + "\n\n", "").replace(GUIDE_PLACEHOLDER, "")
+    text = re.sub(GUIDE_PLACEHOLDER_RE.pattern + r"\n*", "", template, flags=GUIDE_PLACEHOLDER_RE.flags)
     text = _fence(text, "companies", include_companies)
     text = _fence(text, "text", not text_light)
+    text = _fence(text, "no-text", text_light)
+    if preview:
+        text = PREVIEW_LINE + "\n\n" + text
     return (text.replace("{version}", VERSION).replace("{commit}", label)
             .replace("{commit_date}", commit_date).replace("{counts}", counts))
 
@@ -645,7 +664,8 @@ def build_bundle(out_root: Path = Path("deliverables/release"),
             copies=sum(sum(t.redacted.values()) for t in tbls),
             listed=sum(sum(t.redacted.values()) for t in tbls if t.prov is None),
             marked=sum(sum(t.redacted.values()) for t in tbls if t.prov is not None)),
-        include_companies=include_companies, text_light=text_light).encode("utf-8")
+        include_companies=include_companies, text_light=text_light,
+        preview=allow_placeholder_terms).encode("utf-8")
     files["BASELINE.md"] = _baseline_md(full_task, short, text_light).encode("utf-8")
     files["SHA256SUMS"] = _sha_lines(files)
 
