@@ -3,7 +3,7 @@ data/raw/
 data/interim/
 
 # Never commit the source workbook file or spreadsheets exported from it (workplace
-# document). schema/e19_labels.yaml, extracted from it with the owner's permission, is the
+# document). schema/e19_labels.yaml, extracted from it with the schema owner's permission, is the
 # one committed derivative.
 *.xlsx
 *.xlsm

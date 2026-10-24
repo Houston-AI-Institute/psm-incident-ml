@@ -3783,15 +3783,28 @@ count is now 173 with case kept (167 folded), up from 172 (166): the undotted
 Hunt were checked hit by hit; every masked use is an operator reference, so
 none was added to `first_token_exclude`.
 
-
 ## 2026-10-24 — README and licence claims corrected; workbook-schema permission recorded
 
-Each row is a claim that was changed, where, and why. Figures were re-measured by
-command on this date; none were copied from the old text.
+Each row is a claim that was changed, where, and why. Method per figure:
+
+- Re-counted 2026-10-24 by command (Python over the committed CSV and JSON files,
+  and `uv run pytest --collect-only -q`): the 406 rows of `cause_task.csv` and their
+  split (374 `modern_six`, 19 `ad_hoc`, 13 `human_error`), the 36 undated incidents
+  in `splits.json`, the 18 elements in `filled/causes.csv`, the `filled/` token
+  composition (77,206 cells: 33.5% `src`+`xw`, 31.7% `llm`+`syn`, 9.1% `key`+`pseud`,
+  25.7% blank), the 861 tests collected, and the full run (`uv run pytest -q`: 859
+  pass, 2 skip). 92.1% is 374 / 406 from those counts.
+- Read from generated files, not re-run: accuracy, macro-F1, CI, majority baseline,
+  n and per-element F1 (`docs/baseline.md`, written by `psm.baseline`); the 94.3%
+  validity figure (`docs/e19_field_ledger.md`).
+- Text-integrity sentence: stated from `schema/bsee_form2010.yaml`, the Known defects
+  section of `docs/release/PARTICIPANT_GUIDE.md` and `src/psm/bundle.py`. That
+  extraction can drop words in cause text is documented there; its rate was not
+  measured here.
 
 | claim (before) | now | why |
 |---|---|---|
-| README: a generator fabricates "without asserting something false about a real incident" | fabricated values are marked per cell (`syn`); real text is never altered except where marked `mod`, and except the BSEE sidecar's removed contact blocks | The old line was unfalsifiable and ignored `mod` cells and the removed contact blocks. |
+| README: a generator fabricates "without asserting something false about a real incident" | fabricated values are marked per cell (`syn`); real text is not rewritten or paraphrased, and is changed only where a cell is marked `mod` (masking or date shifts), where the BSEE sidecar's contact blocks are removed, and by extraction clean-up (page furniture and field-label text stripped; cause text can drop words, see Known defects); in the release bundle, redactions in tables with no provenance file are listed in `redactions.csv` | The old line was unfalsifiable and ignored `mod` cells and the removed contact blocks. A first rewrite ("never altered except...") was itself too absolute: extraction strips page furniture and label text, and the repo's own Known defects say cause text can drop words. |
 | README: "the other 13 cannot appear at any coverage" | true of `real_only/` and `enriched/` only; `filled/` carries 18 elements, from `llm` and `syn` labels | `filled/` fills ` Failed PSM Framework Element`, so the unscoped claim was false there. |
 | README: "~0.55 accuracy, n=503, 5-fold CV, majority 0.392, macro-F1 0.418, F1 0.692 / 0.639" | accuracy 0.471, macro-F1 0.349 (95% CI 0.293 to 0.399), n 374, majority 0.334 / 0.084, `uv run python -m psm.baseline`; target-meaning sentence from `docs/baseline.md` | The old figures (n=503, 5-fold CV) do not match the current task (n 374, `syn_fold`), and the README named no command that reproduces them. The new ones are the output of `psm.baseline` (`docs/baseline.md`); I did not trace where the old ones came from. |
 | README: "use the shipped split in `real_only/splits.json`" | `splits.json` is a reporting-era partition; for classification use `cause_task.csv` `syn_fold` (grouped by incident) | The era split is not grouped by incident for the classification task. |
@@ -3801,7 +3814,7 @@ command on this date; none were copied from the old text.
 | README: layout line for `data/companies/` ("planted process pathologies + KPI answer key per manifest") | alder, hazel, hornbeam; each manifest records how the register was generated (scenario, knobs, donor partition, input hashes) | Pointer to an answer key removed (the brief's instruction); manifests describe how each register was generated, with input hashes. Slugs were renamed on 2026-10-24 (seed keys kept). |
 | README: no description of company registers | new "Company registers" section: tokens `src`, `xw`, `syn`, `key`, `mod`; operator names masked as `[company]`; contractor and rig names not masked; `core/` and `advanced/` keep real operator names | States no more masking than exists. |
 | README: pipeline block listed 4 commands | the full regeneration chain, then `psm.baseline`, `psm.bundle [--no-companies] [--text-light]`, `psm.review_pack <bundle_dir>` | The old block omitted `psm.fill`, `psm.scenario` and the bundle step. |
-| README: `filled/` composition ("33.5% real", "94.3% of checked cells pass") | unchanged, with a sentence naming their source (token counts of `filled/provenance.csv` and `filled/causes_provenance.csv`; the ledger covers `enriched/`) | Re-measured; the figures did not change. The paragraph did not say what they counted. |
+| README: `filled/` composition ("33.5% real", "94.3% of checked cells pass") | unchanged, with a sentence naming their source (token counts of `filled/provenance.csv` and `filled/causes_provenance.csv`; the ledger covers `enriched/`) | Re-counted 2026-10-24 (token counts over both provenance files); the figures did not change. 94.3% is read from `docs/e19_field_ledger.md`. The paragraph did not say what they counted. |
 | README, DATA_SOURCES.md, docs/_licence.md, CLAUDE.md: "no derivative of [the workbook] is committed", "not located, not opened", "`schema/e19_target.yaml` ... hand-written" | `schema/e19_labels.yaml` was extracted mechanically from the workbook on 2026-08-29 (commit bc84583); the permission wording below | The "no derivative" claim was false from 2026-08-29. `docs/_licence.md` keeps its text and gains a bracketed correction dated 2026-10-19. |
 | `schema/crosswalk.yaml` comment and `target_element_reference` | "(not shipped in the participant bundle)"; stale `tests/test_crosswalk.py` pointer fixed to `tests/test_crosswalk_schema.py` | The labels file is not in the bundle. |
 | `.gitignore` comment | the workbook and exported spreadsheets are never committed; `schema/e19_labels.yaml` is the one committed derivative | Patterns unchanged. |

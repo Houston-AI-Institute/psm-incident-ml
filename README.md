@@ -6,8 +6,12 @@ Framework **Element 19** (Incident Reporting & Investigation) template.
 
 Every cell records its own origin. Nothing is filled unless the source supplies
 it, a versioned rule derives it, or a generator fabricates it. Fabricated values
-are marked per cell (`syn`); real text is never altered except where marked
-`mod`, and except the BSEE sidecar's removed contact blocks.
+are marked per cell (`syn`). Real text is not rewritten or paraphrased. It is
+changed only where a cell is marked `mod` (masking or date shifts), where the BSEE
+sidecar's contact blocks are removed, and by extraction clean-up (page furniture
+and field-label text stripped; cause text can drop words, see Known defects in
+`docs/release/PARTICIPANT_GUIDE.md`). In the release bundle, redactions in tables
+with no provenance file are listed in `redactions.csv`.
 
 ## Read this before modelling
 
@@ -26,8 +30,8 @@ Three properties will change what you build. Each is measured, not asserted;
    class-balanced logistic regression, pooled out-of-fold over `syn_fold`,
    regime `modern_six`) scores accuracy 0.471 and macro-F1 0.349 (95% CI 0.293
    to 0.399, bootstrap over incidents) on n = 374 rows and 6 classes. The
-   majority baseline scores accuracy 0.334 and macro-F1 0.084. Two elements carry
-   most of the signal (15: F1 0.610; 3: F1 0.531); 6, 9 and 17 sit near F1 0.17
+   majority baseline scores accuracy 0.334 and macro-F1 0.084. Two elements score
+   highest (15: F1 0.610; 3: F1 0.531); 6, 9 and 17 sit near F1 0.17
    to 0.18 at n 26 to 28. The target is the BSEE investigator's own cause-category
    head, removed from the text, shown as the repo's crosswalk element (a 1:1
    relabel; the crosswalk is the repo's opinion). Scores measure recovery of the
