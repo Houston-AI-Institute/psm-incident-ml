@@ -633,3 +633,104 @@ def test_track_6_gaps_exist_in_every_company(b):
         behind = [r for r in rd(f"companies/{co}/closeout.csv") if r["Schedule Status"] == "Behind"]
         assert behind, co
         assert inc - rec, co
+
+
+# ---- Task 12 (R65): the stamped README is clean, and text-light says nothing false ----
+
+STRAY = "<!-- a note the template author forgot -->"
+
+
+def test_stamping_refuses_a_comment_that_survives():
+    """Deliberate violations: a stray comment, and an unclosed fence, both leave `<!--` in
+    the stamped text. The builder refuses rather than ship it."""
+    tail = "\n{version} {commit} {commit_date} {counts}"
+    for bad in (STRAY, "<!-- text -->\nunclosed fence"):
+        tpl = _guide_with("Real sentence.\n\n" + bad) + tail
+        with pytest.raises(SystemExit, match="comment"):
+            bundle._readme(tpl, label="abc", commit_date="d", counts="c",
+                           include_companies=True, text_light=False)
+    ok = _guide_with("Real sentence.") + tail
+    assert "Real sentence." in bundle._readme(ok, label="abc", commit_date="d", counts="c",
+                                              include_companies=True, text_light=False)
+
+
+def test_a_build_refuses_a_guide_with_a_stray_comment(tmp_path, monkeypatch):
+    guide = template().replace("## Folders\n", STRAY + "\n\n## Folders\n", 1)
+    assert STRAY in guide
+    monkeypatch.setattr(bundle, "guide_text", lambda *a, **k: guide)
+    with pytest.raises(SystemExit, match="comment"):
+        bundle.build_bundle(tmp_path / "x", include_companies=False, allow_dirty=True,
+                            allow_placeholder_terms=True)
+    assert not (tmp_path / "x").exists()
+
+
+def _prose_lines(text: str):
+    """Lines outside fenced code blocks and tables."""
+    in_code = False
+    for ln in text.splitlines():
+        if ln.startswith("```"):
+            in_code = not in_code
+        elif not in_code and not ln.startswith("|"):
+            yield ln
+
+
+def test_no_double_spaces_in_any_stamped_readme(modes):
+    for name, bd in modes.items():
+        bad = [ln[:80] for ln in _prose_lines(readme(bd)) if re.search(r"\S  +\S", ln)]
+        assert bad == [], (name, bad)
+
+
+def test_the_double_space_check_catches_a_planted_one(modes):
+    text = readme(modes["core"])
+    assert not [ln for ln in _prose_lines(text) if re.search(r"\S  +\S", ln)]
+    planted = text.replace("is the main data.", "is the main  data.", 1)
+    assert planted != text
+    assert [ln for ln in _prose_lines(planted) if re.search(r"\S  +\S", ln)]
+
+
+def test_text_light_readme_points_at_nothing_that_is_absent(modes):
+    """No `[AI tool]` track and no narrative text in a text-light build, so neither is named."""
+    for name, bd in modes.items():
+        text = readme(bd)
+        light = name.startswith("text-light")
+        assert ("[AI tool]" in text) is (not light), name
+        assert ("narrative text" in text.lower().replace("**narrative text.**", "")) is (not light), name
+        assert "Read the **Content note**" in text, name
+
+
+def test_text_light_dictionary_does_not_describe_withheld_columns_as_shipped(b_light, b):
+    """Choice for R65(c): withheld columns keep a row, marked withheld, with no description of
+    contents and no notes (the one exception is `Description`, whose note says why it is
+    withheld in every build)."""
+    prefix = "WITHHELD from this release (not in the file)"
+
+    def dd(bd):
+        with (bd / "core/data_dictionary.csv").open(encoding="utf-8", newline="") as fh:
+            return list(csv.DictReader(fh))
+
+    light = dd(b_light)
+    withheld = [r for r in light if r["meaning"].startswith(prefix)]
+    assert {r["column"] for r in withheld} >= {"Cause Description", "src_text_stripped",
+                                               "What happened?  ", "Recommendation Description"}
+    for r in withheld:
+        assert r["meaning"] == prefix, (r["table"], r["column"], r["meaning"])
+        assert r["notes"] == "" or r["column"] == "Description", (r["table"], r["column"], r["notes"])
+        assert {r[k] for k in r if k.startswith("pct_")} == {"n/a"}
+    # shipped columns keep their meaning, and the full build is unchanged
+    assert any("constructed key" in r["meaning"] for r in light if r["column"] == "Incident Number")
+    full = {(r["table"], r["column"]): r for r in dd(b)}
+    assert "primary input feature" in full[("core/enriched/causes.csv", "Cause Description")]["meaning"]
+    assert "cause_task.csv" in full[("core/enriched/causes.csv", "Cause Description")]["notes"]
+
+
+def test_no_unreproducible_recall_figure_is_shipped():
+    """R65(d): the 'sample of 61 / median 0.98' figure has no recorded method or command, so
+    the notes and the guide keep the qualitative warning only."""
+    import yaml
+    path = REPO / "schema/data_dictionary_notes.yaml"
+    notes = yaml.safe_load(path.read_text(encoding="utf-8"))["notes"]
+    for col in ("Cause Description", "src_text_stripped"):
+        assert "cause text can drop words" in notes[col], col
+    for text in (path.read_text(encoding="utf-8"), template()):
+        assert "0.98" not in text and "0.80" not in text and "of 61" not in text
+        assert "median" not in text.lower()

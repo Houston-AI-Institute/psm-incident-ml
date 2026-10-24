@@ -838,7 +838,7 @@ def test_data_dictionary(b):
     assert by[("core/enriched/incidents.csv", "Description")]["pct_src"] == "n/a"
     assert "per field string, not per person" in notes("core/enriched/incidents.csv", "Investigation leader - Name")
     assert "assumed matrix" in notes("core/enriched/incidents.csv", "Health & Safety  - Consequence")
-    assert "0.98" in notes("core/enriched/causes.csv", "Cause Description")
+    assert "can drop words" in notes("core/enriched/causes.csv", "Cause Description")   # R65(d): no recall figure
     assert "cause_task.csv" in notes("core/enriched/causes.csv", "Cause Description")
     assert "contact blocks" in notes("advanced/bsee_unmapped.csv", "bsee_operator")
     assert "real year" in notes("core/cause_task.csv", "syn_regime")

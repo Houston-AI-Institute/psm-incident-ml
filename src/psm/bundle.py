@@ -462,8 +462,13 @@ def _data_dictionary(tables: list[Tbl], repo: Path) -> list[dict]:
                     f"blank reason: {f['blank_reason']}" if f.get("blank_reason") else None) if x)
             else:
                 meaning = meanings.get(c, "")
-            row = {"table": t.rel, "column": c, "meaning": meaning}
             shipped = c in t.cols
+            if not shipped:
+                # Withheld: the column is not in the file, so say only that. The description
+                # and notes of a column that ships would read as if it did. `Description` is
+                # withheld in every build and its note says why, so that note stays.
+                meaning = WITHHELD_MEANING
+            row = {"table": t.rel, "column": c, "meaning": meaning}
             if shipped and t.prov is not None:
                 counts = Counter(p[c] for p in t.prov)
                 total = len(t.prov)
@@ -474,14 +479,12 @@ def _data_dictionary(tables: list[Tbl], repo: Path) -> list[dict]:
                 for tok in TOKEN_ORDER:
                     row[f"pct_{tok}"] = "n/a"
                 row["pct_blank"] = "n/a"
-            if not shipped:
-                meaning_prefix = "WITHHELD from this release (not in the file)"
-                row["meaning"] = "; ".join(x for x in (meaning_prefix, meaning) if x)
-            row["notes"] = notes.get(c, "")
+            row["notes"] = notes.get(c, "") if shipped or c in DROP_COLUMNS else ""
             out.append(row)
     return out
 
 
+WITHHELD_MEANING = "WITHHELD from this release (not in the file)"
 DICT_COLUMNS = ["table", "column", "meaning", *[f"pct_{t}" for t in TOKEN_ORDER], "pct_blank", "notes"]
 
 
@@ -516,8 +519,13 @@ def _readme(template: str, *, label: str, commit_date: str, counts: str,
     text = _fence(text, "no-text", text_light)
     if preview:
         text = PREVIEW_LINE + "\n\n" + text
-    return (text.replace("{version}", VERSION).replace("{commit}", label)
+    text = (text.replace("{version}", VERSION).replace("{commit}", label)
             .replace("{commit_date}", commit_date).replace("{counts}", counts))
+    if "<!--" in text:      # a stray comment or an unclosed fence: participants must never see it
+        raise SystemExit(f"refusing to build: an HTML comment survives in the stamped README_FIRST.md "
+                         f"(a stray comment or an unclosed fence in {GUIDE}): "
+                         f"{text[text.index('<!--'):][:60]!r}")
+    return text
 
 
 def _baseline_md(full_task_bytes: bytes, short: str, text_light: bool) -> str:

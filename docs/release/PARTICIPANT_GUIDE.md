@@ -6,7 +6,7 @@ Built from commit `{commit}` ({commit_date}).
 
 This bundle holds real US offshore accident reports, laid out as tables in the style of the Energy Institute's PSM Framework, Element 19. It is for practice. This project makes no claims about any operator or person. The reports name real operators, so do not judge them.
 
-The data mixes real and generated values. Every cell says which: see **Provenance tokens**. Read the **Content note** before any narrative text. `TERMS.md` has the rules.
+The data mixes real and generated values. Every cell says which: see **Provenance tokens**. Read the **Content note**<!-- text --> before any narrative text<!-- /text -->. `TERMS.md` has the rules.
 
 <!-- text -->
 **Narrative text.** Incident narratives, cause descriptions and `src_text_stripped` are included.
@@ -37,11 +37,13 @@ Under-18 participants do not use Google AI Studio or the Gemini API themselves.
 
 <!-- organiser text: under-18 tool guidance -->
 
+<!-- text -->
 Tracks marked `[AI tool]` use an AI model. Follow the tool rules above, and ask a mentor if unsure.
+<!-- /text -->
 
 ## Folders
 
-- `core/` is the main data. `real_only/` has the four tables with generated cells left blank. `enriched/` fills them in, with a `provenance` file that tags every cell. <!-- text -->`cause_task.csv` is for Tracks 3 and 4.<!-- /text --> <!-- no-text -->`cause_task.csv` has the labels and folds but no text.<!-- /no-text --> `cells_long.csv` is one row per cell. `content_flags.csv` marks sensitive rows. `redactions.csv` lists the redacted cells in tables with no provenance file. In the others, redacted cells are marked `mod` in the provenance file. `data_dictionary.csv` describes every column.
+- `core/` is the main data. `real_only/` has the four tables with generated cells left blank. `enriched/` fills them in, with a `provenance` file that tags every cell. <!-- text -->`cause_task.csv` is for Tracks 3 and 4. <!-- /text --><!-- no-text -->`cause_task.csv` has the labels and folds but no text. <!-- /no-text -->`cells_long.csv` is one row per cell. `content_flags.csv` marks sensitive rows. `redactions.csv` lists the redacted cells in tables with no provenance file. In the others, redacted cells are marked `mod` in the provenance file. `data_dictionary.csv` describes every column.
 - `advanced/` has extra cause files, `bsee_unmapped.csv` and `schema/`, the crosswalk files. The crosswalk is an opinion.
 <!-- companies -->
 - `companies/`: one folder per fictional company.
@@ -103,7 +105,7 @@ Excel: use Data → From Text/CSV and choose UTF-8, or accented characters and d
 - Investigator and approver names are pseudonyms per field string, not per person: the same real person can get different pseudonyms in different fields.
 - The three consequence columns (Health & Safety, Environment & Reputation, Financial Cost & Business Interruption) come from an assumed matrix, `advanced/schema/xw_consequence_tiers.yaml`, not from BSEE.
 <!-- text -->
-- Cause text can drop words: in a sample of 61, the median share of words kept was about 0.98, and 8 kept fewer than 0.80. This affects `Cause Description` and `src_text_stripped`.
+- Cause text can drop words. This affects `Cause Description` and `src_text_stripped`.
 - The leak: in `causes.csv`, `Cause Description` begins with its own category, which is the label. For classification use `cause_task.csv`, where the category is removed.
 <!-- /text -->
 - In `bsee_operator`, representative, city, state and telephone blocks have been removed. A "CONTRACTOR:" label and the name after it can remain.
@@ -111,7 +113,7 @@ Excel: use Data → From Text/CSV and choose UTF-8, or accented characters and d
 
 ## Tracks
 
-Tags: `[no-code ok]` works in a spreadsheet. `[code]` needs programming. `[AI tool]` uses an AI model.
+Tags: `[no-code ok]` works in a spreadsheet. `[code]` needs programming.<!-- text --> `[AI tool]` uses an AI model.<!-- /text -->
 
 1. **Explore what goes wrong offshore** `[no-code ok]`. Look for patterns.
 2. **Provenance detective** `[no-code ok]`. Use the `enriched` tables, their provenance files and `cells_long.csv`. Which parts of a record are real?

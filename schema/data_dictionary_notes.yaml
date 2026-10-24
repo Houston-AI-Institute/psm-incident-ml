@@ -12,8 +12,8 @@ notes:
   "Health & Safety  - Consequence": "consequence tiers come from an assumed matrix (schema/xw_consequence_tiers.yaml), not from BSEE"
   "Environment & Reputation  - Consequence": "consequence tiers come from an assumed matrix (schema/xw_consequence_tiers.yaml), not from BSEE"
   "Financial Cost & Business Interruption  - Consequence": "consequence tiers come from an assumed matrix (schema/xw_consequence_tiers.yaml), not from BSEE"
-  "Cause Description": "cause text can drop words (median recall ≈0.98; 8 of 61 sampled below 0.80); in causes.csv it begins with its own category, so use cause_task.csv for classification"
-  "src_text_stripped": "cause text can drop words (median recall ≈0.98; 8 of 61 sampled below 0.80); the category head is removed, so this is the text to classify"
+  "Cause Description": "cause text can drop words; in causes.csv it begins with its own category, so use cause_task.csv for classification"
+  "src_text_stripped": "cause text can drop words; the category head is removed, so this is the text to classify"
   "bsee_operator": "contact blocks (representative, city, state and telephone) have been removed; a CONTRACTOR: label and the name after it can remain"
   "syn_regime": "derived from a real year (src_year) via the splits in core/real_only/splits.json"
 
