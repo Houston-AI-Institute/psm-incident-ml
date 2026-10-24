@@ -7,11 +7,11 @@ Framework **Element 19** (Incident Reporting & Investigation) template.
 Every cell records its own origin. Nothing is filled unless the source supplies
 it, a versioned rule derives it, or a generator fabricates it. Fabricated values
 are marked per cell (`syn`). Real text is not rewritten or paraphrased. It is
-changed only where a cell is marked `mod` (masking or date shifts), where the BSEE
+changed only where a cell is marked `mod` (masking, date shifts, bundle redaction), where the BSEE
 sidecar's contact blocks are removed, and by extraction clean-up (page furniture
 and field-label text stripped; cause text can drop words, see Known defects in
 `docs/release/PARTICIPANT_GUIDE.md`). In the release bundle, redactions in tables
-with no provenance file are listed in `redactions.csv`.
+with no provenance file are listed in `core/redactions.csv`.
 
 ## Read this before modelling
 
