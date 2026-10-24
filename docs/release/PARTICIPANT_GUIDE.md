@@ -27,7 +27,7 @@ Track numbers are the same in every bundle, so a track can be missing from yours
 
 ## Content note
 
-> These are real US offshore incident reports. Injuries are described plainly. Fatal incidents were removed from this bundle. Names that follow a title (Mr., Ms., Dr.) were replaced with `[name]`, along with the surname wherever it repeats. Other names may remain: redaction is pattern-based. The source PDFs linked in `bsee_source_url` are not redacted. `content_flags.csv` marks rows that mention death, near-fatal events or serious injury. The flags are pattern-based too, so unflagged rows can still describe serious injury. If any of this is a problem, talk to a mentor.
+> These are real US offshore incident reports, written in the plain, factual style of an investigation. Some describe workplace injuries such as cuts, broken bones, burns and lost fingers. Incidents in which someone died were removed from this bundle. Names that follow a title (Mr., Mrs., Ms., Miss, Dr.) were replaced with `[name]`, along with the surname wherever it repeats. Other names may remain, because redaction is pattern-based. The source PDFs linked in `bsee_source_url` are not redacted. `content_flags.csv` marks rows that describe a serious injury or someone losing consciousness. The flags are pattern-based too, so they can miss some rows. If anything here is a problem, talk to a mentor.
 
 You can stop reading at any time.
 

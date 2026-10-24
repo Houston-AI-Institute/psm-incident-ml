@@ -117,7 +117,7 @@ def test_real_named_cells_fully_redacted():
 @pytest.mark.parametrize("inc,flag", [
     ("HI-A 379-20230904-0900", "near_fatal"),
     ("SS-33-20060906-0800", "near_fatal"),
-    ("EI-330-20061011-2345", "graphic_injury")])
+    ("EI-330-20061011-2345", "serious_injury")])
 def test_must_flag(inc, flag):
     rows = [r for r in _rows(REAL / "incidents.csv") if r["Incident Number"] == inc]
     assert rows, inc
@@ -135,6 +135,53 @@ def test_near_fatal_widened_verbs():
 def test_death_exclusions():
     f = flags("incidents", [{"Incident Number": "X", "t": "the well was killed; engines died"}], ["t"], ["Incident Number"])
     assert "death_mention" not in {r["flag"] for r in f}
+
+
+def _death(text):
+    f = flags("incidents", [{"Incident Number": "X", "t": text}], ["t"], ["Incident Number"])
+    return "death_mention" in {r["flag"] for r in f}
+
+
+@pytest.mark.parametrize("text", [
+    "the worker died at the scene",
+    "the worker was killed in the fall",
+    "the worker was fatally injured",
+    "the worker was pronounced dead",
+])
+def test_death_mention_still_flags_real_death_wording(text):
+    assert _death(text)
+
+
+@pytest.mark.parametrize("text", [
+    "the slip dies marked the pipe",
+    "the well was killed uneventfully",
+    "all 4 engines died",
+    "the pump died and the generator died",
+    "this could have caused a fatality",
+    "the event had fatal potential",
+    "there was potentially a fatal outcome",
+    "the label warns of serious injury or death",
+    "the label warns of injury or fatality",
+    "there was a possibility of a fatal fall",
+    "the result could have been fatal",
+    # wrapped lines, an adverb before "killed", and "and/or" appear in the real text
+    "the well was successfully killed",
+    "this could have caused a\nfatality",
+    "the event had fatal\npotential",
+    "the label warns of serious injury and/or fatality",
+])
+def test_death_mention_ignores_equipment_jargon_and_counterfactuals(text):
+    assert not _death(text)
+
+
+def test_death_exclusion_does_not_swallow_a_real_death_in_the_same_text():
+    assert _death("the engines died and then the worker died")
+    assert _death("the well was killed. The worker was killed")
+
+
+def test_serious_injury_flag_name():
+    f = flags("incidents", [{"Incident Number": "X", "t": "a laceration to the hand"}], ["t"], ["Incident Number"])
+    assert {r["flag"] for r in f} == {"serious_injury"}
 
 
 def test_death_mention_flags_and_never_emits_text():

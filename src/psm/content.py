@@ -10,11 +10,19 @@ _T = r"(?:Mr|Mrs|Ms|Miss|Dr|MR|MRS|MS|MISS|DR)"
 _W = r"(?:[A-Z]\.|[A-Z][A-Za-z'’\-]+)"
 HONORIFIC_RE = re.compile(rf"\b{_T}\.?\s+{_W}(?:\s+{_W}){{0,2}}")          # case-sensitive
 CONTACT_RE = re.compile(r"[\w.]+@[\w.]+\.\w+|\(\d{3}\)\s*\d{3}-\d{4}|\b\d{3}-\d{3}-\d{4}\b")
-DEATH_RE = re.compile(r"\b(died|dies|death|deceased|killed|fatal(ly|ity)?|pronounced dead|"
+# "dies" is the equipment noun here (tong dies, slip dies), so it is not a death word.
+DEATH_RE = re.compile(r"\b(died|death|deceased|killed|fatal(ly|ity)?|pronounced dead|"
                       r"lost (his|her) life|body was recovered)\b", re.I)
-DEATH_EXCLUDE_RE = re.compile(r"\b(well (was )?killed|kill(ed)? the well|kill (weight|mud|line|fluid|pill)|"
-                              r"engines? died|(motor|pump|generator) died)\b", re.I)
-GRAPHIC_RE = re.compile(r"\b(amputat\w*|severed|crush\w*|decapitat\w*|fractur\w*|lacerat\w*|"
+# Spans that are not a death: drilling and equipment jargon, and counterfactual lines.
+DEATH_EXCLUDE_RE = re.compile(
+    r"\b(kill(ed)?\s+the\s+well|kill\s+(weight|mud|line|fluid|pill)|"
+    r"well\s+(was\s+|has\s+been\s+)?(\w+\s+)?killed|it\s+(was\s+|has\s+been\s+)?killed|"
+    r"killed\s+(the\s+well\s+)?uneventfully|"
+    r"((\d+|all|both|the)\s+)?(engine|motor|pump|generator)s?\s+died|"
+    r"could\s+have\s+(been|caused|resulted\s+in)[^.]{0,40}fatal\w*|fatal\s+potential|"
+    r"potential(ly)?\s+(for\s+)?(a\s+)?fatal\w*|(serious\s+)?injury\s+(and/)?or\s+(death|fatality)|"
+    r"possibility\s+of[^.]{0,40}fatal\w*|result\s+could\s+have\s+been\s+fatal)\b", re.I)
+SERIOUS_INJURY_RE = re.compile(r"\b(amputat\w*|severed|crush\w*|decapitat\w*|fractur\w*|lacerat\w*|"
                         r"burns? to (his|her)|degree burns?|impal\w*|deglov\w*|avuls\w*|"
                         r"punctur\w* (lung|\w+ (hand|finger|leg|arm|eye))|"
                         r"broke(n)? (his |her |a |the )?(arm|leg|rib|ribs|pelvis|nose|wrist|ankle|finger|hand|jaw|back|neck)|"
@@ -107,7 +115,7 @@ def flags(table: str, rows: list[dict], text_cols: list[str],
             hits = (
                 ("death_mention", _has_death_mention(text)),
                 ("near_fatal", bool(NEAR_FATAL_RE.search(text))),
-                ("graphic_injury", bool(GRAPHIC_RE.search(text))),
+                ("serious_injury", bool(SERIOUS_INJURY_RE.search(text))),
                 ("name_redacted", bool(HONORIFIC_RE.search(text))),
                 ("contact_redacted", bool(CONTACT_RE.search(text))),
             )

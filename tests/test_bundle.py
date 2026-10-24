@@ -693,8 +693,8 @@ def test_content_flags(b):
     f = rows(b / "core/content_flags.csv")
     assert header(b / "core/content_flags.csv") == ["Incident Number", "table", "row_key", "column", "flag"]
     flags = {r["flag"] for r in f}
-    assert flags <= {"death_mention", "near_fatal", "graphic_injury", "name_redacted", "contact_redacted"}
-    assert {"graphic_injury", "name_redacted", "near_fatal"} <= flags
+    assert flags <= {"death_mention", "near_fatal", "serious_injury", "name_redacted", "contact_redacted"}
+    assert {"serious_injury", "name_redacted", "near_fatal"} <= flags
     tables = {r["table"] for r in f}
     # cause_task.csv and bsee_operator are scanned too but hold no flaggable text today
     assert {"core/enriched/incidents.csv", "core/enriched/causes.csv",
