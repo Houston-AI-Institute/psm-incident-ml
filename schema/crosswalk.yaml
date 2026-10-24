@@ -18,15 +18,16 @@
 # every one of 3,462 cause rows.
 #
 # v2 re-anchors every number against schema/e19_labels.yaml, which is extracted
-# mechanically from the target workbook. Each entry now records the phrase in
+# mechanically from the target workbook (that file is not shipped in the
+# participant bundle). Each entry now records the phrase in
 # its own note that the element name was matched against, so the re-basing is
-# auditable rather than asserted. tests/test_crosswalk.py asserts every number
+# auditable rather than asserted. tests/test_crosswalk_schema.py asserts every number
 # resolves to a real element name, so this cannot silently drift again.
 # ---------------------------------------------------------------------------
 
 version: 2
 target_framework: "Energy Institute PSM Framework"
-target_element_reference: "schema/e19_labels.yaml, vocabulary 'Failed PSM Framework Element'"
+target_element_reference: "schema/e19_labels.yaml, vocabulary 'Failed PSM Framework Element' (not shipped in the participant bundle)"
 source_vocabulary: "BSEE MMS Form 2010, fields 18/19 (re-induced 2026-08-29, n=3,462)"
 
 # Confidence is about the MAPPING, not the extraction:

@@ -1,14 +1,17 @@
 """Public-content scan: no text in the public repo or the bundle may discuss the event
 organiser beyond the event itself and the schema permission.
 
-This module holds the bundle half (Task 7): it scans the bundle's authored text only,
-never the source-derived CSV cells. Task 12 adds the branch-diff half
-(``git diff main...HEAD``, added lines) on top of the same `scan_lines`, PATTERNS and
-ALLOWLIST defined here.
+Two halves share `scan_lines`, PATTERNS and ALLOWLIST. The bundle half (Task 7) scans the
+bundle's authored text only, never the source-derived CSV cells. The branch-diff half
+(Task 12) scans the lines added by ``git diff main...HEAD`` in tracked files outside
+``data/``, which is source-derived BSEE text (real reports say "commercial diving" and
+"client"); it skips, with a reason, when ``main`` is not available.
 """
 from __future__ import annotations
 
+import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import Iterable, NamedTuple
@@ -187,3 +190,138 @@ def test_scan_lines_takes_any_line_source():
     added = ["+a clean line", "+our offering"]
     hits = scan_lines("docs/new.md", [ln[1:] for ln in added])
     assert [(h.source, h.line_no, h.pattern) for h in hits] == [("docs/new.md", 2, r"\boffering\b")]
+
+
+# ---- Task 12: the branch-diff half -------------------------------------------------------
+
+BASE = "main"
+# The scanner module holds the patterns and the deliberate violations, so it cannot scan itself.
+DIFF_EXCLUDED_FILES = frozenset({"tests/test_public_content.py"})
+_HUNK = re.compile(r"^@@ -\S+ \+(\d+)(?:,\d+)? @@")
+
+
+def _run(repo: Path, *args: str) -> subprocess.CompletedProcess:
+    return subprocess.run(["git", "-c", "core.quotepath=off", *args], cwd=repo,
+                          capture_output=True, text=True, encoding="utf-8")
+
+
+def diff_base_problem(repo: Path = REPO, base: str = BASE) -> str | None:
+    """Why the branch diff cannot be taken (no ``main`` ref, no common ancestor); None if it can."""
+    if _run(repo, "rev-parse", "--verify", "--quiet", f"{base}^{{commit}}").returncode != 0:
+        return (f"no `{base}` ref here (shallow clone, or CI without the ref): "
+                f"the branch-diff scan needs `git diff {base}...HEAD`")
+    if _run(repo, "merge-base", base, "HEAD").returncode != 0:
+        return f"`{base}` and HEAD share no history: cannot take `git diff {base}...HEAD`"
+    return None
+
+
+def parse_added_lines(diff: str) -> dict[str, list[tuple[int, str]]]:
+    """file -> [(line number in the new file, text)] for the ``+`` lines of a ``--unified=0``
+    diff. Deleted files and ``DIFF_EXCLUDED_FILES`` are left out."""
+    out: dict[str, list[tuple[int, str]]] = {}
+    path: str | None = None
+    n = 0
+    for line in diff.splitlines():
+        if line.startswith("+++ "):
+            tgt = line[4:]
+            path = tgt[2:] if tgt.startswith("b/") else None
+            if path in DIFF_EXCLUDED_FILES:
+                path = None
+        elif line.startswith("--- ") or line.startswith("diff --git"):
+            continue
+        elif (m := _HUNK.match(line)):
+            n = int(m.group(1)) - 1
+        elif line.startswith("+") and path:
+            n += 1
+            out.setdefault(path, []).append((n, line[1:]))
+    return out
+
+
+def added_lines(repo: Path = REPO, base: str = BASE) -> dict[str, list[tuple[int, str]]]:
+    """Added lines of ``git diff base...HEAD`` outside ``data/``; empty if the diff cannot be taken."""
+    if diff_base_problem(repo, base):
+        return {}
+    r = _run(repo, "diff", f"{base}...HEAD", "--unified=0", "--no-color", "--no-ext-diff",
+             "--no-renames", "--", ".", ":(exclude)data")
+    if r.returncode != 0:
+        raise RuntimeError(f"git diff failed: {r.stderr.strip()}")
+    return parse_added_lines(r.stdout)
+
+
+def scan_branch_diff(repo: Path = REPO, base: str = BASE) -> list[Hit]:
+    hits = []
+    for path, lines in added_lines(repo, base).items():
+        nos = [n for n, _ in lines]
+        hits += [h._replace(line_no=nos[h.line_no - 1])
+                 for h in scan_lines(path, [t for _, t in lines])]
+    return hits
+
+
+def _git(repo: Path, *args: str) -> str:
+    env = {"GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@example.invalid",
+           "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@example.invalid",
+           "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_CONFIG_SYSTEM": "/dev/null", "PATH": os.environ["PATH"]}
+    return subprocess.run(["git", "-c", "commit.gpgsign=false", *args], cwd=repo, env=env, check=True,
+                          capture_output=True, text=True).stdout
+
+
+def _fixture_repo(root: Path, *, base: str = "main") -> Path:
+    """A repo with a base branch and a feature branch. The feature adds a clean doc line, a
+    violating doc line and a violating line under data/ (which the scan must not read)."""
+    _git(root, "init", "-q", "-b", base)
+    (root / "docs").mkdir()
+    (root / "data").mkdir()
+    (root / "docs/new.md").write_text("first\n", encoding="utf-8")
+    _git(root, "add", "docs/new.md")
+    _git(root, "commit", "-q", "-m", "base")
+    _git(root, "checkout", "-q", "-b", "feat")
+    (root / "docs/new.md").write_text("first\na clean line\nbuilt for a consultancy project\n", encoding="utf-8")
+    (root / "data/raw.csv").write_text("id,text\n1,the commercial diving client\n", encoding="utf-8")
+    _git(root, "add", "docs/new.md", "data/raw.csv")
+    _git(root, "commit", "-q", "-m", "feature")
+    return root
+
+
+def test_the_diff_scan_catches_a_deliberate_violation(tmp_path):
+    """A fixture line containing 'consultancy' is caught, with its real line number and file;
+    the same sort of text under data/ is source-derived and is not read."""
+    repo = _fixture_repo(tmp_path)
+    assert diff_base_problem(repo) is None
+    assert added_lines(repo) == {"docs/new.md": [(2, "a clean line"), (3, "built for a consultancy project")]}
+    hits = scan_branch_diff(repo)
+    assert [(h.source, h.line_no, h.pattern) for h in hits] == [("docs/new.md", 3, "consult(ing|ancy|ant)")]
+
+
+def test_the_diff_scan_skips_the_scanner_module_only():
+    """tests/test_public_content.py holds the patterns and the deliberate violations, so it
+    cannot scan itself. It is the only file excused, and it is a real tracked path."""
+    assert DIFF_EXCLUDED_FILES == frozenset({"tests/test_public_content.py"})
+    assert (REPO / "tests/test_public_content.py").exists()
+    added = parse_added_lines("+++ b/tests/test_public_content.py\n@@ -0,0 +1 @@\n+a consultancy\n"
+                              "+++ b/docs/x.md\n@@ -0,0 +1 @@\n+a consultancy\n")
+    assert list(added) == ["docs/x.md"]
+
+
+def test_the_diff_base_problem_names_a_missing_main(tmp_path):
+    """No `main` ref (shallow clone, CI without the ref): a reason, not a failure."""
+    repo = _fixture_repo(tmp_path, base="trunk")
+    reason = diff_base_problem(repo)
+    assert reason is not None and "main" in reason
+    assert added_lines(repo) == {}
+
+
+def test_parse_added_lines_reads_line_numbers_from_hunk_headers():
+    diff = ("diff --git a/docs/a.md b/docs/a.md\n--- a/docs/a.md\n+++ b/docs/a.md\n"
+            "@@ -1,0 +5,2 @@\n+five\n+six\n@@ -9 +12 @@\n-old\n+twelve\n"
+            "diff --git a/gone.md b/gone.md\n--- a/gone.md\n+++ /dev/null\n@@ -1 +0,0 @@\n-x\n")
+    assert parse_added_lines(diff) == {"docs/a.md": [(5, "five"), (6, "six"), (12, "twelve")]}
+
+
+def test_branch_diff_added_lines_are_clean():
+    """Every line this branch adds outside data/ passes the same scan as the bundle's text.
+    data/** is source-derived BSEE text (real reports say 'commercial diving' and 'client')."""
+    reason = diff_base_problem(REPO)
+    if reason:
+        pytest.skip(reason)
+    hits = scan_branch_diff(REPO)
+    assert hits == [], "\n".join(f"{h.source}:{h.line_no} [{h.pattern}] {h.line}" for h in hits)

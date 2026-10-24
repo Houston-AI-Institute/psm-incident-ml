@@ -242,9 +242,9 @@ is nearly free, take the conservative option.
 
 | | Rule |
 |---|---|
-| `schema/e19_target.yaml` and all machine-readable schema | Refer to elements by **NUMBER only** (e.g. `element_19`). Hand-written; contains only field names and picklist vocabularies needed as targets. |
+| `schema/e19_target.yaml` and all machine-readable schema | Refer to elements by **NUMBER only** (e.g. `element_19`). `e19_target.yaml` is hand-written and contains only field names and picklist vocabularies needed as targets; `schema/e19_labels.yaml` is extracted mechanically from the workbook (see *The workbook*). |
 | Prose and documentation | Element names may appear **with explicit attribution to the Energy Institute**, as here, for the reader's orientation. |
-| Never in this repo | The full framework text; the 14 expectations under Element 19; EI guidance documents; workbook structure, formulas, scoring or rollup logic; any substantial reproduction of EI material. |
+| Never in this repo | The full framework text; the 14 expectations under Element 19; EI guidance documents; workbook formulas, scoring or rollup logic; any substantial reproduction of EI material. The workbook's field labels, picklist vocabularies and cell references are the one published part of its structure (*The workbook*). |
 
 If EI objects to the named references in prose, the fallback is already
 specified and cheap: **drop to numbers-only everywhere.** Nothing downstream
@@ -252,12 +252,11 @@ breaks.
 
 ### The workbook
 
-`E19 Investigation Report - Rev2.xlsx` is a **workplace document**. It is not in
+`E19 Investigation Report - Rev2.xlsx` is a **workplace document**. The file is not in
 this repo, has never been in this repo, and must never enter it — including as
-a derivative, an extract, a screenshot, or a transcription of its structure.
-`schema/e19_target.yaml` is hand-written from scratch for that reason. During
-preparation of this document the workbook was **not located, not opened, and not
-downloaded**.
+a copy, a screenshot, or its formulas, scoring or rollup logic.
+`schema/e19_target.yaml` is hand-written from scratch. `schema/e19_labels.yaml` was
+extracted mechanically from the workbook on 2026-08-29 (commit bc84583). The E19 workbook's field labels, picklist vocabularies and cell references (`schema/e19_labels.yaml`) are published with the permission of Houston AI Institute, which owns the workbook schema (confirmed 2026-10-18). The workbook file itself is not committed.
 
 We claim no rights in the EI PSM Framework. It is referenced as a target
 taxonomy; it is not redistributed.

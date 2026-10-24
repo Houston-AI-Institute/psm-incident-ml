@@ -3782,3 +3782,47 @@ count is now 173 with case kept (167 folded), up from 172 (166): the undotted
 "Cox Operating, L.L.C" is now its own masked string. Beta, Merit, Guardian and
 Hunt were checked hit by hit; every masked use is an operator reference, so
 none was added to `first_token_exclude`.
+
+
+## 2026-10-24 — README and licence claims corrected; workbook-schema permission recorded
+
+Each row is a claim that was changed, where, and why. Figures were re-measured by
+command on this date; none were copied from the old text.
+
+| claim (before) | now | why |
+|---|---|---|
+| README: a generator fabricates "without asserting something false about a real incident" | fabricated values are marked per cell (`syn`); real text is never altered except where marked `mod`, and except the BSEE sidecar's removed contact blocks | The old line was unfalsifiable and ignored `mod` cells and the removed contact blocks. |
+| README: "the other 13 cannot appear at any coverage" | true of `real_only/` and `enriched/` only; `filled/` carries 18 elements, from `llm` and `syn` labels | `filled/` fills ` Failed PSM Framework Element`, so the unscoped claim was false there. |
+| README: "~0.55 accuracy, n=503, 5-fold CV, majority 0.392, macro-F1 0.418, F1 0.692 / 0.639" | accuracy 0.471, macro-F1 0.349 (95% CI 0.293 to 0.399), n 374, majority 0.334 / 0.084, `uv run python -m psm.baseline`; target-meaning sentence from `docs/baseline.md` | The old figures (n=503, 5-fold CV) do not match the current task (n 374, `syn_fold`), and the README named no command that reproduces them. The new ones are the output of `psm.baseline` (`docs/baseline.md`); I did not trace where the old ones came from. |
+| README: "use the shipped split in `real_only/splits.json`" | `splits.json` is a reporting-era partition; for classification use `cause_task.csv` `syn_fold` (grouped by incident) | The era split is not grouped by incident for the classification task. |
+| README: "87.1% of labelled cause statements are `modern_six`" | 374 of 406 `cause_task.csv` rows (92.1%) `modern_six`, 19 `ad_hoc`, 13 `human_error`; 36 undated incidents excluded from `splits.json` | The old share did not name the row set it counted; the new line names it and the command-measured counts. |
+| README Tables section: paths for `recommendations.csv`, `closeout.csv`, `bsee_unmapped.csv`, `causes_source_field.csv` (said to be under `enriched/`) | a "where" column; recommendations and closeout are in `real_only/` and verbatim at `data/processed/e19/`; the two sidecars and `cause_task.csv` are at `data/processed/e19/` | Those four paths did not exist. `enriched/` holds incidents and causes (plus sidecars) only. This is my reading of "the 4 wrong paths"; the Repo layout block's own paths all existed and were left, apart from new lines. |
+| README: "495 tests" | 861 tests (`uv run pytest --collect-only -q`; 859 pass, 2 skip) | Measured. The 2 skips are the `enriched/recommendations.csv` and `closeout.csv` cases in `tests/test_projection.py`, which do not exist by design. |
+| README: layout line for `data/companies/` ("planted process pathologies + KPI answer key per manifest") | alder, hazel, hornbeam; each manifest records how the register was generated (scenario, knobs, donor partition, input hashes) | Pointer to an answer key removed (the brief's instruction); manifests describe how each register was generated, with input hashes. Slugs were renamed on 2026-10-24 (seed keys kept). |
+| README: no description of company registers | new "Company registers" section: tokens `src`, `xw`, `syn`, `key`, `mod`; operator names masked as `[company]`; contractor and rig names not masked; `core/` and `advanced/` keep real operator names | States no more masking than exists. |
+| README: pipeline block listed 4 commands | the full regeneration chain, then `psm.baseline`, `psm.bundle [--no-companies] [--text-light]`, `psm.review_pack <bundle_dir>` | The old block omitted `psm.fill`, `psm.scenario` and the bundle step. |
+| README: `filled/` composition ("33.5% real", "94.3% of checked cells pass") | unchanged, with a sentence naming their source (token counts of `filled/provenance.csv` and `filled/causes_provenance.csv`; the ledger covers `enriched/`) | Re-measured; the figures did not change. The paragraph did not say what they counted. |
+| README, DATA_SOURCES.md, docs/_licence.md, CLAUDE.md: "no derivative of [the workbook] is committed", "not located, not opened", "`schema/e19_target.yaml` ... hand-written" | `schema/e19_labels.yaml` was extracted mechanically from the workbook on 2026-08-29 (commit bc84583); the permission wording below | The "no derivative" claim was false from 2026-08-29. `docs/_licence.md` keeps its text and gains a bracketed correction dated 2026-10-19. |
+| `schema/crosswalk.yaml` comment and `target_element_reference` | "(not shipped in the participant bundle)"; stale `tests/test_crosswalk.py` pointer fixed to `tests/test_crosswalk_schema.py` | The labels file is not in the bundle. |
+| `.gitignore` comment | the workbook and exported spreadsheets are never committed; `schema/e19_labels.yaml` is the one committed derivative | Patterns unchanged. |
+| CLAUDE.md "Do not commit" | the workbook file is never committed; permitted derivative `schema/e19_labels.yaml` only; D2 exception (2026-10-19) for `cause_task.csv` baselines added | Records the 2026-10-19 decision D2. |
+| Text-light bundle: `[AI tool]` and content-note lines, double space in README_FIRST.md | those lines are fenced so they appear only when the text they point at is shipped; the double space is gone | They pointed at nothing in a build without narrative text. |
+| Text-light data dictionary rows for withheld columns described them as shipped | those rows read "WITHHELD from this release (not in the file)", with no description or notes | A participant could read a column as present. |
+| Bundle notes: "61 sampled, median recall 0.98" | numbers dropped, warning kept ("cause text can drop words") | The source of the 61 / 0.98 figure was not found: no command, doc, findings entry or commit from edb3dba on describes how it was measured. A figure with no reproducing command should not ship. |
+
+**Permission wording (R63, pending the owner's D3).** The E19 workbook's field
+labels, picklist vocabularies and cell references (`schema/e19_labels.yaml`) are
+published with the permission of Houston AI Institute, which owns the workbook
+schema (confirmed 2026-10-18). The workbook file itself is not committed. The
+written record of that permission is not in this repo.
+
+**Guards added.** `tests/test_public_content.py` now also scans the lines added in
+`git diff main...HEAD` (tracked files outside `data/`, which is source-derived
+BSEE text; the scanner's own file is excluded because it holds the patterns) and skips
+with a reason if `main` is missing. A fixture line carrying one of the banned words is caught (the test suite holds the fixture).
+The allowlist stays empty. The bundle builder refuses to build if an HTML comment
+survives in the stamped README_FIRST.md.
+
+**Not verified here.** That the permission was given as worded (it rests on the
+owner's confirmation of 2026-10-18), and the scope of operator-name masking beyond
+the pattern-based checks in the tests.

@@ -280,6 +280,10 @@ The workbook `E19 Investigation Report - Rev2.xlsx` was **not located, not
 opened, not downloaded, and not referenced** at any point. Out of scope by
 instruction and left that way.
 
+[Correction 2026-10-19: the paragraph above was true when this note was written
+(2026-08-02) and stopped being true on 2026-08-29, when `schema/e19_labels.yaml` was
+extracted mechanically from the workbook (commit bc84583). The E19 workbook's field labels, picklist vocabularies and cell references (`schema/e19_labels.yaml`) are published with the permission of Houston AI Institute, which owns the workbook schema (confirmed 2026-10-18). The workbook file itself is not committed.]
+
 ---
 
 ## Open items for whoever picks this up

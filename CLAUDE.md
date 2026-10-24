@@ -128,9 +128,13 @@ Gitignored: `data/raw/`, `data/interim/`.
 
 ## Do not commit
 
-- `E19 Investigation Report - Rev2.xlsx` or any derivative of that workbook —
-  it is a workplace document. `schema/e19_target.yaml` is **hand-written** and
-  contains only field names and picklist vocabularies needed as targets.
+- `E19 Investigation Report - Rev2.xlsx` — never commit the workbook file; it is
+  a workplace document. The E19 workbook's field labels, picklist vocabularies and cell references (`schema/e19_labels.yaml`) are published with the permission of Houston AI Institute, which owns the workbook schema (confirmed 2026-10-18). The workbook file itself is not committed.
+  `schema/e19_labels.yaml` was extracted mechanically from the workbook
+  (`src/psm/e19_schema.py`, commit bc84583); `schema/e19_target.yaml` is
+  hand-written. Permitted derivative: `schema/e19_labels.yaml` only. Nothing else
+  derived from the workbook (formulas, scoring, rollups, the file itself) is committed.
+- Exception (2026-10-19): `cause_task.csv` baselines may report agreement with `src_category`/`xw_element`, worded as recovery of the investigator's category, not PSM-element correctness, always with n. No other non-gold scoring.
 - EI PSM Framework element *names* may be referenced with attribution (they are
   published by the Energy Institute); the workbook, its formulas, and its
   rollup dashboards may not.
