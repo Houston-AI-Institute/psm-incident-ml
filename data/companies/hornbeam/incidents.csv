@@ -1,5 +1,5 @@
 Incident Number,incident Title,Incident Classificatioin,Date of Incident,Time of Incident,Date of Report,Site,Area,Unit,Detail,Work Group,Description,Incident Type A,Incident Type B,Incident Type C,Incident Type D,Investigation leader - Name,Investigation leader - Position,Incident Classified by - Name,Incident Classified by - Position,Investigation Acceptor/Approver (Owner) - Name,Investigation Acceptor/Approver (Owner)- Position,Approval Date,Close out Approval - Name,Close out Approval - Position,Close out Date,What happened?  ,What was the outcome?,Incident Classification,What was the worst outcome that could reasonably be expected to have happened?,Health & Safety Incident - Classification,Health & Safety - Risk Score,Health & Safety  - Consequence,Health & Safety - Likelihood,Environment & Reputation - Incident Classification,Environment & Reputation - Risk Score,Environment & Reputation  - Consequence,Environment & Reputation - Likelihood,Financial Cost & Business - Incident Classification,Financial Cost & Business Interruption - Risk Score,Financial Cost & Business Interruption  - Consequence,Financial Cost & Business Interruption - Likelihood,How did the incident occur
-CP-BF2EE5947A,,Incident,2021-01-10,07:30,2021-01-12,GI,76,A,,Production Operations,LIFTING,Loss Event,Environment & Reputation,Loss of Containment,,SYN-e06098,Production Foreman,SYN-58ad3a,Facility Engineer,SYN-a769cb,Maintenance Supervisor,2021-01-18,SYN-41eaca,Production Foreman,2021-02-18,"On 10 January 2021, at 0730 hours, a pipeline pollution event occurred at the Fieldwood
+HB-BF2EE5947A,,Incident,2021-01-10,07:30,2021-01-12,GI,76,A,,Production Operations,LIFTING,Loss Event,Environment & Reputation,Loss of Containment,,SYN-e06098,Production Foreman,SYN-58ad3a,Facility Engineer,SYN-a769cb,Maintenance Supervisor,2021-01-18,SYN-41eaca,Production Foreman,2021-02-18,"On 10 January 2021, at 0730 hours, a pipeline pollution event occurred at the Fieldwood
 Energy LLC Grand Isle (GI) 76-A, OCS-G 02161 platform. A 3/8” hole developed in the
 departing pipeline which discharged an estimated 8.35 barrels of hydrocarbons into the
 Gulf of Mexico (GOM). The pipeline subsequently shut-in due to a pressure sensor
@@ -67,7 +67,7 @@ The investigation concluded that Fieldwood properly followed oil spill reporting
 procedures. However, Fieldwood failed to set the PSH on the pipeline properly, failed
 to set the PSV on the pipeline pumps properly, and lastly failed to obtain approval
 from BSEE Pipeline Section before converting the pipeline from gas sales to bulk oil."
-CP-D5270111A8,,,2021-01-29,06:45,2021-01-31,MP,296,C,,Production Operations,LIFTING,Loss Event,Health & Safety,,,SYN-3bc182,Production Foreman,SYN-c123af,Production Foreman,SYN-86cbdb,HSE Advisor,2021-02-06,SYN-d4017a,Facility Engineer,2021-03-06,"On January 29, 2021, an injury occurred at Main Pass (MP) 296 C, Lease OCS-G 01673,
+HB-D5270111A8,,,2021-01-29,06:45,2021-01-31,MP,296,C,,Production Operations,LIFTING,Loss Event,Health & Safety,,,SYN-3bc182,Production Foreman,SYN-c123af,Production Foreman,SYN-86cbdb,HSE Advisor,2021-02-06,SYN-d4017a,Facility Engineer,2021-03-06,"On January 29, 2021, an injury occurred at Main Pass (MP) 296 C, Lease OCS-G 01673,
 operated by GOM Shelf LLC, during a vessel cleaning operation. An Acadian Contractors
 Construction crew was removing studs on the manway for a Surge Tank when a wrench
 struck the contractor in the mouth. GOM Shelf medically evacuated the Injured Person
@@ -114,7 +114,7 @@ it to slip or bounce off once impacted with the hammer. The crew did not use Bes
 Available Safety Technology (BAST).
 BSEE Recommendations:
 No recommendations."
-CP-9E1D15576D,,,2021-02-14,14:45,2021-02-15,,,A(MAD DOG SPAR),,Construction,LIFTING DEVICE,,,,,SYN-0f9aca,Maintenance Supervisor,SYN-12c89a,Production Foreman,SYN-381495,Operations Superintendent,2021-03-03,SYN-741bca,Facility Engineer,2021-03-07,"On 14 February 2021, BP Exploration and Production Inc's Mad Dog spar had a pollution
+HB-9E1D15576D,,,2021-02-14,14:45,2021-02-15,,,A(MAD DOG SPAR),,Construction,LIFTING DEVICE,,,,,SYN-0f9aca,Maintenance Supervisor,SYN-12c89a,Production Foreman,SYN-381495,Operations Superintendent,2021-03-03,SYN-741bca,Facility Engineer,2021-03-07,"On 14 February 2021, BP Exploration and Production Inc's Mad Dog spar had a pollution
 event resulting in approximately 50 barrels going into the water of the moon pool
 center well. While pulling a sample off of the disposal (sump) caisson, a production
 operator observed a strong hydrocarbon odor in the area. He entered the well bay,
@@ -129,7 +129,7 @@ BP's investigation determined that a faulty check valve allowed oil to enter the
 caisson. This valve was repaired and double isolated with manual block valves that
 are locked closed. The check valve remains isolated until the piping is re-designed
 and re-routed to prevent another occurrence.",,,,,,,,,,,,,,,,
-CP-FD6D0CBC38,,Serious Incident,2021-02-17,09:26,2021-02-19,EI,259,C,,Drilling,LIFTING DEVICE,Loss Event,,,,,,SYN-972da8,Marine Coordinator,,,,,,,"On the morning of February 17, 2021 at approximately 0926 hours, the crane operator at
+HB-FD6D0CBC38,,Serious Incident,2021-02-17,09:26,2021-02-19,EI,259,C,,Drilling,LIFTING DEVICE,Loss Event,,,,,,SYN-972da8,Marine Coordinator,,,,,,,"On the morning of February 17, 2021 at approximately 0926 hours, the crane operator at
 Nexen Eugene Island 259 C platform was attempting to lift a gang box from the M/V
 Grant (field boat). The load was to be placed on the top deck of the production
 platform. During the lifting process, while the load was suspended over the water,
@@ -142,7 +142,7 @@ standing on top of the compressor building taking measurements to fabricate
 handrailing, when they were struck by small fragments from the boom cable when it
 parted. Their injuries were limited to small pieces of wire being embedded in their
 skin, covering shoulder and neck areas on their upper body.",Reported as a crane incident.,Serious Incident,,Serious Incident,20,D,5,,,,,,,,,
-CP-4B15C3DC3B,,,2021-03-23,22:15,2021-03-27,AC,857,,T.O. DEEPWATER THALASSA,Maintenance,LIFTING,Loss Event,Health & Safety,Injury Minor,,SYN-cda7ee,Marine Coordinator,SYN-93dfd2,Operations Superintendent,SYN-3e658f,Marine Coordinator,2021-03-31,SYN-03e2b2,Production Foreman,2021-04-26,"On 29-MAR-2021, approximately 1630 hours, a Subsea Engineer onboard the Transocean
+HB-4B15C3DC3B,,,2021-03-23,22:15,2021-03-27,AC,857,,T.O. DEEPWATER THALASSA,Maintenance,LIFTING,Loss Event,Health & Safety,Injury Minor,,SYN-cda7ee,Marine Coordinator,SYN-93dfd2,Operations Superintendent,SYN-3e658f,Marine Coordinator,2021-03-31,SYN-03e2b2,Production Foreman,2021-04-26,"On 29-MAR-2021, approximately 1630 hours, a Subsea Engineer onboard the Transocean
 Drillship Thalassa, was utilizing a tagline to help guide a load down to the deck in
 the Subsea POD shop. While pulling on the tagline, the Injured Person(IP) heard a
 pop and felt pain in the right knee.
@@ -150,7 +150,7 @@ A verbal risk assessment prompt card was done by personnel involved in the job t
 prior to the crane lowering the load.
 The Subsea Engineer pulled to hard on the tagline while attempting to guide the load
 which caused him to injure himself.",The incident resulted in restricted work or job transfer for more than 3 days. The facility was evacuated.,,,,,,,,,,,,,,,
-CP-783EC00CCA,,Very Serious Incident,2021-03-30,02:20,2021-04-01,GC,282,,NOBLE DON TAYLOR,Production Operations,LIFTING hydraulic running tool,Loss Event,Business Interruption & Cost,Equipment Damage,,,,SYN-72d48d,Maintenance Supervisor,,,,,,,"On March 30, 2021, an incident occurred on board the drillship, Noble Don Taylor
+HB-783EC00CCA,,Very Serious Incident,2021-03-30,02:20,2021-04-01,GC,282,,NOBLE DON TAYLOR,Production Operations,LIFTING hydraulic running tool,Loss Event,Business Interruption & Cost,Equipment Damage,,,,SYN-72d48d,Maintenance Supervisor,,,,,,,"On March 30, 2021, an incident occurred on board the drillship, Noble Don Taylor
 while under contract for Talos Energy Resource Technology (ERT) LLC. The Noble Don
 Taylor was located at Green Canyon Block 282 OCS - G -16727 at the time of the
 incident. A single 35,000 pound slick riser joint fell across the rig floor after it
@@ -231,7 +231,7 @@ verifier and the indicator rods on the RRT are painted red and green for greater
 visibility for secondary latch verification. Also, revisions have been submitted to
 management for review on Noble’s personnel zone management procedures for the drill
 floor area.","There were no injuries reported, but an employee in the area was nearly struck by the dropped riser joint.",Very Serious Incident,,Very Serious Incident,25,E,5,,,,,,,C,,
-CP-3B79FD9E11,,Serious Incident,2021-04-17,10:00,2021-04-19,EW,910,A,,Maintenance,LIFTING DEVICEAir Tugger,Loss Event,,,,SYN-7be90f,Facility Engineer,SYN-a0b3ee,Operations Superintendent,SYN-81ae96,Maintenance Supervisor,2021-04-22,SYN-b12842,Maintenance Supervisor,2021-06-15,"The crew was attempting to remove a storm damaged MCC building from the platform to a
+HB-3B79FD9E11,,Serious Incident,2021-04-17,10:00,2021-04-19,EW,910,A,,Maintenance,LIFTING DEVICEAir Tugger,Loss Event,,,,SYN-7be90f,Facility Engineer,SYN-a0b3ee,Operations Superintendent,SYN-81ae96,Maintenance Supervisor,2021-04-22,SYN-b12842,Maintenance Supervisor,2021-06-15,"The crew was attempting to remove a storm damaged MCC building from the platform to a
 crew boat using four 10K Tuggers and two 4K tuggers. There was no structural support
 on top of the building to install cable guides and the lifting eyes were on the
 bottom of the building. The 4 ¿ 10 K tuggers were rigged to each corner and the 2 ¿ 4
@@ -244,7 +244,7 @@ crossed the last beam of the deck, the building became top heavy and rolled over
 scaffolding ¿peg¿ boards overboard. One of the corner 10K air tugger cables parted
 from the shock loading of the roll. Once the building was stabilized, the supervisor
 lowered the building to the crew boat securely","Reported as a lifting-device incident. Estimated property damage $5,000.",Serious Incident,,Serious Incident,20,D,5,,,,,,,A,,
-CP-E8CD75BF8D,,,2021-04-18,18:30,2021-04-23,,73,A,,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-3e5dac,Maintenance Supervisor,SYN-36f22f,Maintenance Supervisor,SYN-6e3bcd,Production Foreman,2021-04-28,SYN-d7393a,Marine Coordinator,2021-08-12,"On April 18, 2021, at approximately 18:30, on Energy XXI GOM's, OCS-G 02947, Main
+HB-E8CD75BF8D,,,2021-04-18,18:30,2021-04-23,,73,A,,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-3e5dac,Maintenance Supervisor,SYN-36f22f,Maintenance Supervisor,SYN-6e3bcd,Production Foreman,2021-04-28,SYN-d7393a,Marine Coordinator,2021-08-12,"On April 18, 2021, at approximately 18:30, on Energy XXI GOM's, OCS-G 02947, Main
 Pass (MP) 73 A Platform, a Crane Mechanic received a puncture wound to his right shin
 when he slipped on oil and water residue and struck his right shin on the corner of
 the skid, as a result of a weather related slip hazard. Injured Person (IP) was sent
@@ -256,7 +256,7 @@ and slipped on the residue, striking his right shin on the corner of the skid. H
 flown in for treatment and put on restricted duty for 1-2 weeks.
 Follow-up: IP was seen and treated for a puncture wound to the right shin, was
 prescribed antibiotics, no stitches and put on restricted duty for one week."
-CP-FC86518082,,Very Serious Incident,2021-05-17,01:00,2021-05-18,MC,109,A-Amberjack,,Drilling,LIFTING,Loss Event,,,Combustion,SYN-bda861,Marine Coordinator,SYN-4ac38b,Maintenance Supervisor,SYN-f2ae20,Production Foreman,2021-05-30,SYN-d9d167,Facility Engineer,2021-08-20,"An explosion occurred on 17 May 2021, at 0115 on the Mississippi Canyon (MC) 109
+HB-FC86518082,,Very Serious Incident,2021-05-17,01:00,2021-05-18,MC,109,A-Amberjack,,Drilling,LIFTING,Loss Event,,,Combustion,SYN-bda861,Marine Coordinator,SYN-4ac38b,Maintenance Supervisor,SYN-f2ae20,Production Foreman,2021-05-30,SYN-d9d167,Facility Engineer,2021-08-20,"An explosion occurred on 17 May 2021, at 0115 on the Mississippi Canyon (MC) 109
 A (Amberjack) Platform, Lease OCS-G 5825, operated by Talos Petroleum LLC (Talos). The
 explosion originated from a 12 Volt (V) battery located inside a Remote Terminal Unit
 (RTU) Panel. The force of the explosion blew the panel door off the enclosure. Debris
@@ -307,7 +307,7 @@ panel was vented, Talos installed the panel in a Class 1 Division 2 area. Howeve
 components inside were not rated for a Class 1 Division 2 area.
 The BSEE investigation determined that the event was not a rupture as initially
 reported by Talos, but an explosion."
-CP-1D33D4C3C1,,Incident,2021-05-31,22:15,2021-06-01,MC,762,,NOBLE BULLY I,Production Operations,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,,,SYN-7e36ce,Facility Engineer,,,,,,,"-
+HB-1D33D4C3C1,,Incident,2021-05-31,22:15,2021-06-01,MC,762,,NOBLE BULLY I,Production Operations,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,,,SYN-7e36ce,Facility Engineer,,,,,,,"-
 On 31-MAY-2021 at 2215 hours, the primary sealing element for the riser slip joint
 failed due to a loss of air pressure. As a result 20.8 barrels of 12.8 pound per
 gallon synthetic based mud (SBM) was spilled into the moon pool.
@@ -318,13 +318,13 @@ slip joint to relax. While engine control room personnel were responding to the 
 rig air alarm, it was noticed that the slip joint was leaking SBM into the moon pool.
 Once all air compressors were online and full rig air was restored, the sealing
 element engaged stopping the leak.",Reported as a pollution release.,Incident,,Incident,6,C,2,,,C,,,,,,
-CP-02C26650DB,,,2021-06-09,09:50,2021-06-13,,,F,,Well Services,LIFTING DEVICE,,,,,SYN-39e8ab,Marine Coordinator,SYN-9d653b,Operations Superintendent,SYN-e42a75,Operations Superintendent,2021-06-21,SYN-0f7f2b,Facility Engineer,2021-07-16,"On 9 June 2021, Apache platform operators noticed a high temperature alarm flashing
+HB-02C26650DB,,,2021-06-09,09:50,2021-06-13,,,F,,Well Services,LIFTING DEVICE,,,,,SYN-39e8ab,Marine Coordinator,SYN-9d653b,Operations Superintendent,SYN-e42a75,Operations Superintendent,2021-06-21,SYN-0f7f2b,Facility Engineer,2021-07-16,"On 9 June 2021, Apache platform operators noticed a high temperature alarm flashing
 on the air compressor unit #1, then reported the alarm to the mainetenace contractor;
 PESCO Inc. Later that evening, at approximately 2200 hours, a platform fire alarm
 sounded and the operators found the air compressor on fire. The operators discovered
 that a sand blasting crew had covered the unit with filter media causing it to
 overheat.",,,,,,,,,,,,,,A,,
-CP-6027395E36,,Very Serious Incident,2021-07-14,23:25,2021-07-15,MC,194,A-Cognac,NABORS 202,Construction,LIFTING,Loss Event,,,,SYN-d56156,Maintenance Supervisor,SYN-e4f1d0,Marine Coordinator,SYN-fd863a,HSE Advisor,2021-07-21,SYN-534201,HSE Advisor,2021-09-04,"On July 14, 2021 at 10:00 hours, Enven Energy Ventures (EnVen) had a dropped object
+HB-6027395E36,,Very Serious Incident,2021-07-14,23:25,2021-07-15,MC,194,A-Cognac,NABORS 202,Construction,LIFTING,Loss Event,,,,SYN-d56156,Maintenance Supervisor,SYN-e4f1d0,Marine Coordinator,SYN-fd863a,HSE Advisor,2021-07-21,SYN-534201,HSE Advisor,2021-09-04,"On July 14, 2021 at 10:00 hours, Enven Energy Ventures (EnVen) had a dropped object
 incident on board the Nabors 202 rig while conducting drilling operations at
 Mississippi Canyon 194 well A23, ST2 OCS-G 02638. The incident involved a joint of 10
 3/4 inch (in) casing falling out of the elevators into the V-Door. The dropped casing
@@ -364,7 +364,7 @@ first aid, was sent to shore for further medical evaluation, he was released and
 returned to full duty. The employee was not in the direct line of fire.
 9) The damage sustained during the incident was two sections of handrail and a tote
 tank."
-CP-E25A5F1EF9,,,2021-07-26,14:45,2021-07-27,EI,208,­ J,ENSCO 90,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-04c94b,Marine Coordinator,SYN-c05a55,HSE Advisor,SYN-daf69f,Maintenance Supervisor,2021-08-01,SYN-c727f8,Maintenance Supervisor,2021-09-09,"­
+HB-E25A5F1EF9,,,2021-07-26,14:45,2021-07-27,EI,208,­ J,ENSCO 90,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-04c94b,Marine Coordinator,SYN-c05a55,HSE Advisor,SYN-daf69f,Maintenance Supervisor,2021-08-01,SYN-c727f8,Maintenance Supervisor,2021-09-09,"­
 At approximately 14:45 hours on 26 July 2021, an Ensco Floorhand sustained a
 finger injury while working on the Ensco 90 jack-up rig during drilling operations
 for Ankor Energy, LLC on Well J007 located at Eugene Island (EI) Block 208J.
@@ -395,7 +395,7 @@ casing joints were supported by the cat walk back stop; 2) workers did not recog
 that a casing joint was not supported by the cat walk back stop; 3) the hazard
 analysis did not address potential pinch points created by slipping casing joints and
 4) inadequate spacing of casing joints in the v-door.","­ At approximately 14:45 hours on 26 July 2021, an Ensco Floorhand sustained a finger injury while working on the Ensco 90 jack-up rig during drilling operations for Ankor Energy, LLC on Well J007 located at Eugene Island (EI) Block 208J.",,,,,,,,,,,,,,,
-CP-C3BE94F691,,Incident,2021-07-28,09:30,2021-07-29,GB,427,,NOBLE DON TAYLOR,Well Services,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-954ce9,HSE Advisor,SYN-b5f94c,Production Foreman,SYN-b2c6c9,HSE Advisor,2021-08-04,SYN-92438d,HSE Advisor,2021-10-12,"On 28 July 2021, the Noble Drilling Service, Inc. (Noble) Don Taylor (NDT) drill ship
+HB-C3BE94F691,,Incident,2021-07-28,09:30,2021-07-29,GB,427,,NOBLE DON TAYLOR,Well Services,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-954ce9,HSE Advisor,SYN-b5f94c,Production Foreman,SYN-b2c6c9,HSE Advisor,2021-08-04,SYN-92438d,HSE Advisor,2021-10-12,"On 28 July 2021, the Noble Drilling Service, Inc. (Noble) Don Taylor (NDT) drill ship
 under contract to Shell Exploration and Production Company (Shell) reported an
 initial discharge of approximately 26 barrels (bbl) of 15.1 pounds per gallon (ppg)
 synthetic oil base mud (SOBM) during exploration operations on Well DC005 (Cardamom)
@@ -443,7 +443,7 @@ plug; therefore, the subsea BOP was unlatched at 19:35 hr for retrieval to the
 surface. From 10 to 2 August 2021, a BSEE incident investigation team conducted an
 onsite incident investigation that included witnessing the inspection of the subsea
 BOP when it was pulled to the surface. The","Reported as a pollution release. Estimated property damage $36,000.",Incident,,Incident,8,D,2,,,C,,,,B,,
-CP-8EF558598C,,Incident,2021-08-22,02:17,2021-08-24,ST,311,A,H&P 100,Production Operations,LIFTING,Loss Event,Environment & Reputation,Loss of Containment,,SYN-01c7c4,Maintenance Supervisor,SYN-a454bc,Maintenance Supervisor,SYN-427310,HSE Advisor,2021-09-04,SYN-955397,Maintenance Supervisor,2021-10-08,"On August 21, 2021, an incident occurred on the Helmerich & Payne (H&P) platform
+HB-8EF558598C,,Incident,2021-08-22,02:17,2021-08-24,ST,311,A,H&P 100,Production Operations,LIFTING,Loss Event,Environment & Reputation,Loss of Containment,,SYN-01c7c4,Maintenance Supervisor,SYN-a454bc,Maintenance Supervisor,SYN-427310,HSE Advisor,2021-09-04,SYN-955397,Maintenance Supervisor,2021-10-08,"On August 21, 2021, an incident occurred on the Helmerich & Payne (H&P) platform
 rig 100, which was working under contract for Walter Oil and Gas. Drilling operations
 were being conducted at South Timbalier-311-A platform-OCS-G-31418 well A002. There
 was an unintentional discharge of approximately 517 barrels of synthetic based mud
@@ -507,7 +507,7 @@ butterfly valves and gate valves at each transfer station gives redundant integr
 the mud system to prevent future discharges. There will also be a low pressure test
 on the mud system prior to any fluid transfers to ensure the system is sealed as
 required prior to any transfer of fluids.",Reported as a pollution release.,Incident,,Incident,8,D,2,,,C,,,,,,
-CP-A54C179A20,,,2021-09-13,14:15,2021-09-15,,,A-PRD,,Production Operations,LIFTING DEVICE,,,,,SYN-348563,Maintenance Supervisor,SYN-6c7788,Facility Engineer,SYN-6a5535,Maintenance Supervisor,2021-09-24,SYN-3cb3b1,Facility Engineer,2021-11-21,"At 1415 hours on 13 September 2021, an Operator for Maritech Resource was manually
+HB-A54C179A20,,,2021-09-13,14:15,2021-09-15,,,A-PRD,,Production Operations,LIFTING DEVICE,,,,,SYN-348563,Maintenance Supervisor,SYN-6c7788,Facility Engineer,SYN-6a5535,Maintenance Supervisor,2021-09-24,SYN-3cb3b1,Facility Engineer,2021-11-21,"At 1415 hours on 13 September 2021, an Operator for Maritech Resource was manually
 refueling the #1 diesel generator while it was running. During the refueling
 operation, the Operator left the manual refueling operation unattended to start the
 #2 generator, located approximately three feet from the #1 generator. Once the
@@ -531,7 +531,7 @@ precautions associated with diesel. During the diesel refueling operation to the
 generator, the Operator did not ground the fuel nozzle and hose to the generator
 package. Also, the refuleing process was conducted with the #1 generator running and
 unattended.",,,,,,,,,,,,,,A,,
-CP-68FE7B4E5E,,Incident,2021-10-07,08:50,2021-10-10,AT,140,RIG NAME DIAMOND OCEAN STAR,,Well Services,,Loss Event,Environment & Reputation,Loss of Containment,,SYN-6fb149,HSE Advisor,SYN-191cff,Production Foreman,SYN-933ce1,Production Foreman,2021-10-17,SYN-b8404e,Operations Superintendent,2021-11-18,"The incident occurred while running 13 5/8"" casing. The well was on trip tank and the
+HB-68FE7B4E5E,,Incident,2021-10-07,08:50,2021-10-10,AT,140,RIG NAME DIAMOND OCEAN STAR,,Well Services,,Loss Event,Environment & Reputation,Loss of Containment,,SYN-6fb149,HSE Advisor,SYN-191cff,Production Foreman,SYN-933ce1,Production Foreman,2021-10-17,SYN-b8404e,Operations Superintendent,2021-11-18,"The incident occurred while running 13 5/8"" casing. The well was on trip tank and the
 trip tank volume started dropping. While the driller took action to line-up and fill
 the trip tank, the driller noticed the light was on indicating the diverter overboard
 valve was open. The diverter valve was closed immediatedly upon discovery.
@@ -549,7 +549,7 @@ There is no alert system installed to monitor the valve when not in use.
 The valve was repaired, and the valve on the other side of the diverter overboard
 line was also replaced as preventative maintance.
 The MMS was not notified of the pollution event.","Reported as a pollution release. Estimated property damage $3,800.",Incident,,Incident,8,D,2,,,C,,,,A,,
-CP-B2A240DFA2,,Incident,2021-10-15,05:50,2021-10-18,GC,65,A-Bullwinkle,,Maintenance,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-0d27ab,Operations Superintendent,SYN-49e391,Marine Coordinator,SYN-5e0255,Production Foreman,2021-10-24,SYN-b7ee82,Maintenance Supervisor,2021-11-27,"On October 15, 2021 at approximately 5:50 AM a vessel collision occurred at Fieldwood
+HB-B2A240DFA2,,Incident,2021-10-15,05:50,2021-10-18,GC,65,A-Bullwinkle,,Maintenance,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-0d27ab,Operations Superintendent,SYN-49e391,Marine Coordinator,SYN-5e0255,Production Foreman,2021-10-24,SYN-b7ee82,Maintenance Supervisor,2021-11-27,"On October 15, 2021 at approximately 5:50 AM a vessel collision occurred at Fieldwood
 Energy’s Green Canyon 65 A “Bullwinkle” manned facility. The Motor Vessel Ms. Melissa,
 a 170 foot support vessel contracted by Fieldwood Energy, was on approach when it
 collided with the platform. There were no injuries reported but both the vessel and
@@ -557,7 +557,7 @@ the platform sustained damage. The vessel damaged the starboard bow area (dent a
 scratch) and the mast. The platform received damages to the Northwest walkway
 (grating, supports and wiring) and bumper (dent) located at the +10 level. Safety
 systems and production equipment were not damaged as",There were no injuries reported but both the vessel and the platform sustained damage.,Incident,,Incident,4,D,1,,,,,,,B,,
-CP-5791A4827D,,Very Serious Incident,2021-11-02,14:00,2021-11-05,EI,327,A,,Production Operations,LIFTING DEVICE,Loss Event,,,,SYN-087048,Operations Superintendent,SYN-f1fd51,Marine Coordinator,SYN-e55a64,Maintenance Supervisor,2021-11-11,SYN-246c01,Maintenance Supervisor,2022-01-04,"On November 2, 2021 at approximately 1400 hours, a Nabors Offshore crane operator noticed
+HB-5791A4827D,,Very Serious Incident,2021-11-02,14:00,2021-11-05,EI,327,A,,Production Operations,LIFTING DEVICE,Loss Event,,,,SYN-087048,Operations Superintendent,SYN-f1fd51,Marine Coordinator,SYN-e55a64,Maintenance Supervisor,2021-11-11,SYN-246c01,Maintenance Supervisor,2022-01-04,"On November 2, 2021 at approximately 1400 hours, a Nabors Offshore crane operator noticed
 a loss of engine RPM while operating the boom control from the cab of the platform's
 production crane. The crane operator then ceased all operations, rendered the crane
 out-of-service, and notified the facility Person-In-Charge (PIC) of the incident. The
@@ -574,7 +574,7 @@ boom struck a diesel generator's exhaust stack prior to coming to a complete hal
 The boom was positioned at a minus 10 degree angle when the mechanic and platform
 personnel were able to secure the boom to a side structural beam of the platform. All
 operations were suspended, and assessment of the incident was initiated.",Reported as a crane incident.,Very Serious Incident,,Very Serious Incident,,,,,,,,,,,,
-CP-6A3B6A17BD,,,2021-12-05,01:31,2021-12-07,ST,200,A,ROWAN GORILLA IV,Drilling,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-bce5f0,Production Foreman,SYN-333c62,Maintenance Supervisor,SYN-ac2cfe,Operations Superintendent,2021-12-16,SYN-d224c1,Production Foreman,2022-02-24,"On December 5, 2021, a Floor Hand working on the Rowan Gorilla IV, which was
+HB-6A3B6A17BD,,,2021-12-05,01:31,2021-12-07,ST,200,A,ROWAN GORILLA IV,Drilling,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-bce5f0,Production Foreman,SYN-333c62,Maintenance Supervisor,SYN-ac2cfe,Operations Superintendent,2021-12-16,SYN-d224c1,Production Foreman,2022-02-24,"On December 5, 2021, a Floor Hand working on the Rowan Gorilla IV, which was
 contracted to EPL Oil and Gas/Energy XXI, suffered an injury to his left hand while
 performing tripping operations on the rig floor.
 At approximately 01:25 hours, the Assistant Driller (AD) took over control of the top
@@ -607,7 +607,7 @@ Driller and AD had identified a missing pin in the top drive throttle pedal. The
 replaced the pin with a nut and bolt, and initially the pedal did stick but after
 adjustment the pedal operated smoothly. The Maintenance Supervisor inspected the
 pedal following the incident and determined the pedal to be working correctly.","On December 5, 2021, a Floor Hand working on the Rowan Gorilla IV, which was contracted to EPL Oil and Gas/Energy XXI, suffered an injury to his left hand while performing tripping operations on the rig floor.",,,,,,,,,,,,,,,
-CP-6FBA9BECDE,,,2021-12-07,11:45,2021-12-11,WC,280,B,,Well Services,Atmospheric,Loss Event,Health & Safety,,,SYN-dc256c,Maintenance Supervisor,SYN-a36314,Operations Superintendent,SYN-684c64,Marine Coordinator,2022-01-01,SYN-9a5265,HSE Advisor,2022-01-15,"Our investigation revealed the platform was shut-in and bled down the morning of 1­
+HB-6FBA9BECDE,,,2021-12-07,11:45,2021-12-11,WC,280,B,,Well Services,Atmospheric,Loss Event,Health & Safety,,,SYN-dc256c,Maintenance Supervisor,SYN-a36314,Operations Superintendent,SYN-684c64,Marine Coordinator,2022-01-01,SYN-9a5265,HSE Advisor,2022-01-15,"Our investigation revealed the platform was shut-in and bled down the morning of 1­
 14-05. The pipeline company arrived at around 10:30 a.m. to perform
 maintenance on their valves. Before Duke departed the platform the 16"" sales valves
 and 16 riser valves were closed. Operations personnel were having problems
@@ -626,7 +626,7 @@ bled off the production equipment, the 3rd party construction crew continued rem
 old valves from the coalescer. Gas was reported coming from the top of the coalescer
 at around 11:30 p.m. and the 1/2"" ball valve and gauge valves were closed. The gas
 release began at around 11:45 p.m. on 1-14-05 and lasted until 8:45 a.m. on 1-16-05.",The incident resulted in an injury recorded without a severity code.,,,,,,,,,,,,,,,
-CP-98B7510218,,,2021-12-13,14:00,2021-12-19,EI,238,E,,Production Operations,LIFTING,Loss Event,Health & Safety,Injury Minor,,SYN-73fce7,Production Foreman,SYN-c67744,Facility Engineer,SYN-d088ff,Facility Engineer,2021-12-23,SYN-ede37d,HSE Advisor,2022-01-25,"On December 13, 2021 at approximately 1400 hours, a mechanic was injured while
+HB-98B7510218,,,2021-12-13,14:00,2021-12-19,EI,238,E,,Production Operations,LIFTING,Loss Event,Health & Safety,Injury Minor,,SYN-73fce7,Production Foreman,SYN-c67744,Facility Engineer,SYN-d088ff,Facility Engineer,2021-12-23,SYN-ede37d,HSE Advisor,2022-01-25,"On December 13, 2021 at approximately 1400 hours, a mechanic was injured while
 descending a stairway and missing the final step at Arena Offshore, LP operated
 facility located at EI238E. The mechanic was evacuated to Teche Occupational Clinic in
 New Iberia La. At 5:28 PM on December 13, 2021, Arena Offshore LP, verbally reported
@@ -647,7 +647,7 @@ after, the mechanic began feeling discomfort and was flown to a medical facility
 evaluated. The mechanic was diagnosed with a bruised kidney and placed on light duty
 for a 4-week period pending further evaluations.
 The BSEE Lafayette District conducted an onsite investigation December 18, 2021.",The mechanic was diagnosed with a bruised kidney and placed on light duty for a 4-week period pending further evaluations.,,,,,,,,,,,,,,,
-CP-96EAF2138B,,,2022-01-08,17:40,2022-01-12,,,,NOBLE LORRIS BOUZIGARD,Well Services,LIFTING DEVICE,,,,,SYN-210c17,Marine Coordinator,SYN-c0f3ab,Facility Engineer,SYN-6391be,HSE Advisor,2022-01-17,SYN-a26c4a,Marine Coordinator,2022-06-24,"During an acid job being conducted between the frac boat and rig, acid was being
+HB-96EAF2138B,,,2022-01-08,17:40,2022-01-12,,,,NOBLE LORRIS BOUZIGARD,Well Services,LIFTING DEVICE,,,,,SYN-210c17,Marine Coordinator,SYN-c0f3ab,Facility Engineer,SYN-6391be,HSE Advisor,2022-01-17,SYN-a26c4a,Marine Coordinator,2022-06-24,"During an acid job being conducted between the frac boat and rig, acid was being
 pumped down the drill pipe while taking completion fluid returns through the mud
 return line to the gumbo box. The completion fluid returns were intended to be routed
 to shaker #2 and then to pit #3 however, the manual drain valve beneath the gumbo box
@@ -670,7 +670,7 @@ gumbo box. The investigation determined the following: 1) the gumbo box drain va
 was not part of the lock-out program, 2) the crew members terminology on names for
 specific valves was not precise, and 3) the crew members did not monitor the
 operations when they returned from their meal break.",,,,,,,,,,,,,,C,,
-CP-86126D932D,,,2022-01-12,22:45,2022-01-13,MP,30,DIAMOND OCEAN DRAKE,,Maintenance,,Loss Event,Health & Safety,,,,,SYN-625a13,Maintenance Supervisor,,,,,,,"While tripping in the hole with 5 1/2"" drill pipe, the Derrick hand was operating the
+HB-86126D932D,,,2022-01-12,22:45,2022-01-13,MP,30,DIAMOND OCEAN DRAKE,,Maintenance,,Loss Event,Health & Safety,,,,,SYN-625a13,Maintenance Supervisor,,,,,,,"While tripping in the hole with 5 1/2"" drill pipe, the Derrick hand was operating the
 Spinner Hawk. After a connection, a malfunction occurred with the spinner wrench
 chain. The Derrick hand used his hand to push the chain of the spinner wrench. At
 the same time he used his other hand to hold the spinner wrench steady due to weather
@@ -698,7 +698,7 @@ stretch was within tolerance, control levers functioned properly, and warning la
 noted on each side.
 7. Injured Person began operating Spinner
 22:45.",The incident resulted in an injury recorded without a severity code.,,,,,,,,,,,,,,,
-CP-B092285F66,,,2022-01-24,04:45,2022-01-26,,,A,,Marine & Logistics,LIFTING DEVICE,,,,,SYN-c2551f,Maintenance Supervisor,SYN-f7068a,Maintenance Supervisor,SYN-d4ce20,Production Foreman,2022-01-31,SYN-ae019c,Operations Superintendent,2022-03-01,"On 24 January 2022, during simultaneous operations, a flash fire occurred at
+HB-B092285F66,,,2022-01-24,04:45,2022-01-26,,,A,,Marine & Logistics,LIFTING DEVICE,,,,,SYN-c2551f,Maintenance Supervisor,SYN-f7068a,Maintenance Supervisor,SYN-d4ce20,Production Foreman,2022-01-31,SYN-ae019c,Operations Superintendent,2022-03-01,"On 24 January 2022, during simultaneous operations, a flash fire occurred at
 approximately 0700 hrs which resulted in the pump operator receiving burns to his
 neck, left arm, shoulder and facial area. During the time leading up to the
 incident, a lift boat was adjacent to the producing platform with Coil Tubing (CT)
@@ -750,7 +750,7 @@ installed on well A-1, which was with-in ten (10) feet of the natural gas compre
 and (4) there was no Emergency Shut Down (ESD) Station installed on the lift boat
 during the simultaneous operations.
 * * * * * * PROPRIETARY * * * * * *",,,,,,,,,,,,,,,,
-CP-AF65344437,,,2022-01-31,23:30,2022-02-04,ST,308,A (Tarantula),,Drilling,,Loss Event,Health & Safety,,,SYN-1c3a9a,Production Foreman,SYN-f3c468,Marine Coordinator,SYN-c7ed7c,HSE Advisor,2022-02-10,SYN-6788e5,Production Foreman,2022-02-24,"Upon completion of a frac job, there was approximately 9,500 pounds of pressure on
+HB-AF65344437,,,2022-01-31,23:30,2022-02-04,ST,308,A (Tarantula),,Drilling,,Loss Event,Health & Safety,,,SYN-1c3a9a,Production Foreman,SYN-f3c468,Marine Coordinator,SYN-c7ed7c,HSE Advisor,2022-02-10,SYN-6788e5,Production Foreman,2022-02-24,"Upon completion of a frac job, there was approximately 9,500 pounds of pressure on
 the drill pipe. While pulling on the drill pipe to move the crossover to the reverse
 position, the hydraulic choke was not completely closed. When the crossover tool hit
 the reverse position, the 9500 pounds bled to zero within 55 seconds. This caused a
@@ -762,7 +762,7 @@ around uncontrollably. This line then struck an employee from behind and knocked
 into a handrail, causing several injuries. The employee sustained four fractured
 ribs,a laceration to his calf and brused spleen and kidney. He was treated for a
 blood clot in his leg, which has not been attributed","The incident resulted in an injury recorded without a severity code. Estimated property damage $5,300.",,,,,,,,,,,,,A,,
-CP-3AED37EBF4,,,2022-03-05,14:40,2022-03-07,ST,200,A,BLAKE 651,Marine & Logistics,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-9d0609,Operations Superintendent,SYN-cfb97a,Operations Superintendent,SYN-7609e3,Maintenance Supervisor,2022-03-22,SYN-d90a44,Production Foreman,2022-04-13,"On March 5, 2022, the Blake 651 platform rig was conducting abandonment operations
+HB-3AED37EBF4,,,2022-03-05,14:40,2022-03-07,ST,200,A,BLAKE 651,Marine & Logistics,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-9d0609,Operations Superintendent,SYN-cfb97a,Operations Superintendent,SYN-7609e3,Maintenance Supervisor,2022-03-22,SYN-d90a44,Production Foreman,2022-04-13,"On March 5, 2022, the Blake 651 platform rig was conducting abandonment operations
 for Energy Partners Limited Oil and Gas, Inc. (EPL) on South Timbalier 200 A facility
 (ST200A). While drilling a bridge plug at 474 feet with the annular preventer closed,
 the drill pipe was suddenly forced up 15 feet and bent the drill pipe in the derrick.
@@ -820,7 +820,7 @@ inch CIBP and exceeded the weight on bit applied by the rig. In the future, EPL 
 drill small pilot holes in large bridge plugs to ensure pressure is vented prior to
 actually drilling out the plugs and not compromising the CIBP holding slips.
 For P ublic Release",There were no injuries to personnel as a result of this incident.,,,,,,,,,,,,,,,
-CP-046ACB062E,,,2022-03-10,18:43,2022-03-16,GC,237,B (Helix),,Well Services,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-c9f894,Production Foreman,SYN-e5b1d9,HSE Advisor,SYN-ec579b,Marine Coordinator,2022-03-23,SYN-03b1df,Production Foreman,2022-06-11,"Incident:
+HB-046ACB062E,,,2022-03-10,18:43,2022-03-16,GC,237,B (Helix),,Well Services,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-c9f894,Production Foreman,SYN-e5b1d9,HSE Advisor,SYN-ec579b,Marine Coordinator,2022-03-23,SYN-03b1df,Production Foreman,2022-06-11,"Incident:
 On March 10, 2022, a Disabled Safety Systems Incident occurred on the Helix Producer
 1 (HP-1) Floating Production Unit (FPU) operated by Talos ERT LLC and owned by Helix
 Energy Solutions located in Green Canyon (GC) Block 237 in the Gulf of America. On
@@ -1034,7 +1034,7 @@ Maintenance Manual. This will occur at least annually as well as any event separ
 from testing that may require a disconnect to occur. All lubrication, maintenance,
 and inspections of the QCDC will be tracked and monitored in the company's electronic
 maintenance management system."
-CP-3D7A1B48AC,,,2022-03-19,23:30,2022-03-24,GB,426,A-Auger TLP,,Marine & Logistics,LIFTING,Loss Event,Health & Safety,Injury Minor,,SYN-d35f57,HSE Advisor,SYN-190286,Facility Engineer,SYN-aabca4,Production Foreman,2022-04-04,SYN-d2adaa,Facility Engineer,2022-04-28,"On 19 March 2022, at approximately 1310 hours, an injury occurred on Shell Offshore
+HB-3D7A1B48AC,,,2022-03-19,23:30,2022-03-24,GB,426,A-Auger TLP,,Marine & Logistics,LIFTING,Loss Event,Health & Safety,Injury Minor,,SYN-d35f57,HSE Advisor,SYN-190286,Facility Engineer,SYN-aabca4,Production Foreman,2022-04-04,SYN-d2adaa,Facility Engineer,2022-04-28,"On 19 March 2022, at approximately 1310 hours, an injury occurred on Shell Offshore
 Inc. (Shell) OCS-G08241 Garden Banks (GB) 426-A.",The IP was transported to a medical facility for additional medical treatment including X-rays that revealed a closed displaced fracture on the fifth metacarpal bone of the left hand.,,,,,,,,,,,,,,,"Sequence of Events:
 On 19 March 2022, a production operator was on the deck testing the boarding shut down
 valve (BSDV) for the Cardamom Field. There were three control room operators monitoring
@@ -1091,7 +1091,7 @@ introduced to the hose after the piping had been bled down to zero. Utilizing th
 hose to show zero pressure on the flowline was not part of the Shell’s Operating
 Procedure. An additional probable cause includes allowing the IP to assist in the
 testing of the BSDV without prior experience in boarding valve testing operations."
-CP-6E609FE29C,,,2022-03-28,12:45,2022-03-31,GC,236,RIG NAME NOBLE THERALD MARTIN,,Construction,,Loss Event,Health & Safety,,,SYN-6f1456,Maintenance Supervisor,SYN-074300,Production Foreman,SYN-3a6aec,Facility Engineer,2022-04-05,SYN-32c42e,Operations Superintendent,2022-08-08,"The drill crew was in the process of installing chicksan lines on the Expro Flowhead.
+HB-6E609FE29C,,,2022-03-28,12:45,2022-03-31,GC,236,RIG NAME NOBLE THERALD MARTIN,,Construction,,Loss Event,Health & Safety,,,SYN-6f1456,Maintenance Supervisor,SYN-074300,Production Foreman,SYN-3a6aec,Facility Engineer,2022-04-05,SYN-32c42e,Operations Superintendent,2022-08-08,"The drill crew was in the process of installing chicksan lines on the Expro Flowhead.
 The flowhead contains valves with handles that are held in place by
 safety pins. The crew was unaware that at some point after
 installation, the safety pin that secured the master valve handle fell out/was
@@ -1101,7 +1101,7 @@ the valve handle off. The valve handle weighing
 feet and struck a Noble employee on the side of
 employee sustained lacerations around the right
 head. Also, his wrist was broken.",The incident resulted in an injury recorded without a severity code.,,,,,,,,,,,,,,,
-CP-99AE614DE1,,,2022-04-10,12:00,2022-04-11,MP,107,D,HERCULES 204,Maintenance,LIFTING DEVICE,Near Hit,,,,SYN-a443f4,Operations Superintendent,SYN-9f02ca,HSE Advisor,SYN-7cee19,Maintenance Supervisor,2022-04-18,SYN-a7e921,Operations Superintendent,2022-06-02,"On April 10, 2022, at approximately 1145 hours, on the Hercules 204 located at LLOG
+HB-99AE614DE1,,,2022-04-10,12:00,2022-04-11,MP,107,D,HERCULES 204,Maintenance,LIFTING DEVICE,Near Hit,,,,SYN-a443f4,Operations Superintendent,SYN-9f02ca,HSE Advisor,SYN-7cee19,Maintenance Supervisor,2022-04-18,SYN-a7e921,Operations Superintendent,2022-06-02,"On April 10, 2022, at approximately 1145 hours, on the Hercules 204 located at LLOG
 Exploration Offshore, Inc.'s Lease OCS-G 31435, Main Pass Block 107, rig floorhands
 were attempting to break three joints of tubing (one stand) and lay the tubing on the
 casing deck. The stand of tubing was in the mouse hole, and one joint was broken and
@@ -1118,13 +1118,13 @@ shackle on the end of the cylinder, with the cotton pin, struck the Injured Pers
 (IP) in the face, resulting in a 1 ½"" laceration to his left cheek. The IP was
 treated by the medic and was evacuated for medical treatment, where he received
 stitches and was given a full release to return to work.",The facility was evacuated.,,,,,,,,,,,,,,,
-CP-9534B48819,,,2022-05-17,19:21,2022-05-18,MC,522,,T.O. MARIANAS,Construction,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-606e96,Operations Superintendent,SYN-a0d216,Production Foreman,SYN-4bba0e,HSE Advisor,2022-05-21,SYN-d8a98c,Maintenance Supervisor,2022-06-07,"On May 17, 2022, on the Transocean Marianas, located at BP E&P Inc.'s Lease OCS-G
+HB-9534B48819,,,2022-05-17,19:21,2022-05-18,MC,522,,T.O. MARIANAS,Construction,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-606e96,Operations Superintendent,SYN-a0d216,Production Foreman,SYN-4bba0e,HSE Advisor,2022-05-21,SYN-d8a98c,Maintenance Supervisor,2022-06-07,"On May 17, 2022, on the Transocean Marianas, located at BP E&P Inc.'s Lease OCS-G
 8823, Mississippi Canyon (MC) Block 522, a Roustabout suffered a back sprain while
 moving heavy equipment. The Injured Person (IP) was moving heavy equipment into an
 enclosed container for shipment when a pry bar
 weight on a 2x6x4 piece of wood he was placing
 evacuated on a scheduled flight to Houma. Loss","On May 17, 2022, on the Transocean Marianas, located at BP E&P Inc.'s Lease OCS-G 8823, Mississippi Canyon (MC) Block 522, a Roustabout suffered a back sprain while moving heavy equipment.",,,,,,,,,,,,,,,
-CP-D330F37F05,,Very Serious Incident,2022-05-21,12:15,2022-05-22,WR,315,,SEADRILL WEST VELA,Maintenance,LIFTING Material handling with tugger,Loss Event,,,,SYN-087c4a,Facility Engineer,SYN-88448f,Production Foreman,SYN-c31ebb,Maintenance Supervisor,2022-05-26,SYN-73182f,HSE Advisor,2022-06-17,"On May 21, 2022, an incident occurred on board the Seadrill West Vela drillship
+HB-D330F37F05,,Very Serious Incident,2022-05-21,12:15,2022-05-22,WR,315,,SEADRILL WEST VELA,Maintenance,LIFTING Material handling with tugger,Loss Event,,,,SYN-087c4a,Facility Engineer,SYN-88448f,Production Foreman,SYN-c31ebb,Maintenance Supervisor,2022-05-26,SYN-73182f,HSE Advisor,2022-06-17,"On May 21, 2022, an incident occurred on board the Seadrill West Vela drillship
 working for Equinor Gulf of Mexico LLC. Drilling operations were being conducted at
 Walker Ridge Block 315 OCS-G35733 Well #001. The drill crew was in the process of
 replacing the Hydra-racker hoist wire rope when the wire rope slipped from its rigging
@@ -1184,7 +1184,7 @@ Seadrill action plans are to update the appropriate maintenance procedure with t
 proper manufacturer procedure and ensure that the proper wire snakes are available on
 board to use for the wire rope replacement. Also, Seadrill has updated the appropriate
 TBRA’s and SSP’s to reflect change in the manufacturer’s procedure.",There was no damage to equipment and no injuries were reported.,Very Serious Incident,,Very Serious Incident,25,E,5,,,,,,,,,
-CP-F5097143EF,,Incident,2022-05-25,12:00,2022-05-30,WD,73,A,,Construction,LIFTING,Loss Event,Environment & Reputation,Loss of Containment,,SYN-ffacb3,HSE Advisor,SYN-ec8964,Facility Engineer,SYN-52791a,Facility Engineer,2022-06-07,SYN-e481dd,Marine Coordinator,2022-07-28,"From 25 May 2022 to 27 May 2022 several pollution events occurred at the West
+HB-F5097143EF,,Incident,2022-05-25,12:00,2022-05-30,WD,73,A,,Construction,LIFTING,Loss Event,Environment & Reputation,Loss of Containment,,SYN-ffacb3,HSE Advisor,SYN-ec8964,Facility Engineer,SYN-52791a,Facility Engineer,2022-06-07,SYN-e481dd,Marine Coordinator,2022-07-28,"From 25 May 2022 to 27 May 2022 several pollution events occurred at the West
 Delta (WD) Block 73 A Platform, Lease OCS-G 1083 operated by Cox Oil (Cox). BSEE
 inspectors observed the first pollution event and estimated it to be 14 barrels (bbls)
 of oil. BSEE and Cox independently reported the pollution to the National Response
@@ -1345,7 +1345,7 @@ pollution occurred on 25 May 2022, due to failed pumps discharging hydrocarbon o
 containment into the GOM waters. The third point of discharge was caused by discharges
 from the Sump Tank overboard water discharge line and overflow out the top of the Sump
 Tank. The investigation resulted in 14 INCs and a list of corrective actions for Cox."
-CP-66B4C93D81,,Very Serious Incident,2022-06-03,23:15,2022-06-05,WR,160,,T.O. DISCOVERER,Maintenance,LIFTING DEVICE PRS - Dropped objects,Loss Event,,,,,,SYN-7280d0,Facility Engineer,,,,,,,"On June 3, 2022, while working for Statoil Gulf of Mexico LLC, an incident
+HB-66B4C93D81,,Very Serious Incident,2022-06-03,23:15,2022-06-05,WR,160,,T.O. DISCOVERER,Maintenance,LIFTING DEVICE PRS - Dropped objects,Loss Event,,,,,,SYN-7280d0,Facility Engineer,,,,,,,"On June 3, 2022, while working for Statoil Gulf of Mexico LLC, an incident
 occurred onboard Transocean’s Discoverer Americas when a collision between a stand of
 drill pipe and the rig’s Pipe Racking System (PRS) led to two pieces of equipment
 falling approximately 144 feet to the drill floor. At the time of the incident, the
@@ -1395,7 +1395,7 @@ back to the drill floor. The job was stopped and an investigation into the incid
 began. It was found that the result of the incident was half of the PRS’s Support
 Retainer, weighing 79 lbs., and a Teflon Bearing, weighing 3 lbs., being knocked off
 of the PRS and falling 144 feet to the drill floor.","Reported as a lifting-device incident. Estimated property damage $16,282.",Very Serious Incident,,Very Serious Incident,25,E,5,,,,,,,A,,
-CP-57D88C9DD8,,Serious Incident,2022-06-06,20:30,2022-06-07,ST,245,A,,Marine & Logistics,LIFTING DEVICE,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-fa8c3d,Production Foreman,SYN-77c976,Production Foreman,SYN-d14721,Production Foreman,2022-06-12,SYN-f2b518,Maintenance Supervisor,2022-07-11,"During Plug and Abandonment (P&A) operations the crane operator was instructed to
+HB-57D88C9DD8,,Serious Incident,2022-06-06,20:30,2022-06-07,ST,245,A,,Marine & Logistics,LIFTING DEVICE,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-fa8c3d,Production Foreman,SYN-77c976,Production Foreman,SYN-d14721,Production Foreman,2022-06-12,SYN-f2b518,Maintenance Supervisor,2022-07-11,"During Plug and Abandonment (P&A) operations the crane operator was instructed to
 position the Manitex ML 1200 platform crane over the number five wellbay, check the
 angle and make the lift to the maximum allowable pull at that angle. While attempting
 to pull 570 feet of 7-5/8""casing with the platform crane, the bolts holding the ring
@@ -1414,7 +1414,7 @@ dynamometer was installed on the main block hoist. A signalman was utilized for 
 lift operation using standard hand signals.
 No Job Safety Analysis (JSA) documentation could be located to determine that a JSA
 was performed prior to the incident.",There were no injuries or pollution associated with the incident.,Serious Incident,,Serious Incident,20,D,5,,,,,,,C,,
-CP-9D63C7E5D6,,,2022-06-07,13:15,2022-06-08,AC,857,A(Perdido),H&P 205,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-de0828,HSE Advisor,SYN-ea9b39,Maintenance Supervisor,SYN-cb27c0,HSE Advisor,2022-06-12,SYN-80e17c,Maintenance Supervisor,2022-09-01,"On June 7, 2022, an injury occurred during drilling activities at Alaminos Canyon
+HB-9D63C7E5D6,,,2022-06-07,13:15,2022-06-08,AC,857,A(Perdido),H&P 205,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-de0828,HSE Advisor,SYN-ea9b39,Maintenance Supervisor,SYN-cb27c0,HSE Advisor,2022-06-12,SYN-80e17c,Maintenance Supervisor,2022-09-01,"On June 7, 2022, an injury occurred during drilling activities at Alaminos Canyon
 857, H & P 205 Rig, OCS-G-17565, operated by Shell Offshore, Inc. The injury
 occurred on Well GA006 (API#608054004401) during general rig maintenance. An H & P
 Mechanic was struck in the face by a flange associated with a butterfly valve for a
@@ -1437,7 +1437,7 @@ butterfly valve was filled out and signed by the rig Mechanic. Steps five and si
 the JSA recommend proper body positioning and proper tool selection for the job to be
 conducted. H & P 205 management have addressed the issues related to the incident and
 submitted corrective actions fleet wide.",The H & P Mechanic was medevaced to a medical facility for stitches and returned to the rig the next day.,,,,,,,,,,,,,,,
-CP-AF101CEEE5,,,2022-06-08,08:00,2022-06-09,WC,237,A,,Maintenance,LIFTING DEVICE,Loss Event,Health & Safety,,,SYN-fa5bb6,Operations Superintendent,SYN-e55edd,Marine Coordinator,SYN-8357b2,HSE Advisor,2022-06-14,SYN-44bf76,Production Foreman,2022-07-31,"The lead operator was instructed by the production foreman to proceed to WC-237-A and
+HB-AF101CEEE5,,,2022-06-08,08:00,2022-06-09,WC,237,A,,Maintenance,LIFTING DEVICE,Loss Event,Health & Safety,,,SYN-fa5bb6,Operations Superintendent,SYN-e55edd,Marine Coordinator,SYN-8357b2,HSE Advisor,2022-06-14,SYN-44bf76,Production Foreman,2022-07-31,"The lead operator was instructed by the production foreman to proceed to WC-237-A and
 offload wireline equipment. The lead operator stated that when Mr. Nichols stepped on
 well A-6 hatch cover it gave way and Mr. Nichols and the hatch cover fell to the deck
 below. The lead operator also stated that it was the first time they had ever been on
@@ -1457,7 +1457,7 @@ tried it, the opening was to large allowing the cover to fall straight through t
 opening and when the hatch cover was turned it allowed approximately 1/4"" to 1/2"" of
 the angle iron frame to set on the edge of the opening. With the beams being cut it
 allowed the hatch cover to move freely inside the opening.",The incident resulted in an injury recorded without a severity code.,,,,,,,,,,,,,,,
-CP-9F92249E10,,,2022-07-07,12:00,2022-07-10,MC,208,,,Production Operations,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-3120eb,Operations Superintendent,SYN-965706,Facility Engineer,SYN-c454ce,Operations Superintendent,2022-07-14,SYN-f2df38,Maintenance Supervisor,2022-08-22,"On 7 July 2022, at 1200 hours, a loss of communication to Mississippi Canyon (MC)
+HB-9F92249E10,,,2022-07-07,12:00,2022-07-10,MC,208,,,Production Operations,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-3120eb,Operations Superintendent,SYN-965706,Facility Engineer,SYN-c454ce,Operations Superintendent,2022-07-14,SYN-f2df38,Maintenance Supervisor,2022-08-22,"On 7 July 2022, at 1200 hours, a loss of communication to Mississippi Canyon (MC)
 208 (Seafloor location) Subsea (SS) 001 OCS-G 32303 (Bottom hole location at SS 209),
 occurred at the Murphy Exploration & Production Company's MC 254 A Delta House
 platform. This resulted in a catastrophic failure of the satellite umbilical cobra
@@ -1508,7 +1508,7 @@ transferring on the MQC plate resulting in additional
 208/209 well's tree end.
 3. The Electrical Flying Lead (EFL) being grounded to
 consumption of anodes on adjacent structures."
-CP-28BCE26628,,Serious Incident,2022-07-20,19:30,2022-07-21,MI,703,A,,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-a1e16b,Maintenance Supervisor,SYN-ca0912,Maintenance Supervisor,SYN-c4a756,Facility Engineer,2022-07-31,SYN-abb919,Marine Coordinator,2022-09-13,"While attempting to remove D-ring on four part sling load from crane hook after load
+HB-28BCE26628,,Serious Incident,2022-07-20,19:30,2022-07-21,MI,703,A,,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-a1e16b,Maintenance Supervisor,SYN-ca0912,Maintenance Supervisor,SYN-c4a756,Facility Engineer,2022-07-31,SYN-abb919,Marine Coordinator,2022-09-13,"While attempting to remove D-ring on four part sling load from crane hook after load
 was landed on deck, rigger on top of Marine Portable Transfer (MPT)tank was having
 trouble getting the D-ring unhooked. Coiled Tubing Unit (CTU) Supervisor was
 assisting by pushing up on slings. Rigger on top of MPT tank got the D-ring unhooked
@@ -1517,7 +1517,7 @@ finger of the supervisor on deck between the side of tank and the D-ring. Superv
 initially stated that he was wearing the company required high-visibility impact
 gloves but later into the investigation changed testimony to say that he was not
 wearing any gloves at the time of the incident.",The incident resulted in restricted work or job transfer for more than 3 days. Reported as a crane incident. The facility was evacuated.,Serious Incident,,Serious Incident,20,D,5,,,,,,,,,
-CP-C7C9B9694D,,,2022-07-21,13:45,2022-07-23,GC,680,A (Constitution,[J,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-7741c0,Production Foreman,SYN-6284b7,HSE Advisor,SYN-0a448e,Operations Superintendent,2022-08-06,SYN-c55739,Production Foreman,2022-08-15,"On 22 July 2022, the Ensco 8500 semi-submersible rig under contract with Anadarko
+HB-C7C9B9694D,,,2022-07-21,13:45,2022-07-23,GC,680,A (Constitution,[J,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-7741c0,Production Foreman,SYN-6284b7,HSE Advisor,SYN-0a448e,Operations Superintendent,2022-08-06,SYN-c55739,Production Foreman,2022-08-15,"On 22 July 2022, the Ensco 8500 semi-submersible rig under contract with Anadarko
 Petroleum Corporation (Anadarko), was conducting drilling operations on Well SS001
 located at the surface location of Keathley Canyon Block 875 when the primary slip
 joint packer on the upper telescopic joint failed resulting in the discharge of
@@ -1545,7 +1545,7 @@ outside of the SIWS, to move further inward toward the Inner Barrel. In addition
 higher stresses than normal may have been applied SWIS resulting in the urethane
 wiper moving away from the center end rings until it compressed against the outer
 retaining rings and became stuck.","The incident resulted in a lost-time accident with more than 3 days lost. Estimated property damage $150,000.",,,,,,,,,,,,,C,,
-CP-23ED7A0BF3,,Incident,2022-07-30,15:45,2022-08-01,VR,287,A,,Construction,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-572dc7,Marine Coordinator,SYN-0900f6,Production Foreman,SYN-d652b4,HSE Advisor,2022-08-08,SYN-4d691a,Operations Superintendent,2022-08-29,"MMS Investigators found that the heater treater (NBK 1107) had been improperly
+HB-23ED7A0BF3,,Incident,2022-07-30,15:45,2022-08-01,VR,287,A,,Construction,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-572dc7,Marine Coordinator,SYN-0900f6,Production Foreman,SYN-d652b4,HSE Advisor,2022-08-08,SYN-4d691a,Operations Superintendent,2022-08-29,"MMS Investigators found that the heater treater (NBK 1107) had been improperly
 designed and installed. This unit was equipped with manually operated drains that
 were used to drain water and sand from the bottom of the vessel. The drains had
 individiual 2"" manual valves and were manifolded together. A single line from the
@@ -1556,7 +1556,7 @@ installed correctly to prevent pollution and was in violation of 30 CFR 250.300
 to water / sand treating equipment prior to discharge. Since the spill, the drains
 from the heater treater were blind flanged. This will correct the design /
 installation of the heater treater.",Reported as a pollution release.,Incident,,Incident,6,C,2,,,C,,,,,,
-CP-1B64E6DB5E,,Serious Incident,2022-07-31,19:00,2022-08-03,ST,23,CC,,Production Operations,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,Combustion,,,SYN-1b65bb,Maintenance Supervisor,,,,,,,"FFoorr PPuubblliicc RReelleeaassee
+HB-1B64E6DB5E,,Serious Incident,2022-07-31,19:00,2022-08-03,ST,23,CC,,Production Operations,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,Combustion,,,SYN-1b65bb,Maintenance Supervisor,,,,,,,"FFoorr PPuubblliicc RReelleeaassee
 On July 31, 2022 at approximately 1745, a Fire occurred on Glycol Reboiler vent
 line. Operators were adding glycol to the system following a platform shut down. The
 incident occurred on Cantium LLC facility South Timbalier Block 23 CC OCS 00166.
@@ -1581,7 +1581,7 @@ make up the packing section of the still column. Cantium then reassembled the st
 column and brought the unit back online.
 BSEE was notified on August 1, 2022, of a fire a that occurred on the Glycol
 Reboiler.","Reported as a fire and damage over $25,000. Estimated property damage $40,000.",Serious Incident,,Serious Incident,12,D,3,,,,,,,B,,
-CP-215260714B,,Serious Incident,2022-08-02,16:40,2022-08-03,GB,161,,CAL-DIVE Q-4000,Drilling,LIFTING Man Rider & CTLF,Loss Event,Health & Safety,Injury TLI,,SYN-a4a799,Facility Engineer,SYN-3634e3,Maintenance Supervisor,SYN-447318,Operations Superintendent,2022-08-10,SYN-35310c,Facility Engineer,2022-09-19,"At 16:40 hours on 2 August 2022, a Helix Energy Solutions (Helix) Roughneck sustained
+HB-215260714B,,Serious Incident,2022-08-02,16:40,2022-08-03,GB,161,,CAL-DIVE Q-4000,Drilling,LIFTING Man Rider & CTLF,Loss Event,Health & Safety,Injury TLI,,SYN-a4a799,Facility Engineer,SYN-3634e3,Maintenance Supervisor,SYN-447318,Operations Superintendent,2022-08-10,SYN-35310c,Facility Engineer,2022-09-19,"At 16:40 hours on 2 August 2022, a Helix Energy Solutions (Helix) Roughneck sustained
 serious injuries to his left hand during well abandonment operations on the Helix
 Q4000 semisubmersible vessel under contract to Freeport-McMoRan Oil & Gas LLC
 (McMoRan) at the surface location in Garden Banks (GB) Block 161. The severity of the
@@ -1610,7 +1610,7 @@ were in the initial stages of their investigation, so information was limited. B
 gathered all available pertinent documents, inspected the incident scene and
 coordinated for the delivery of all remaining investigation-related documents from
 McMoRan and Helix.","At 16:40 hours on 2 August 2022, a Helix Energy Solutions (Helix) Roughneck sustained serious injuries to his left hand during well abandonment operations on the Helix Q4000 semisubmersible vessel under contract to Freeport-McMoRan Oil & Gas LLC (McMoRan) at the surface location in Garden Banks (GB) Block 161.",Serious Incident,,Serious Incident,20,D,5,,,,,,,,,
-CP-872326FC4E,,Serious Incident,2022-08-06,09:30,2022-08-08,SM,99,A,,Drilling,LIFTING,Loss Event,Health & Safety,Injury Minor,,SYN-005169,Facility Engineer,SYN-48ff2a,HSE Advisor,SYN-5f8f3e,Operations Superintendent,2022-08-14,SYN-16a775,Operations Superintendent,2022-08-22,"On August 6, 2022 at approximately 0930 hours, a contract employee (CE) injured his
+HB-872326FC4E,,Serious Incident,2022-08-06,09:30,2022-08-08,SM,99,A,,Drilling,LIFTING,Loss Event,Health & Safety,Injury Minor,,SYN-005169,Facility Engineer,SYN-48ff2a,HSE Advisor,SYN-5f8f3e,Operations Superintendent,2022-08-14,SYN-16a775,Operations Superintendent,2022-08-22,"On August 6, 2022 at approximately 0930 hours, a contract employee (CE) injured his
 index finger on his left hand while attempting to position a cutting box on the deck
 during lifting operations.
 The CE was attempting to position a cutting box that was being lowered by the platform
@@ -1625,7 +1625,7 @@ was wearing gloves at the time of the incident.
 The CE was transported to a medical facility for additional treatment where it was
 determined he fractured the finger.
 The BSEE Lafayette District conducted an onsite investigation August 10, 2022.",The CE was transported to a medical facility for additional treatment where it was determined he fractured the finger.,Serious Incident,,Serious Incident,20,D,5,,,,,,,,,
-CP-F883ABFF3A,,Incident,2022-08-14,19:30,2022-08-17,SM,149,,ROWAN JP BUSSELL,Production Operations,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-129055,Marine Coordinator,SYN-79f7f1,HSE Advisor,SYN-2afb63,Production Foreman,2022-08-23,SYN-60f4ec,Maintenance Supervisor,2022-09-20,"On August 14, 2022, at approximately 1930 hours, on the Mariner Energy, Inc.'s Lease
+HB-F883ABFF3A,,Incident,2022-08-14,19:30,2022-08-17,SM,149,,ROWAN JP BUSSELL,Production Operations,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-129055,Marine Coordinator,SYN-79f7f1,HSE Advisor,SYN-2afb63,Production Foreman,2022-08-23,SYN-60f4ec,Maintenance Supervisor,2022-09-20,"On August 14, 2022, at approximately 1930 hours, on the Mariner Energy, Inc.'s Lease
 OCS-G 02592, South Marsh Island Block 149 Platform D, utilizing the Rowan JP Bussell
 Rig, approximately 33 barrels (BBLs) of Zinc Bromide (ZnBr2) and approximately 37
 BBLs of a weighted blend of Calcium Bromide (CaBr2) and Calcium Chloride (CaCl2) was
@@ -1646,7 +1646,7 @@ completion fluids, but the tank's closed suction line's butterfly valve (new val
 #2 leaked. This allowed the completion fluids to enter the pre-load tank. From the
 pre-load tank, the 25 BBLs of fluid was recovered and the approximately 70 BBLs of
 ZnBr2, CaBr2, and CaCl2 completion fluid blend was lost overboard.",Reported as a pollution release.,Incident,,Incident,8,D,2,,,C,,,,,,
-CP-2674FB26E1,,Serious Incident,2022-08-23,14:00,2022-08-24,EI,24,,,Maintenance,LIFTING,Loss Event,,,Combustion,SYN-99fc76,HSE Advisor,SYN-0f8fb2,Maintenance Supervisor,SYN-0c67bb,Maintenance Supervisor,2022-08-29,SYN-1c2f75,Facility Engineer,2022-10-11,"On August 23, 2022 at approximately 1400 hours an employee received burns to his
+HB-2674FB26E1,,Serious Incident,2022-08-23,14:00,2022-08-24,EI,24,,,Maintenance,LIFTING,Loss Event,,,Combustion,SYN-99fc76,HSE Advisor,SYN-0f8fb2,Maintenance Supervisor,SYN-0c67bb,Maintenance Supervisor,2022-08-29,SYN-1c2f75,Facility Engineer,2022-10-11,"On August 23, 2022 at approximately 1400 hours an employee received burns to his
 face and neck while attempting to ignite a Heater Treater.
 Operators observed the NBK-2000 Heater Treater surging. The operators shut in the
 Heater Treater and completed a Job Safety Analysis (JSA) as well as paperwork for the
@@ -1673,7 +1673,7 @@ pilot. As the gas lit, fire came through the opening coming in contact with the 
 operators face and neck.
 The injured operator was transported to a medical facility to receive additional
 treatment. He was diagnosed with 1st and 2nd degree burns.",He was diagnosed with 1st and 2nd degree burns.,Serious Incident,,Serious Incident,12,D,3,,,,,,,,,
-CP-754AE9C18C,,Serious Incident,2022-08-24,05:10,2022-08-26,MC,736,A(Thunder Hawk),,Marine & Logistics,LIFTING DEVICE,Loss Event,,,Combustion,SYN-186886,HSE Advisor,SYN-b20683,HSE Advisor,SYN-2d148c,Operations Superintendent,2022-09-01,SYN-8fde5d,Production Foreman,2022-10-03,"On 24 August 2022 at 0510 a fire occurred at Murphy Exploration MC 736-A OCS-G
+HB-754AE9C18C,,Serious Incident,2022-08-24,05:10,2022-08-26,MC,736,A(Thunder Hawk),,Marine & Logistics,LIFTING DEVICE,Loss Event,,,Combustion,SYN-186886,HSE Advisor,SYN-b20683,HSE Advisor,SYN-2d148c,Operations Superintendent,2022-09-01,SYN-8fde5d,Production Foreman,2022-10-03,"On 24 August 2022 at 0510 a fire occurred at Murphy Exploration MC 736-A OCS-G
 27306 (Thunder Hawk) Platform. A Pressurized Welding Enclosure (PWE) was constructed
 with the approximate dimensions: 32’ (L) x 6’ (W) X 8’ (H) to accommodate the removal
 of bumper pads and the repair of deck plates.
@@ -1708,7 +1708,7 @@ Performance Energy Services (PES) Supervisor and the Noble Inspector failed to n
 the Control Room Operators immediately. This incident was found to be part of an
 unsafe situation that posed an immediate danger to all personnel and the overall
 safety of the facility.","Reported as a fire. Estimated property damage $25,000.",Serious Incident,,Serious Incident,12,D,3,,,,,,,B,,
-CP-C733A576BA,,,2022-09-02,16:30,2022-09-05,AC,856,STENA TAY,,Construction,,Loss Event,Health & Safety,,,SYN-d0df5c,Marine Coordinator,SYN-1e6d71,HSE Advisor,SYN-4c303a,Operations Superintendent,2022-09-11,SYN-348471,Operations Superintendent,2022-10-29,"The tool pusher confirmed he was in position and clear of the lay-down area. The
+HB-C733A576BA,,,2022-09-02,16:30,2022-09-05,AC,856,STENA TAY,,Construction,,Loss Event,Health & Safety,,,SYN-d0df5c,Marine Coordinator,SYN-1e6d71,HSE Advisor,SYN-4c303a,Operations Superintendent,2022-09-11,SYN-348471,Operations Superintendent,2022-10-29,"The tool pusher confirmed he was in position and clear of the lay-down area. The
 logging unit was lifted over the port side of the rig and over the shaker room. This
 was a blind lift. The tag lines were taken by two men, and the crane operator began
 to lower the load into position under the direction of the banksman (driller). The
@@ -1720,14 +1720,14 @@ The banksman toppled over the handrail and fell thirteen feet and three inches t
 deck below.
 The driller had completed a Banksman and Slinging course a number of years ago,
 however, there are no records of completion of that course.",The incident resulted in an injury recorded without a severity code.,,,,,,,,,,,,,,,
-CP-5067563F49,,,2022-09-19,00:26,2022-09-20,SM,6524,HIDALGO,[J,Well Services,LIFTING DEVICE,,,,,SYN-f97833,HSE Advisor,SYN-c47613,Maintenance Supervisor,SYN-0cf060,Marine Coordinator,2022-09-24,SYN-eaf0dc,Production Foreman,2022-12-10,"The release is attributed to a rupture of a 3/4 inch diameter piece of pipe attached
+HB-5067563F49,,,2022-09-19,00:26,2022-09-20,SM,6524,HIDALGO,[J,Well Services,LIFTING DEVICE,,,,,SYN-f97833,HSE Advisor,SYN-c47613,Maintenance Supervisor,SYN-0cf060,Marine Coordinator,2022-09-24,SYN-eaf0dc,Production Foreman,2022-12-10,"The release is attributed to a rupture of a 3/4 inch diameter piece of pipe attached
 to the Glycol vessel (V-16) located on Platform Hidalgo•s Production Deck. The
 glyc~l
 vessel was at normal pressure of approxamately 1285 psi with normal H2S
 op~rating
 concentrations of approxamately 19,500 ppm. The release was initally detected by a
 combustable gas detector which triggered an alarm and a simultanious ESD.",,,,,,,,,,,,,,,,
-CP-58E98FEEFD,,Serious Incident,2022-09-28,11:10,2022-09-29,ST,52,A,,Maintenance,LIFTING,Loss Event,Health & Safety,Injury TLI,,SYN-137963,Facility Engineer,SYN-d4aa52,Facility Engineer,SYN-b29103,Marine Coordinator,2022-10-12,SYN-e35d28,Marine Coordinator,2022-11-19,"At approximately 1110 hours on September 28, 2022, an incident occurred at South
+HB-58E98FEEFD,,Serious Incident,2022-09-28,11:10,2022-09-29,ST,52,A,,Maintenance,LIFTING,Loss Event,Health & Safety,Injury TLI,,SYN-137963,Facility Engineer,SYN-d4aa52,Facility Engineer,SYN-b29103,Marine Coordinator,2022-10-12,SYN-e35d28,Marine Coordinator,2022-11-19,"At approximately 1110 hours on September 28, 2022, an incident occurred at South
 Timbalier Block 52 Platform A, lease number OCS-G01241. The Operator on record is
 Arena Offshore, LP.
 Upon completing work on the lower level of ST 52 A facility. Personnel started to
@@ -1750,7 +1750,7 @@ to be translated by an interpreter on the platform during the investigation. The
 interpreter wrote the translation in English, then signed and dated it. The Inspector
 took pictures of the boat landing, upper deck, and air hoisting work baskets from the
 Liftboat Raimy Eymard.",The incident resulted in a lost-time accident with more than 3 days lost. Reported as a crane incident. The facility was evacuated.,Serious Incident,,Serious Incident,,,,,,,,,,,,
-CP-688D792711,,Serious Incident,2022-10-12,17:00,2022-10-13,GC,338,A-Front Runner,,Maintenance,LIFTING,Loss Event,Health & Safety,,,,,SYN-bb4134,Marine Coordinator,,,,,,,"At approximately 1700 hours on October 12, 2022, a crane incident occurred at Green
+HB-688D792711,,Serious Incident,2022-10-12,17:00,2022-10-13,GC,338,A-Front Runner,,Maintenance,LIFTING,Loss Event,Health & Safety,,,,,SYN-bb4134,Marine Coordinator,,,,,,,"At approximately 1700 hours on October 12, 2022, a crane incident occurred at Green
 Canyon Block 338 Platform A, Lease Number OCS-G21790. The Operator on record is Murphy
 Exploration & Production Company – USA.
 The drilling contract crew experienced a sheave failure during a critical lift when
@@ -1787,7 +1787,7 @@ when the incident occurred. Marks were found on the deck where the larger pieces
 the sheave possibly landed. The weight of the load was found listed on the side of the
 mud tank #1 as 89,896 lbs. The rigging was found in good condition and certification
 tags confirmed rated weights were adequate for the lift.",The incident resulted in an injury recorded as Other Injury. Reported as a crane incident.,Serious Incident,,Serious Incident,20,D,5,,,,,,,,,
-CP-2868D67F34,,,2022-10-13,03:05,2022-10-15,,,5. PLATFORM' GAIL,,Production Operations,LIFTING DEVICE,,,,,SYN-e7ae75,Facility Engineer,SYN-4a5c28,HSE Advisor,SYN-a816b4,Operations Superintendent,2022-10-26,SYN-cc0510,Marine Coordinator,2022-11-09,"Venoco experienced a loss of well control while performing a workover/completion
+HB-2868D67F34,,,2022-10-13,03:05,2022-10-15,,,5. PLATFORM' GAIL,,Production Operations,LIFTING DEVICE,,,,,SYN-e7ae75,Facility Engineer,SYN-4a5c28,HSE Advisor,SYN-a816b4,Operations Superintendent,2022-10-26,SYN-cc0510,Marine Coordinator,2022-11-09,"Venoco experienced a loss of well control while performing a workover/completion
 operation on Well E-15 when an Elco, Inc. Wellhead Service Technician removed a 1.SR
 diameter lockdown pin and packing-gland from the wellhead. The pin was reJnoved to
 achieve a visual alignment of split tubing hanger; however, it is designed only
@@ -1842,7 +1842,7 @@ activatedandseawater was pumped into the well at a high rate through the kill li
 the BOP stack and after flowing uncontrolled for approximately 2.5 hours the rate of
 leakage subsided enough to allow the installation of a valve assembly into the 1.5""
 opening. Valves on this assembly were closed thus eliminating the leak path.",,,,,,,,,,,,,,,,
-CP-09636DAF8E,,,2022-11-06,06:30,2022-11-08,GA,151,,HERCULES 251,Drilling,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-bd442e,Facility Engineer,SYN-e6e7f5,Facility Engineer,SYN-825a89,Production Foreman,2022-11-11,SYN-d611f7,Maintenance Supervisor,2023-01-11,"The third floorman, who was operating the slips, was thrown out of the way. His left
+HB-09636DAF8E,,,2022-11-06,06:30,2022-11-08,GA,151,,HERCULES 251,Drilling,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-bd442e,Facility Engineer,SYN-e6e7f5,Facility Engineer,SYN-825a89,Production Foreman,2022-11-11,SYN-d611f7,Maintenance Supervisor,2023-01-11,"The third floorman, who was operating the slips, was thrown out of the way. His left
 shoulder and elbow were sore from the slips being ripped from his hand during the
 pre-mature drill pipe separation. During the onsite investigation on November 20,
 2007, his injury was not reported. It was, however, reported to the Lake Jackson
@@ -1871,7 +1871,7 @@ violent rotation of the slips. He was also struck in the back by the rig tongs
 rotating off the drill pipe, but did not consider the impact to be overly severe. He
 sustained an injury to his index finger and torn ligaments on the back of his left
 hand, but had no broken bones.","He sustained an injury to his index finger and torn ligaments on the back of his left hand, but had no broken bones.",,,,,,,,,,,,,,,
-CP-CE0CA4123B,,Serious Incident,2022-11-07,06:45,2022-11-09,MP,42,D,,Production Operations,LIFTING,Loss Event,Health & Safety,Injury TLI,,SYN-a0da66,Facility Engineer,SYN-6b8418,Operations Superintendent,SYN-9ae4b1,HSE Advisor,2022-11-16,SYN-1ff1c5,HSE Advisor,2022-12-13,"On 7 November 2022 at 0645 hours, at Main Pass (MP) 42 Delta (D), OCS 00375, a Lost
+HB-CE0CA4123B,,Serious Incident,2022-11-07,06:45,2022-11-09,MP,42,D,,Production Operations,LIFTING,Loss Event,Health & Safety,Injury TLI,,SYN-a0da66,Facility Engineer,SYN-6b8418,Operations Superintendent,SYN-9ae4b1,HSE Advisor,2022-11-16,SYN-1ff1c5,HSE Advisor,2022-12-13,"On 7 November 2022 at 0645 hours, at Main Pass (MP) 42 Delta (D), OCS 00375, a Lost
 Time Accident occurred involving a Quality Production Management (QPM) contract
 operator. The contract operator was assisting the platform Crane Operator (CO) with
 the offloading of a chemical transporter from the field boat to the platform. The
@@ -1924,7 +1924,7 @@ CONCLUSION:
 BSEE has determined a lack of experience and poor hand placement resulted in the
 injury. However, impact resistant gloves saved the
 injury."
-CP-FEEB73F805,,Incident,2022-11-18,11:30,2022-11-20,GC,858,,GSF DEVELOPMENT,Well Services,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-db1048,HSE Advisor,SYN-0bd06b,Production Foreman,SYN-9bcabd,HSE Advisor,2022-11-24,SYN-012262,Maintenance Supervisor,2022-12-05,"While drilling the 21 inch hole section with a mud weight of 9.0 ppg, a kick was
+HB-FEEB73F805,,Incident,2022-11-18,11:30,2022-11-20,GC,858,,GSF DEVELOPMENT,Well Services,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-db1048,HSE Advisor,SYN-0bd06b,Production Foreman,SYN-9bcabd,HSE Advisor,2022-11-24,SYN-012262,Maintenance Supervisor,2022-12-05,"While drilling the 21 inch hole section with a mud weight of 9.0 ppg, a kick was
 taken at xxxx and the well was shut-in on the annular preventer. The well was then killed
 with 10.1 ppg Kill Weight Mud (KWM) with the drill string becoming stuck, worked free
 by jarring, then stripped up to xxxx ft where the well was Circulated and
@@ -1946,7 +1946,7 @@ underreamer since the bit was stuck in the hole, but once the drill string was
 unstuck all subsequent C&C of the hole occurred through both the bit and underreamer.
 Subsequent to tallying the mud volume, approximately 5 barrels could not be accounted
 for and was believed to be lost overboard.",Reported as a pollution release.,Incident,,Incident,8,D,2,,,C,,,,,,
-CP-CF338020AE,,,2022-11-23,08:45,2022-11-27,VK,965,A-Ram Powell,,Well Services,LIFTING,,,,,SYN-588e43,Production Foreman,SYN-1ac2f1,Operations Superintendent,SYN-0e99e1,HSE Advisor,2022-12-05,SYN-94737d,Facility Engineer,2023-02-07,"On November 23, 2022 at approximately 1945 hrs, a gas release occurred on Viosca Knoll
+HB-CF338020AE,,,2022-11-23,08:45,2022-11-27,VK,965,A-Ram Powell,,Well Services,LIFTING,,,,,SYN-588e43,Production Foreman,SYN-1ac2f1,Operations Superintendent,SYN-0e99e1,HSE Advisor,2022-12-05,SYN-94737d,Facility Engineer,2023-02-07,"On November 23, 2022 at approximately 1945 hrs, a gas release occurred on Viosca Knoll
 (VK) 956 A-Ram Powell platform, owned and operated by Talos Petroleum LLC (Talos). The
 platform shut-in as a result of the gas leak. No injuries or pollution occurred.",No injuries or pollution occurred.,,,,,,,,,,,,,,,"Sequence of Events:
 Per the operator’s report, at 1945 hrs on November 23, 2022, a production operator on
@@ -1974,7 +1974,7 @@ concludes that this leak was caused by an equipment failure due to a lack of
 maintenance. The BSEE AI also concluded that the production operators working that
 night reacted properly and in a safe and prudent manner. Talos has taken action to try
 and prevent this from reoccurrence by replacing all piping in need of maintenance."
-CP-43C661ECA2,,Incident,2022-11-26,18:45,2022-12-01,EB,164,,,Drilling,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,,,SYN-315921,Production Foreman,,,,,,,"Mariner Energy Resources (Mariner) was on location to complete abandonment of the
+HB-43C661ECA2,,Incident,2022-11-26,18:45,2022-12-01,EB,164,,,Drilling,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,,,SYN-315921,Production Foreman,,,,,,,"Mariner Energy Resources (Mariner) was on location to complete abandonment of the
 subject subsea well which was Temporarily Abandoned (TA'd) in 1997 without being
 completed or produced. On 26 November 2022 at 1845 hours, approximately 6 hours
 after the 9-5/8"", 13-3/8"" and 20"" casings were cut 15 feet Below the Mud Line (BML),
@@ -1998,7 +1998,7 @@ intervention vessel Ross Candies. On 8 December 2022, with no flow being observe
 the vessels were released. Monitoring continued weekly until the 20"" and 30"" casings
 were cut 7 feet BML, the wellhead was recovered by the Q4000 and on 19 December 2022,
 final site clearance was completed.",Reported as a pollution release.,Incident,,Incident,,,,,,C,,,,,,
-CP-A0F413DEA6,,Incident,2022-12-21,05:00,2022-12-22,SM,236,160,,Maintenance,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-0cae11,Maintenance Supervisor,SYN-6ac403,Maintenance Supervisor,SYN-7a6ca6,Facility Engineer,2022-12-27,SYN-885a26,Facility Engineer,2023-01-11,"During the early morning hours on December 21, 2022 at approximately 05:00 hrs the
+HB-A0F413DEA6,,Incident,2022-12-21,05:00,2022-12-22,SM,236,160,,Maintenance,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-0cae11,Maintenance Supervisor,SYN-6ac403,Maintenance Supervisor,SYN-7a6ca6,Facility Engineer,2022-12-27,SYN-885a26,Facility Engineer,2023-01-11,"During the early morning hours on December 21, 2022 at approximately 05:00 hrs the
 motor vessel (MV) Juan, a 200' lift boat had departed from Port Fourchon, LA and was
 en-route to Freshwater City, LA. While passing through Chevron's South Marsh Island-
 236 field the M/V came into contact with an unidentifiable structure that was not
@@ -2028,12 +2028,12 @@ nav-aids on the structure were not working at all at the time of the collision, 
 did say they could faintly hear the fog horn as they approached the structure. Since
 completing this report all repairs to the structure have been completed and the well
 has been returned to production.","Reported as a pollution release and a collision with damage over $25,000. Estimated property damage $350,000.",Incident,,Incident,8,D,2,,,C,,,,C,,
-CP-16B473505A,,,2023-01-11,18:05,2023-01-13,HI,A 119,,ROWAN JOE DOUGLAS,Maintenance,LIFTING DEVICE,,,,,,,SYN-124e97,Production Foreman,,,,,,,"While transfering Synthetic Oil Base Mud (SOBM) to the sand traps, rig personnel
+HB-16B473505A,,,2023-01-11,18:05,2023-01-13,HI,A 119,,ROWAN JOE DOUGLAS,Maintenance,LIFTING DEVICE,,,,,,,SYN-124e97,Production Foreman,,,,,,,"While transfering Synthetic Oil Base Mud (SOBM) to the sand traps, rig personnel
 inadvertantly opened the #5 sand trap valve and the mud traveled down to the Master
 dump valve. The Master dump valve which was supposed to be fully closed was found to
 be open approximately 4 inches. This caused a release
 waters.",,,,,,,,,,,,,,,,
-CP-0D19E3D5BC,,Incident,2023-01-26,17:15,2023-01-28,GC,743,,GSF DEVELOPMENT,Drilling,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-f27095,HSE Advisor,SYN-011732,Facility Engineer,SYN-84df09,Facility Engineer,2023-02-13,SYN-270a35,Marine Coordinator,2023-03-11,"On the afternoon of January 26, 2023 the rig had stopped drilling and had pulled the
+HB-0D19E3D5BC,,Incident,2023-01-26,17:15,2023-01-28,GC,743,,GSF DEVELOPMENT,Drilling,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-f27095,HSE Advisor,SYN-011732,Facility Engineer,SYN-84df09,Facility Engineer,2023-02-13,SYN-270a35,Marine Coordinator,2023-03-11,"On the afternoon of January 26, 2023 the rig had stopped drilling and had pulled the
 drill pipe back in to the casing shoe to work on maintenance items and was
 circulating the wellbore. The electric motor on one of the shale shakers failed. The
 screens stopped moving and coated over with mud and cuttings. Three barrels of
@@ -2041,7 +2041,7 @@ synthetic based mud (SBM) overran the screens into the secondary skimmer for the
 cuttings drying equipment which overflowed into the over board trough and then into
 the Gulf. The duration that the shaker was inoperative was about one minute. See
 attached pictures and diagrams of the shale shaker area.",Reported as a pollution release.,Incident,,Incident,8,D,2,,,C,,,,,,
-CP-2389456D4E,,,2023-01-30,12:45,2023-01-31,MC,129,,ROWAN RELENTLESS,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,,,SYN-a7c330,Operations Superintendent,,,,,,,"On 30-JAN-2023 at approximately 12:45 p.m. onboard the drillship Rowan Relentless, an
+HB-2389456D4E,,,2023-01-30,12:45,2023-01-31,MC,129,,ROWAN RELENTLESS,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,,,SYN-a7c330,Operations Superintendent,,,,,,,"On 30-JAN-2023 at approximately 12:45 p.m. onboard the drillship Rowan Relentless, an
 incident occurred involving a third party employee resulting in a fractured leg. The
 incident took place while the I.P. (injured person) was attempting to close the lid
 on a drill cuttings box.
@@ -2065,7 +2065,7 @@ Immediately after the incident took place, the bridge mobilized the Medic and th
 was taken to the rig hospital for evaluation where his leg was splinted and a Medivac
 flight was arranged. It was later determined that IP
 fibular requiring surgery.",The incident resulted in a lost-time accident with more than 3 days lost. The facility was evacuated.,,,,,,,,,,,,,,,
-CP-DD5356BDB1,,,2023-02-13,21:15,2023-02-16,SS,198,I,HERCULES 205,Construction,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,,,SYN-017327,Maintenance Supervisor,,,,,,,"-
+HB-DD5356BDB1,,,2023-02-13,21:15,2023-02-16,SS,198,I,HERCULES 205,Construction,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,,,SYN-017327,Maintenance Supervisor,,,,,,,"-
 On February 13, 2023, a Floorman working on the Hercules 205 drilling rig was injured
 when a joint of 7 inch casing rolled onto his foot. The Hercules 205 drilling rig was
 working for Black Elk Energy and was located at Ship Shoal 198.
@@ -2090,7 +2090,7 @@ the accident. Witnesses were interviewed and corrective actions were put into pl
 before the work continued. The IP was sent to Occupational Medical Specialist in
 Houma for further evaluation. It was at this time that it was discovered that the
 IP's left ankle had been broken.",The incident resulted in a lost-time accident with more than 3 days lost. The facility was evacuated.,,,,,,,,,,,,,,,
-CP-3C356856A7,,Serious Incident,2023-02-22,10:45,2023-02-26,MI,,A,,Well Services,LIFTING DEVICE,Loss Event,,,,SYN-a57358,HSE Advisor,SYN-d1c023,Facility Engineer,SYN-c38e17,Facility Engineer,2023-03-12,SYN-19357a,Facility Engineer,2023-04-28,"The crew was conducting well abandonment operations on the MI A-5 well when the
+HB-3C356856A7,,Serious Incident,2023-02-22,10:45,2023-02-26,MI,,A,,Well Services,LIFTING DEVICE,Loss Event,,,,SYN-a57358,HSE Advisor,SYN-d1c023,Facility Engineer,SYN-c38e17,Facility Engineer,2023-03-12,SYN-19357a,Facility Engineer,2023-04-28,"The crew was conducting well abandonment operations on the MI A-5 well when the
 incident occurred. The crane was being used to support and anchor the power swivel.
 The big block was attached to the power swivel and the fast line attached to the
 tension cable. The power swivel had just been disconnected and the Supervisor was
@@ -2105,7 +2105,7 @@ cable was cut and the ball reattached. The fast line was then used to pick up an
 feet long section of tool string weighing about 120 pounds to test the ball
 reattachment. The fast line was then put out-of-service until a Crane Mechanic (CM)
 conducted an inspection of the fast line and returned the crane to service.",No one was injured since everyone was outside of the area at the time of the occurrence.,Serious Incident,,Serious Incident,20,D,5,,,,,,,A,,
-CP-EB037DCDDA,,,2023-02-25,15:30,2023-02-28,SM,106,A NORTH,,Well Services,Fall,Loss Event,Health & Safety,,,SYN-2a6d1b,Operations Superintendent,SYN-090d59,HSE Advisor,SYN-ca09c3,Production Foreman,2023-03-05,SYN-99249e,Marine Coordinator,2023-04-11,"On February 25, 2023, at approximately 15:30 hours, Mr. Gregory Rhodes, United Production
+HB-EB037DCDDA,,,2023-02-25,15:30,2023-02-28,SM,106,A NORTH,,Well Services,Fall,Loss Event,Health & Safety,,,SYN-2a6d1b,Operations Superintendent,SYN-090d59,HSE Advisor,SYN-ca09c3,Production Foreman,2023-03-05,SYN-99249e,Marine Coordinator,2023-04-11,"On February 25, 2023, at approximately 15:30 hours, Mr. Gregory Rhodes, United Production
 and Construction Inc. contract employee, fell approximately eleven (11) feet to a
 lower deck sustaining multiple injuries to the index finger of the right hand,
 bruised ribs and a cut behind the left ear. Mr. Rhodes was in the process of
@@ -2161,7 +2161,7 @@ Mr. Fontenot was surveying additional corroded piping that needed to be removed.
 Fontenot states that Mr. Rhodes was standing on an elevated electrical tray above the
 air compressor and had just handed Mr. Stewart a section of one inch piping before
 falling.",The incident resulted in an injury recorded without a severity code.,,,,,,,,,,,,,,,
-CP-19F338C9DF,,Very Serious Incident,2023-03-30,03:45,2023-04-02,WR,425,,NOBLE STANLEY LAFOSSE (FKA,Well Services,LIFTING,Loss Event,Health & Safety,Injury Minor,,SYN-241107,Maintenance Supervisor,SYN-8df51e,Maintenance Supervisor,SYN-c56378,Maintenance Supervisor,2023-04-08,SYN-31a502,Facility Engineer,2023-04-26,"On March 30, 2023, an employee suffered a hand injury from an incident that occurred
+HB-19F338C9DF,,Very Serious Incident,2023-03-30,03:45,2023-04-02,WR,425,,NOBLE STANLEY LAFOSSE (FKA,Well Services,LIFTING,Loss Event,Health & Safety,Injury Minor,,SYN-241107,Maintenance Supervisor,SYN-8df51e,Maintenance Supervisor,SYN-c56378,Maintenance Supervisor,2023-04-08,SYN-31a502,Facility Engineer,2023-04-26,"On March 30, 2023, an employee suffered a hand injury from an incident that occurred
 on the Noble drillship Stanley Lafosse, which is working for Murphy Oil Corporation.
 Drilling operations were being conducted at Walker Ridge Block 425, OCS-G 16987, Well
 Chinook #5. Two roustabouts (RSTB1) and RSTB2 (IP) were tending to a tag line
@@ -2209,7 +2209,7 @@ incident investigation report, BSEE concluded that the hazards associated with
 handling large taglines (consider weight, size, need for additional personnel, hand
 off procedures and handling). BSEE believes that a proper hazard analysis would have
 prevented this incident.","On March 30, 2023, an employee suffered a hand injury from an incident that occurred on the Noble drillship Stanley Lafosse, which is working for Murphy Oil Corporation.",Very Serious Incident,,Very Serious Incident,25,E,5,,,,,,,,,
-CP-C58910DB68,,,2023-04-04,11:15,2023-04-06,MC,696,,T.O. CAJUN EXPRESS,Maintenance,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,,,SYN-7b4f60,Facility Engineer,,,,,,,"On April 4, 2023, at approximately 11:15, at Chevron U.S.A. Inc.'s, Lease OCS-G
+HB-C58910DB68,,,2023-04-04,11:15,2023-04-06,MC,696,,T.O. CAJUN EXPRESS,Maintenance,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,,,SYN-7b4f60,Facility Engineer,,,,,,,"On April 4, 2023, at approximately 11:15, at Chevron U.S.A. Inc.'s, Lease OCS-G
 16641, Mississippi Canyon (MC) Block 696, an employee injured his left arm when he
 loss his balance and used his arm, in an attempt to break his fall. The Injured
 Person (IP) hyper extended his left arm and was placed on restricted duty.",The incident resulted in restricted work or job transfer for more than 3 days. The facility was evacuated.,,,,,,,,,,,,,,,"Sequence of Events:
@@ -2219,7 +2219,7 @@ caught on a scaffold bolt causing him to lose his balance. As he was falling for
 he reached out to grab the handrail with his left hand but over-reached, striking the
 top of handrail with his wrist. Unable to grasp the handrail, he continued falling
 forward. With his left arm still on the rail,"
-CP-889FB976D8,,Very Serious Incident,2023-04-06,18:45,2023-04-09,MC,773,A(DEVILS TOWER,NABORS MODS 140,Construction,LIFTING,Loss Event,,,,SYN-8c330d,Marine Coordinator,SYN-e245fd,Facility Engineer,SYN-8d039e,Operations Superintendent,2023-04-13,SYN-eea4e4,HSE Advisor,2023-05-07,"On April 6, 2023, at approximately 18:15 hours, ENI US Operating CO. Inc. (ENI) had a
+HB-889FB976D8,,Very Serious Incident,2023-04-06,18:45,2023-04-09,MC,773,A(DEVILS TOWER,NABORS MODS 140,Construction,LIFTING,Loss Event,,,,SYN-8c330d,Marine Coordinator,SYN-e245fd,Facility Engineer,SYN-8d039e,Operations Superintendent,2023-04-13,SYN-eea4e4,HSE Advisor,2023-05-07,"On April 6, 2023, at approximately 18:15 hours, ENI US Operating CO. Inc. (ENI) had a
 dropped object incident on the Nabors MODS 140 rig while using the South crane during
 sidetrack operations on the A005 well at Mississippi Canyon (MC) Block 773. ENI
 reported the incident to the Bureau of Safety and Environmental Enforcement (BSEE),
@@ -2256,7 +2256,7 @@ or have situation awareness of all activities involving the drill floor. In this
 instance, the driller was not aware of this lift and did not have the opportunity to
 suggest other means of moving the crossover sub to the drill floor or to ensure proper
 equipment and personnel were utilized."
-CP-AF26AE8FD9,,Serious Incident,2023-04-15,11:50,2023-04-16,ST,34,B,,Drilling,LIFTING DEVICE,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-15ca2b,Facility Engineer,SYN-cfec5e,Facility Engineer,SYN-cf503d,Operations Superintendent,2023-04-22,SYN-18e4a2,HSE Advisor,2023-05-20,"On April 15, 2023, an incident occurred on the South Timbalier 34B Platform
+HB-AF26AE8FD9,,Serious Incident,2023-04-15,11:50,2023-04-16,ST,34,B,,Drilling,LIFTING DEVICE,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-15ca2b,Facility Engineer,SYN-cfec5e,Facility Engineer,SYN-cf503d,Operations Superintendent,2023-04-22,SYN-18e4a2,HSE Advisor,2023-05-20,"On April 15, 2023, an incident occurred on the South Timbalier 34B Platform
 (Lease OCS G04842). Talos Energy, LLC (Talos) is the Designated Operator of Records.
 The platform is situated nine nautical miles from shore in fifty feet of water.
 After completing a third and final lift on the back deck of the Motor Vessel (M/V),
@@ -2275,7 +2275,7 @@ stretching and bending, indicating contact. Therefore, it appears the most likel
 cause of the failure of the bottom bolts in the boom midsection was due to a probable
 boom/boom stop contact that day or in recent days prior to the incident. The
 following third party investigative findings support this","Reported as damage over $25,000 and a crane incident. Estimated property damage $270,450.",Serious Incident,,Serious Incident,20,D,5,,,,,,,C,,
-CP-E2B1997418,,,2023-06-03,14:15,2023-06-07,EC,129,A (SEAHORSE),[J,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,,,SYN-499625,Marine Coordinator,,,,,,,"On 03-05-2012 at 1425 hours, during P&A operations on the EC-129 Well A-01 a well
+HB-E2B1997418,,,2023-06-03,14:15,2023-06-07,EC,129,A (SEAHORSE),[J,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,,,SYN-499625,Marine Coordinator,,,,,,,"On 03-05-2012 at 1425 hours, during P&A operations on the EC-129 Well A-01 a well
 service assistant working for the contractor Chet Morrison Well Sevrvices (CMWS),
 was the Injured Person (IP)who suffered head and face injuries.
 The IP was returning from the lower deck of the platform to assist two other well
@@ -2295,7 +2295,7 @@ After reviewing multiple Job Safety Analysis (JSA) for the day of the accident B
 inspectors were unable to locate a JSA for the specific task of replacing grating in
 the barricaded open hole over well # A-1. None of the JSAs available mentioned open-
 hole awareness.",The incident resulted in a lost-time accident with more than 3 days lost. The facility was evacuated.,,,,,,,,,,,,,,,
-CP-96BE7D6D00,,Serious Incident,2023-07-31,10:30,2023-08-01,VR,379,A,BLAKE 1505,Drilling,LIFTING DEVICE,Loss Event,,,,SYN-751ae2,Production Foreman,SYN-58ac9c,Production Foreman,SYN-d2b755,Production Foreman,2023-08-09,SYN-1812f8,Facility Engineer,2023-09-06,"-
+HB-96BE7D6D00,,Serious Incident,2023-07-31,10:30,2023-08-01,VR,379,A,BLAKE 1505,Drilling,LIFTING DEVICE,Loss Event,,,,SYN-751ae2,Production Foreman,SYN-58ac9c,Production Foreman,SYN-d2b755,Production Foreman,2023-08-09,SYN-1812f8,Facility Engineer,2023-09-06,"-
 On 08-June-2014 as the Blake 1505 platform rig was being mobilized onto ANKOR
 Energy's Vermilion 379A (VR-379A) facility an incident occurred. The incident
 resulted in an injury to a construction worker requiring evacuation of the injured
@@ -2324,10 +2324,10 @@ reviewed the Job Safety Analysis (JSA) for lifting operations. Step 3-1 required
 area under the lifting operation be flagged off with warning tape. That step was not
 completed prior to commencement of lifting operations allowing construction personnel
 access to the area.",Reported as a crane incident. The facility was evacuated.,Serious Incident,,Serious Incident,20,D,5,,,,,,,,,
-CP-E34F6FA176,,,2023-08-19,11:30,2023-08-21,LA,6660,HOUCHIN,[J,Marine & Logistics,LIFTING DEVICE,,,,,SYN-0f6e00,Maintenance Supervisor,SYN-33a814,Operations Superintendent,SYN-cb83e0,Maintenance Supervisor,2023-08-31,SYN-efa1cc,Maintenance Supervisor,2023-09-25,"2 men were lifting a 4a valve from the deck into a small
+HB-E34F6FA176,,,2023-08-19,11:30,2023-08-21,LA,6660,HOUCHIN,[J,Marine & Logistics,LIFTING DEVICE,,,,,SYN-0f6e00,Maintenance Supervisor,SYN-33a814,Operations Superintendent,SYN-cb83e0,Maintenance Supervisor,2023-08-31,SYN-efa1cc,Maintenance Supervisor,2023-09-25,"2 men were lifting a 4a valve from the deck into a small
 & were lifting a 4n gate valve.
 on the edge of the basket, the valve was set on",,,,,,,,,,,,,,,,
-CP-7E78C21014,,,2023-09-01,15:00,2023-09-03,SM,128,A-PRD,,Construction,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,,,SYN-81d440,Facility Engineer,,,,,,,"-
+HB-7E78C21014,,,2023-09-01,15:00,2023-09-03,SM,128,A-PRD,,Construction,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,,,SYN-81d440,Facility Engineer,,,,,,,"-
 On September 1, 2023 at approximately 1500 hours, a Contract Employee (CE) fell
 approximately 90 feet into the Gulf of Mexico from the rear of a crane he was
 previously operating.
@@ -2363,7 +2363,7 @@ During the investigation, it was noted that the CE had a large amount of wear on
 bottom of his boots. This could have been a factor in the CE losing his footing. The
 CE was unclear on what caused him to lose his footing.
 The BSEE Lafayette District conducted an onsite investigation 9/3/2023.","The CE suffered a severe cut to his forehead, a broken nose and a broken tailbone.",,,,,,,,,,,,,,,
-CP-F154929E4F,,,2023-09-05,02:55,2023-09-06,GB,978,,T.O. DISCOVERER INDIA,Maintenance,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-fcdda1,Maintenance Supervisor,SYN-5eb436,Marine Coordinator,SYN-af9968,HSE Advisor,2023-09-10,SYN-ee58e0,HSE Advisor,2023-10-05,"CHIEF MECHANIC/INJURED PERSON (IP) AND MECHANIC WERE IN THE PROCESS OF REMOVING A
+HB-F154929E4F,,,2023-09-05,02:55,2023-09-06,GB,978,,T.O. DISCOVERER INDIA,Maintenance,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-fcdda1,Maintenance Supervisor,SYN-5eb436,Marine Coordinator,SYN-af9968,HSE Advisor,2023-09-10,SYN-ee58e0,HSE Advisor,2023-10-05,"CHIEF MECHANIC/INJURED PERSON (IP) AND MECHANIC WERE IN THE PROCESS OF REMOVING A
 GEAR BOX COUPLING AND MUD AGITATOR SHAFT TO REPAIR A LEAKING OIL SEAL FROM THE
 GEARBOX ON SURFACE/ACTIVE PIT S6. IP AND MECHANIC HAD LIFTED GEAR BOX WITH TAPERED
 COUPLING AND AGITATOR SHAFT ATTACHED IN ORDER TO PLACE SAFETY CLAMP (DRILL COLLAR
@@ -2411,11 +2411,11 @@ MEASURES TAKEN TO MITIGATE THE HAZARD OF UNEXPECTED COUPLING FAILURE CAUSING
 SEPARATION OF THE AGITATOR SHAFT FROM THE GEARBOX OUTPUT SHAFT WHILE PERSONNEL WERE
 PERFORMING REPAIRS ON THIS EQUIPMENT. PROCEDURES AND WRA’S WERE NOT UPDATED TO
 INCLUDE THESE HAZARDS, CAUSING THREAT OF INJURY TO PERSONNEL.",The incident resulted in a lost-time accident with more than 3 days lost. The facility was evacuated.,,,,,,,,,,,,,,,
-CP-DA8B8BA200,,Serious Incident,2023-09-10,18:00,2023-09-12,SS,209,K,,Maintenance,,Loss Event,,,Combustion,SYN-89d8bf,HSE Advisor,SYN-e6bc66,Facility Engineer,SYN-deb0c3,HSE Advisor,2023-09-19,SYN-7a184d,Maintenance Supervisor,2023-11-20,"Due to vibration, the 3"" nipple broke on the compressor hydraulic fan pump causing
+HB-DA8B8BA200,,Serious Incident,2023-09-10,18:00,2023-09-12,SS,209,K,,Maintenance,,Loss Event,,,Combustion,SYN-89d8bf,HSE Advisor,SYN-e6bc66,Facility Engineer,SYN-deb0c3,HSE Advisor,2023-09-19,SYN-7a184d,Maintenance Supervisor,2023-11-20,"Due to vibration, the 3"" nipple broke on the compressor hydraulic fan pump causing
 hydraulic oil to spill on the hot exhaust of the compressor. Heat from the exhaust
 caused the hydraulic oil to burn. The fire was extinguished with about one-third of
 a 150 lb. dry chemical wheel unit.","Reported as a fire. Estimated property damage $1,000.",Serious Incident,,Serious Incident,12,D,3,,,,,,,A,,
-CP-DBE3F957D9,,Incident,2023-09-21,17:10,2023-09-24,EB,599,,DIAMOND OCEAN VALIANT,Maintenance,LIFTING DEVICE,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-c0d610,HSE Advisor,SYN-1aa714,Operations Superintendent,SYN-ebece3,Production Foreman,2023-09-26,SYN-aae2c8,HSE Advisor,2023-10-08,"M/V C-Rover was tied up on the starboard side to the MODU Diamond Ocean (DO) Valiant
+HB-DBE3F957D9,,Incident,2023-09-21,17:10,2023-09-24,EB,599,,DIAMOND OCEAN VALIANT,Maintenance,LIFTING DEVICE,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-c0d610,HSE Advisor,SYN-1aa714,Operations Superintendent,SYN-ebece3,Production Foreman,2023-09-26,SYN-aae2c8,HSE Advisor,2023-10-08,"M/V C-Rover was tied up on the starboard side to the MODU Diamond Ocean (DO) Valiant
 while transferring liquid Synthetic Based Mud (SBM) to the Valiant via the rig's mud
 transfer hose. During transfer, C-Rover lost hydraulic power to the bow thruster.
 The mud transfer hose was released without problems, but while attempting to recover
@@ -2425,14 +2425,14 @@ The rig stern line was found to be pulled too tight to remove and was subsequent
 cut. M/V C-Rover powers away without further incident. Approximately 30 minutes
 later, C-Rover reported a hull breach to the #4 tank
 of the incident.","Reported as a collision with damage over $25,000. Estimated property damage $126,000.",Incident,,Incident,,,,,,,,,,C,,
-CP-842BEE84F9,,Incident,2023-09-26,08:40,2023-09-29,ST,131,K,,Drilling,LIFTING DEVICE,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-c66b16,Operations Superintendent,SYN-c16501,HSE Advisor,SYN-bffe0a,HSE Advisor,2023-10-11,SYN-20291d,Marine Coordinator,2023-11-09,"Derrick barge William Kallop had just completed installation of Arena Offshore's
+HB-842BEE84F9,,Incident,2023-09-26,08:40,2023-09-29,ST,131,K,,Drilling,LIFTING DEVICE,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-c66b16,Operations Superintendent,SYN-c16501,HSE Advisor,SYN-bffe0a,HSE Advisor,2023-10-11,SYN-20291d,Marine Coordinator,2023-11-09,"Derrick barge William Kallop had just completed installation of Arena Offshore's
 South Timbalier (ST) 131 K platform. Kallop was in the process of recovering its
 anchors to relocate to ST 151 for a second structure installation, and after picking
 up anchors, tugboat Offshore King lost control of the barge. The derrick barge then
 drifted into adjacent Chevron platform complex ST 130D (specifically the D-CP
 Compressor platform), thereby damaging the riser guard and 12-inch beam below the
 cellar deck.","Reported as a collision with damage over $25,000.",Incident,,Incident,4,D,1,,,,,,,,,
-CP-F33EB85E55,,Serious Incident,2023-10-23,02:52,2023-10-26,SM,128,B,,Production Operations,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,Combustion,SYN-d4ce74,Maintenance Supervisor,SYN-0de019,Facility Engineer,SYN-10ccef,Marine Coordinator,2023-11-06,SYN-542f18,Maintenance Supervisor,2023-11-30,"On October 23, 2023, at approximately 0252 hours, the C1 compressor experienced a
+HB-F33EB85E55,,Serious Incident,2023-10-23,02:52,2023-10-26,SM,128,B,,Production Operations,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,Combustion,SYN-d4ce74,Maintenance Supervisor,SYN-0de019,Facility Engineer,SYN-10ccef,Marine Coordinator,2023-11-06,SYN-542f18,Maintenance Supervisor,2023-11-30,"On October 23, 2023, at approximately 0252 hours, the C1 compressor experienced a
 piston failure that caused damage to the housing and ignited a fire at Arena Offshore,
 (Arena) LP OCS-G02587, South Marsh Island (SM) 128 B Facility. While making a round,
 the night operator (NO) discovered a fire on the C1 compressor. The NO activated the
@@ -2488,14 +2488,14 @@ could have initiated the shut down to the panel, the incident may have been prev
 As a result of the SM-128B incident, Arena has implemented the following action:
 • An in-line desiccant dryer to the pneumatic supply inlets of the compressor control
 panel were ordered and will to be installed."
-CP-600B617E24,,Serious Incident,2023-11-19,15:00,2023-11-20,,956,A-Ram Powell,H&P 205,Marine & Logistics,LIFTING DEVICE,Loss Event,,,,SYN-1847f7,Maintenance Supervisor,SYN-d59182,Maintenance Supervisor,SYN-d55ee0,HSE Advisor,2023-11-24,SYN-9274bc,Marine Coordinator,2024-02-10,"While preparing to lower the derrick, the cable of the derrick lowering winch pulled
+HB-600B617E24,,Serious Incident,2023-11-19,15:00,2023-11-20,,956,A-Ram Powell,H&P 205,Marine & Logistics,LIFTING DEVICE,Loss Event,,,,SYN-1847f7,Maintenance Supervisor,SYN-d59182,Maintenance Supervisor,SYN-d55ee0,HSE Advisor,2023-11-24,SYN-9274bc,Marine Coordinator,2024-02-10,"While preparing to lower the derrick, the cable of the derrick lowering winch pulled
 out of the factory made open spelter socket. The cable was attached to the bottom
 lowering sheave body, which is in turn secured to the derrick. An attempt was made to
 lift the derrick slightly to relieve tension allowing the slides to be removed more
 easily. As the weight increased, the cable was pulled out of the socket. Only 3 of 8
 slices had been removed prior to the failure. When
 the crews began to push the slides back into place",Reported as a lifting-device incident.,Serious Incident,,Serious Incident,20,D,5,,,,,,,,,
-CP-2F1992912D,,Serious Incident,2023-11-21,22:17,2023-11-22,AC,857,A(Perdido),,Well Services,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,Combustion,SYN-c2e0f6,HSE Advisor,SYN-43d68c,Operations Superintendent,SYN-173b82,Production Foreman,2023-11-27,SYN-6be448,HSE Advisor,2023-12-17,"On November 21, 2023, at 2210 hours, Shell Offshore Inc. (Shell) reported a fire
+HB-2F1992912D,,Serious Incident,2023-11-21,22:17,2023-11-22,AC,857,A(Perdido),,Well Services,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,Combustion,SYN-c2e0f6,HSE Advisor,SYN-43d68c,Operations Superintendent,SYN-173b82,Production Foreman,2023-11-27,SYN-6be448,HSE Advisor,2023-12-17,"On November 21, 2023, at 2210 hours, Shell Offshore Inc. (Shell) reported a fire
 occurred at Alaminos Canyon (AC) 857, Perdido Spar, lease OCSG-17565. The Universal
 Power Supply (UPS- 7560) failed releasing smoke and setting off smoke detectors in the
 UPS room. This caused an automated facility shut-in and full power loss at the
@@ -2528,7 +2528,7 @@ remaining equipment could be powered up. Shell reported the estimated cost of da
 to be $56,830.00 and that it will take seven to nine weeks to receive parts for
 repairs to be made. The Shell Perdido SPAR is currently using a spare circuit to
 provide power to the quarters in the meantime.",There were no injuries or pollution reported with this incident.,Serious Incident,,Serious Incident,,,,,,,,,,B,,
-CP-A55DEBBD97,,Very Serious Incident,2023-11-23,15:38,2023-11-25,MC,727,,HELIX Q5000,Well Services,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,Combustion,SYN-3206be,Operations Superintendent,SYN-d85d0b,Production Foreman,SYN-69f299,Facility Engineer,2023-12-07,SYN-cce462,Production Foreman,2024-01-11,"On November 23, 2023, at approximately 15:38 hours, Kosmos Energy (Kosmos) experienced a
+HB-A55DEBBD97,,Very Serious Incident,2023-11-23,15:38,2023-11-25,MC,727,,HELIX Q5000,Well Services,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,Combustion,SYN-3206be,Operations Superintendent,SYN-d85d0b,Production Foreman,SYN-69f299,Facility Engineer,2023-12-07,SYN-cce462,Production Foreman,2024-01-11,"On November 23, 2023, at approximately 15:38 hours, Kosmos Energy (Kosmos) experienced a
 nitrogen bottle rupture inside a twelve-cylinder bottle rack onboard the Helix Q5000.
 The Helix Q5000 was conducting workover operations on well number 3 (API#
 608174141901, OCSG 24107). Kosmos reported the incident to the Bureau of Safety and
@@ -2623,7 +2623,7 @@ demonstrating Helix’s commitment to accountability and quality assurance. The
 selection of a new vendor and adhering to an elevated inspection process informed by
 lessons learned from this incident, is a critical measure to restore confidence in
 operational safety."
-CP-A8413831E1,,,2023-12-01,07:10,2023-12-06,MC,503,,SEADRILL WEST NEPTUNE,Production Operations,LIFTING,Loss Event,Health & Safety,Injury TLI,,SYN-131b78,Marine Coordinator,SYN-2b42f1,HSE Advisor,SYN-e41b8b,HSE Advisor,2023-12-13,SYN-4e9937,Maintenance Supervisor,2023-12-28,"On December 1, 2023 at approximately 17:58 hours, LLOG Exploration Offshore, LLC.
+HB-A8413831E1,,,2023-12-01,07:10,2023-12-06,MC,503,,SEADRILL WEST NEPTUNE,Production Operations,LIFTING,Loss Event,Health & Safety,Injury TLI,,SYN-131b78,Marine Coordinator,SYN-2b42f1,HSE Advisor,SYN-e41b8b,HSE Advisor,2023-12-13,SYN-4e9937,Maintenance Supervisor,2023-12-28,"On December 1, 2023 at approximately 17:58 hours, LLOG Exploration Offshore, LLC.
 (LLOG) experienced a dropped object incident which occurred onboard the drillship
 SeaDrill West Neptune rig at Mississippi Canyon 503, Well #007. The incident involved
 a spider dog safety door (a piece of grating) falling through the rotary table to the
@@ -2689,7 +2689,7 @@ work platform while the dogs are in the open/vertical position. Since the chain 
 bolted to the bracket and the bolts were sheared, this allowed the grating to fall
 into the well center and the moon pool; again, please seen the attached
 presentation/photos."
-CP-7D02588F5C,,,2023-12-07,16:45,2023-12-08,ST,193,A,,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-c883ea,Facility Engineer,SYN-72c4f6,Maintenance Supervisor,SYN-3a9637,Operations Superintendent,2023-12-13,SYN-dfb889,HSE Advisor,2024-02-10,"The Injured Party (IP) was holding a clamp on the hydraulic return line for the crane
+HB-7D02588F5C,,,2023-12-07,16:45,2023-12-08,ST,193,A,,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-c883ea,Facility Engineer,SYN-72c4f6,Maintenance Supervisor,SYN-3a9637,Operations Superintendent,2023-12-13,SYN-dfb889,HSE Advisor,2024-02-10,"The Injured Party (IP) was holding a clamp on the hydraulic return line for the crane
 with a pair of channel locks. Another operator was cutting a rusted bolt from the
 clamp with a battery powered Sawzall. The blade stuck in the bolt and the saw jumped
 causing the IP to retract his hand. When the IP moved his hand, the saw blade struck
@@ -2701,7 +2701,7 @@ day, the IP saw an orthopedic surgeon because of stiffness in three fingers. The
 IP's hand required surgery to repair ligaments that were damaged during the incident.
 The IP was placed on light duty on 15 December 2023 and was returned to full duty on 30
 April 2007.",The incident resulted in a lost-time accident with more than 3 days lost. The facility was evacuated.,,,,,,,,,,,,,,,
-CP-B838EAABAC,,,2023-12-11,06:30,2023-12-14,HI,,A,,Maintenance,LIFTING DEVICE,Near Hit,,,,,,SYN-8a695d,Maintenance Supervisor,,,,,,,"On the morning of 12 December 2023, personnel were evacuated from Coldren Resources
+HB-B838EAABAC,,,2023-12-11,06:30,2023-12-14,HI,,A,,Maintenance,LIFTING DEVICE,Near Hit,,,,,,SYN-8a695d,Maintenance Supervisor,,,,,,,"On the morning of 12 December 2023, personnel were evacuated from Coldren Resources
 offshore production facility At HI A-446A. This facility is owned by Coldren
 Resources and operated by SPN Resources. Simultanous operations of producing and well
 abandonment were being overseen by Noble Energy. There were 14 personnel onboard,
@@ -2711,7 +2711,7 @@ in for medical examinations and as a result of the tests, all had an elevated le
 of carbon monoxide in their blood. Eight of the personnel remained in the hospital
 overnight for observation. All personnel were released the next morning with no work
 restrictions.",The facility was evacuated.,,,,,,,,,,,,,,,
-CP-F05811403B,,Serious Incident,2023-12-22,15:50,2023-12-23,SS,154,E-AUX,,Drilling,LIFTING DEVICE,Loss Event,,,Combustion,SYN-e9fc21,Maintenance Supervisor,SYN-6746e2,Maintenance Supervisor,SYN-8dc91b,Operations Superintendent,2023-12-26,SYN-7ca289,Maintenance Supervisor,2024-02-20,"At approximately 1550 hours on December 22, 2023, an incident occurred on a fixed
+HB-F05811403B,,Serious Incident,2023-12-22,15:50,2023-12-23,SS,154,E-AUX,,Drilling,LIFTING DEVICE,Loss Event,,,Combustion,SYN-e9fc21,Maintenance Supervisor,SYN-6746e2,Maintenance Supervisor,SYN-8dc91b,Operations Superintendent,2023-12-26,SYN-7ca289,Maintenance Supervisor,2024-02-20,"At approximately 1550 hours on December 22, 2023, an incident occurred on a fixed
 structure located at Ship Shoal Block 154 (E-Auxilliary platform), OCS 00420. The
 operator of record is Ridgelake Energy, Inc. (Ridgelake), who contracts Island
 Operating Co. onboard this facility.
@@ -2723,7 +2723,7 @@ was drained of all fluids, and the fire tube was removed and sent to a fabricati
 and repair yard in Scott, Louisiana. BSEE inspectors were there on December 28, 2023,
 to witness the sandblasting and cleaning of the fire tube, as well as to assess the
 damage.","Reported as a fire. Estimated property damage $175,000.",Serious Incident,,Serious Incident,,,,,,,,,,C,,
-CP-3692EFDD2C,,,2023-12-24,13:35,2023-12-26,KC,875,,,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-e09e4c,Marine Coordinator,SYN-14b30c,Production Foreman,SYN-c8d4cf,HSE Advisor,2023-12-30,SYN-6cf525,HSE Advisor,2024-01-31,"-
+HB-3692EFDD2C,,,2023-12-24,13:35,2023-12-26,KC,875,,,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-e09e4c,Marine Coordinator,SYN-14b30c,Production Foreman,SYN-c8d4cf,HSE Advisor,2023-12-30,SYN-6cf525,HSE Advisor,2024-01-31,"-
 On December 24, 2023 at approximately 1335 hours, an employee was injured while
 attempting to hydro test a pipeline.
 The injured employee (IE) was part of a crew that was in the process of hydro-testing
@@ -2745,7 +2745,7 @@ removed to access the leaking valve, trapped pressure downstream of the (CV1) wa
 released striking the IE in the left side of face and head. The IE was found
 unconscious due to his injuries. The IE was transported to a medical facility for
 additional treatment.",The IE was transported to a medical facility for additional treatment.,,,,,,,,,,,,,,,
-CP-4D06E49FE0,,,2023-12-24,13:00,2023-12-26,HI,A 571,B-AUX,,Drilling,LIFTING DEVICE,Loss Event,Business Interruption & Cost,Equipment Damage,,,,SYN-783fd0,Maintenance Supervisor,,,,,,,"On Wednesday, 12/24/2023, the adjustable choke on the HI-A571 ""A"" A-15 well was found
+HB-4D06E49FE0,,,2023-12-24,13:00,2023-12-26,HI,A 571,B-AUX,,Drilling,LIFTING DEVICE,Loss Event,Business Interruption & Cost,Equipment Damage,,,,SYN-783fd0,Maintenance Supervisor,,,,,,,"On Wednesday, 12/24/2023, the adjustable choke on the HI-A571 ""A"" A-15 well was found
 to be ""cut out"" due to the well producing sand. Operators re-built the choke and
 placed the well back on production to the test separator around 4:00 pm. The choke
 was set at 4/64 after rebuild instead of the original setting of 8/64 to help control
@@ -2769,11 +2769,11 @@ The PSH and PSL located on the flowline were found to have sensing lines plugged
 sand and therefore did not function. The report from Xtreme Pressure Services stated
 the SSV of the A-15 well was found to have large amounts of sand, which was believed
 to be responsible for the A-15 SSV failing to actuate to the closed position.","Reported as damage over $25,000. Estimated property damage $100,000.",,,,,,,,,,,,,C,,
-CP-60B0C6B839,,,2023-12-30,12:00,2024-01-01,EB,602,,HELIX 534,Drilling,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-e7b384,HSE Advisor,SYN-4cd949,Production Foreman,SYN-ad64a7,Maintenance Supervisor,2024-01-04,SYN-6547c5,Production Foreman,2024-02-01,"­
+HB-60B0C6B839,,,2023-12-30,12:00,2024-01-01,EB,602,,HELIX 534,Drilling,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-e7b384,HSE Advisor,SYN-4cd949,Production Foreman,SYN-ad64a7,Maintenance Supervisor,2024-01-04,SYN-6547c5,Production Foreman,2024-02-01,"­
 Injured Person (IP) was paged to the Capson deck.
 transversing from catwalk to the Capson deck when
 fell and landed on his left knee.",The incident resulted in restricted work or job transfer for 1-3 days. The facility was evacuated.,,,,,,,,,,,,,,,
-CP-EE305E50DE,,,2024-02-07,18:15,2024-02-10,MC,711,A (GOMEZ),,Marine & Logistics,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-364c6c,Facility Engineer,SYN-c322c6,Operations Superintendent,SYN-a13afb,Marine Coordinator,2024-02-18,SYN-fd7f20,HSE Advisor,2024-03-23,"On February 7, 2024, at approximately 18:15, on ATP Oil & Gas's OCS-G 14016,
+HB-EE305E50DE,,,2024-02-07,18:15,2024-02-10,MC,711,A (GOMEZ),,Marine & Logistics,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-364c6c,Facility Engineer,SYN-c322c6,Operations Superintendent,SYN-a13afb,Marine Coordinator,2024-02-18,SYN-fd7f20,HSE Advisor,2024-03-23,"On February 7, 2024, at approximately 18:15, on ATP Oil & Gas's OCS-G 14016,
 Mississippi Canyon (MC) 711 A Platform (GOMEZ), a contract employee was injured when
 his middle finger tip on his left hand was pierced by a broken drill bit, as a result
 of equipment failure. Injured person (IP) was placed on light duty.",The incident resulted in restricted work or job transfer for more than 3 days. The facility was evacuated.,,,,,,,,,,,,,,,"Sequence of Events:
@@ -2784,7 +2784,7 @@ stop the bleeding and was sent to shore on February 8, 2024, for an evaluation a
 CECHE Occupational Medical Clinic in New Iberia, LA. IP had a clean puncture through
 his finger, missing the bone and there were no signs of foreign particles on the X-
 ray. IP was sent to light duty at Omega's yard."
-CP-4A8977A114,,Very Serious Incident,2024-02-23,05:10,2024-02-24,GB,959,,STENA EVOLUTION,Maintenance,LIFTING aerial lift,Loss Event,Health & Safety,Injury TLI,,SYN-4ba1f4,Production Foreman,SYN-d98a2f,Facility Engineer,SYN-1bd447,Production Foreman,2024-03-06,SYN-244e48,Production Foreman,2024-03-23,"On 23 February 2024, an Assistant Driller (AD) employed by Stena Drilling (Stena)
+HB-4A8977A114,,Very Serious Incident,2024-02-23,05:10,2024-02-24,GB,959,,STENA EVOLUTION,Maintenance,LIFTING aerial lift,Loss Event,Health & Safety,Injury TLI,,SYN-4ba1f4,Production Foreman,SYN-d98a2f,Facility Engineer,SYN-1bd447,Production Foreman,2024-03-06,SYN-244e48,Production Foreman,2024-03-23,"On 23 February 2024, an Assistant Driller (AD) employed by Stena Drilling (Stena)
 sustained injuries while utilizing an aerial lift man-riding work basket during
 drilling operations for Shell Offshore, Inc. (Shell) on the Stena Evolution drillship
 located at Garden Banks Block 959. The aerial lift unit is a hydraulic telescopic crane
@@ -2859,7 +2859,7 @@ assessment report of the incident. According to the Shell report, the incident o
 because the aerial lift man-riding work basket was being used outside of its design as
 both a man-riding basket and as a crane to pull a load simultaneously. In addition,
 there was no lift plan in place for this type of operation."
-CP-FE4D05FCE3,,Serious Incident,2024-03-22,07:30,2024-03-25,SP,27,5,,Well Services,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-c9328d,Marine Coordinator,SYN-99292c,Operations Superintendent,SYN-c4ef2b,Facility Engineer,2024-04-03,SYN-a1ae1e,Production Foreman,2024-05-01,"On 22 March 2024, at 0730 hours, an incident occurred at South Pass 27 #5 platform (SP
+HB-FE4D05FCE3,,Serious Incident,2024-03-22,07:30,2024-03-25,SP,27,5,,Well Services,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-c9328d,Marine Coordinator,SYN-99292c,Operations Superintendent,SYN-c4ef2b,Facility Engineer,2024-04-03,SYN-a1ae1e,Production Foreman,2024-05-01,"On 22 March 2024, at 0730 hours, an incident occurred at South Pass 27 #5 platform (SP
 27 #5). SP 27 #5 platform is owned and operated by Nugulf Operating L.L.C. (Nugulf).
 During platform surveying operations for the East Bay field, the Motor Vessel Marc C
 (MV) allided with the SP 27 #5 platform. The allision that occurred resulted in damage
@@ -2937,14 +2937,14 @@ incident from occurring in the future. Some of these steps include a safety aler
 being shared with the GOL fleet for maneuvering close to platforms/ structures and
 safe navigation of the vessel. GOL will also hold a review of the navigation policy
 with each vessel of the entire GOL fleet."
-CP-5A16E091A7,,Very Serious Incident,2024-04-08,11:30,2024-04-11,VR,218,B,,Maintenance,,Loss Event,Health & Safety,,Combustion,SYN-6e7a41,Maintenance Supervisor,SYN-0f30de,Operations Superintendent,SYN-8b575a,Maintenance Supervisor,2024-04-16,SYN-b22b37,Production Foreman,2024-06-21,"AS THE WELDER AND WELDERS HELPER WERE PERFORMING HOT WORK ON THE TOP DECK ( PRE FAB
+HB-5A16E091A7,,Very Serious Incident,2024-04-08,11:30,2024-04-11,VR,218,B,,Maintenance,,Loss Event,Health & Safety,,Combustion,SYN-6e7a41,Maintenance Supervisor,SYN-0f30de,Operations Superintendent,SYN-8b575a,Maintenance Supervisor,2024-04-16,SYN-b22b37,Production Foreman,2024-06-21,"AS THE WELDER AND WELDERS HELPER WERE PERFORMING HOT WORK ON THE TOP DECK ( PRE FAB
 HANDRAILS) SLAG FELL TO THE BOTTOM DECK AND IGNITED A 1/4 FULL TANK OF METHANOL,
 CAUSING IT TO EXPLODE. THIS RESULTED IN A FLASH FIRE, FOLLOWED BY SEVERAL SMALL FIRES
 INVOLVING RESIDUAL PLASTIC AND PAPER PRODUCTS.
 THE EXPLOSION AND RESULTING FIRE CAUSED BURNS TO TWO OF THE WELDERS. THEY WERE
 EVACUATED TO SHORE FOR TREATMENT. BOTH WRE ADMITTED FOR TREATMENT, WHICH RESULTED IN
 LOST TIME.","BOTH WRE ADMITTED FOR TREATMENT, WHICH RESULTED IN LOST TIME.",Very Serious Incident,,Very Serious Incident,25,E,5,,,,,,,A,,
-CP-AAEC0F5FC5,,Very Serious Incident,2024-04-09,14:00,2024-04-10,HI,,A,,Maintenance,,Loss Event,,,Combustion,SYN-3e80de,Production Foreman,SYN-60166b,Operations Superintendent,SYN-fcd73d,Facility Engineer,2024-04-16,SYN-df7296,Production Foreman,2024-05-08,"The compressor failed to start (4-5 times). When the compressor fails to start,
+HB-AAEC0F5FC5,,Very Serious Incident,2024-04-09,14:00,2024-04-10,HI,,A,,Maintenance,,Loss Event,,,Combustion,SYN-3e80de,Production Foreman,SYN-60166b,Operations Superintendent,SYN-fcd73d,Facility Engineer,2024-04-16,SYN-df7296,Production Foreman,2024-05-08,"The compressor failed to start (4-5 times). When the compressor fails to start,
 HP gas is vented to flair, LP gas is vented to the low pressure vent line, which is
 common to the skimmer tanks installed below the MCC room. Gas migrated from the
 skimmer atmosphere along the structure beams and up through the opening in the deck
@@ -2953,7 +2953,7 @@ alarmed with 20% LFL and the door was opened to ventilate the gas. The gas was
 trapped in the electrical panels and the pump relay opened or closed providing spark,
 exploding gas and blowing out the doors, panel doors, light fixtures, and building
 walls. The employee was blown fifteen feet out of the door.","Reported as an explosion. Estimated property damage $10,000.",Very Serious Incident,,Very Serious Incident,25,E,5,,,,,,,A,,
-CP-0D35A2BD08,,,2024-04-18,19:00,2024-04-20,VR,226,A,,Well Services,LIFTING DEVICE,,,,,SYN-7dcb98,HSE Advisor,SYN-7540c1,Maintenance Supervisor,SYN-e683c5,HSE Advisor,2024-05-04,SYN-60e672,HSE Advisor,2024-05-20,"-
+HB-0D35A2BD08,,,2024-04-18,19:00,2024-04-20,VR,226,A,,Well Services,LIFTING DEVICE,,,,,SYN-7dcb98,HSE Advisor,SYN-7540c1,Maintenance Supervisor,SYN-e683c5,HSE Advisor,2024-05-04,SYN-60e672,HSE Advisor,2024-05-20,"-
 Freedom Well Services (FWS) was performing plug and abandonment (PA) operations on
 the A-5 well for W & T Offshore on the VR-226A platform. On October 23, 2013, the 7""
 casing was being pulled from the well utilizing both casing jacks and the platform
@@ -2993,7 +2993,7 @@ casing string and was unable to pull it free. The approximate weight of the 550'
 casing was 14,300 lbs. The static load limit was utilized from the load chart rather
 than the dynamic limit. At 27,000 lbs. of pull, the dynamic limit of 19,710 lbs. was
 exceeded by 7,290 lbs. when initially attempting to free the casing from the well.",There were no injuries reported and all personnel were accounted for immediately following the incident.,,,,,,,,,,,,,,,
-CP-BD12A5BAEA,,,2024-05-20,18:00,2024-05-24,MU,A 111 A,­ A,,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,,,SYN-5adf36,HSE Advisor,SYN-501cf6,Marine Coordinator,SYN-ac48aa,Marine Coordinator,2024-06-06,SYN-fd0560,HSE Advisor,2024-06-24,"-
+HB-BD12A5BAEA,,,2024-05-20,18:00,2024-05-24,MU,A 111 A,­ A,,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,,,SYN-5adf36,HSE Advisor,SYN-501cf6,Marine Coordinator,SYN-ac48aa,Marine Coordinator,2024-06-06,SYN-fd0560,HSE Advisor,2024-06-24,"-
 Two crew members were inside the work basket utilizing power tongs to trip in the
 hole with 3 inch drill pipe. A joint of drill pipe was stabbed into the stump and the
 Tong Operator started to swing the tongs towards the pipe to make up the connection.
@@ -3002,14 +3002,14 @@ tong door was closed. The IP grabbed the tong's door in an attempt to open it,
 misjudged the tong's movement. As the IP placed his hand on the tong's door, the
 tongs struck the drill pipe resulting in pinching his right thumb between the tong
 door and the joint of pipe.",The incident resulted in an injury recorded as Other Injury. The facility was evacuated.,,,,,,,,,,,,,,,
-CP-2586CB2E6C,,Very Serious Incident,2024-05-26,13:30,2024-05-30,SM,58,,ENTERPRISE 263,Construction,LIFTING Drawworks / Topdrive,Loss Event,,,,,,SYN-4db7b2,Operations Superintendent,,,,,,,"On 26 May 2024, Byron Energy Inc. (Byron) had a near miss incident involving the
+HB-2586CB2E6C,,Very Serious Incident,2024-05-26,13:30,2024-05-30,SM,58,,ENTERPRISE 263,Construction,LIFTING Drawworks / Topdrive,Loss Event,,,,,,SYN-4db7b2,Operations Superintendent,,,,,,,"On 26 May 2024, Byron Energy Inc. (Byron) had a near miss incident involving the
 topdrive and traveling block on the Enterprise Offshore Drilling, LLC (Enterprise) 263
 jack-up rig that was conducting well operations at South Marsh Island Block 58. There
 were no injuries and only limited damage to equipment during this incident. Byron
 reported this incident to the Bureau of Safety and Environmental Enforcement (BSEE)
 Lafayette District at 14:26 hours on 26 May 2024.
 At 08:44 hours on 27 May 2024, a",There were no injuries and only limited damage to equipment during this incident.,Very Serious Incident,,Very Serious Incident,25,E,5,,,,,,,,,
-CP-D10A5C8CAF,,Incident,2024-06-04,06:00,2024-06-05,GC,155,,NOBLE DRILLER,Construction,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-663d62,Marine Coordinator,SYN-a85900,Facility Engineer,SYN-1ddb5e,HSE Advisor,2024-06-15,SYN-916773,Maintenance Supervisor,2024-07-16,"-
+HB-D10A5C8CAF,,Incident,2024-06-04,06:00,2024-06-05,GC,155,,NOBLE DRILLER,Construction,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-663d62,Marine Coordinator,SYN-a85900,Facility Engineer,SYN-1ddb5e,HSE Advisor,2024-06-15,SYN-916773,Maintenance Supervisor,2024-07-16,"-
 On June 4, 2024, approximately 150 barrels of Synthetic Based Mud (SBM) were
 discharged into the Gulf of Mexico while crews onboard the Noble Driller prepared the
 rig to take on completion fluid.
@@ -3041,7 +3041,7 @@ level. In addition, the Pit Volume Transmitter (PVT) Alarm was found to be set o
 of range. The PVT alarm is a device that is designed to warn the Driller if there is
 an unexpected gain or loss of fluid volume in the pits. The set points for the alarm
 had been set so far apart that the alarm was rendered inoperable.",Reported as a pollution release.,Incident,,Incident,8,D,2,,,C,,,,,,
-CP-DD880048AA,,Serious Incident,2024-06-18,16:08,2024-06-19,MP,42,L,,Production Operations,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,Combustion,SYN-7ad304,Marine Coordinator,SYN-c92ef6,Marine Coordinator,SYN-73e890,Marine Coordinator,2024-06-25,SYN-99781b,Maintenance Supervisor,2024-08-23,"On 18 June 2024, a fire requiring evacuation occurred in the compressor-generator
+HB-DD880048AA,,Serious Incident,2024-06-18,16:08,2024-06-19,MP,42,L,,Production Operations,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,Combustion,SYN-7ad304,Marine Coordinator,SYN-c92ef6,Marine Coordinator,SYN-73e890,Marine Coordinator,2024-06-25,SYN-99781b,Maintenance Supervisor,2024-08-23,"On 18 June 2024, a fire requiring evacuation occurred in the compressor-generator
 building of Main Pass (MP) 42 D, L, and M (D/L/M) complex owned and operated by
 Cantium LLC. The MP 42 complex is comprised of three structures (D, L, and M)
 connected by catwalks. The ‘L’ platform contains a compressor-generator building that
@@ -3144,7 +3144,7 @@ compressor engine to ignite and spread rapidly. All safety systems on the platfo
 functioned as designed and all personnel were safely evacuated from the platform with
 no injuries. No pollution into the Gulf of Mexico occurred from this incident. The
 Turbine compressor was not overdue for any maintenance."
-CP-13A8820D4B,,,2024-06-20,06:50,2024-06-22,,,,FRONTIER DRILLER,Maintenance,LIFTING DEVICE,,,,,SYN-c48d51,Maintenance Supervisor,SYN-d7ab00,Marine Coordinator,SYN-65f301,HSE Advisor,2024-07-01,SYN-844672,HSE Advisor,2024-09-07,"A pollution event occurred as the result of the Driller failing to place the diverter
+HB-13A8820D4B,,,2024-06-20,06:50,2024-06-22,,,,FRONTIER DRILLER,Maintenance,LIFTING DEVICE,,,,,SYN-c48d51,Maintenance Supervisor,SYN-d7ab00,Marine Coordinator,SYN-65f301,HSE Advisor,2024-07-01,SYN-844672,HSE Advisor,2024-09-07,"A pollution event occurred as the result of the Driller failing to place the diverter
 panel in the ""Test"" mode prior to conducting a diverter test. At the time of the
 incident, drilling operations were suspended to perform a function test on the
 diverter bag that was just installed. The investigation determined that the Driller
@@ -3158,7 +3158,7 @@ bbls was recovered from the lines. An estimated 6.5 bbls of SBM was released int
 Gulf waters, of which, 73% or approximately 4.7 bbls was oil. The SBM contained 73%
 base oil and 27% calcium chloride. The National Response Center (NRC) was notified of
 the incident on 20 July 20 2009 at 0940 hours (NRC Report No. 912098).",,,,,,,,,,,,,,A,,
-CP-11BFCC2E3F,,Incident,2024-07-22,09:30,2024-07-23,,47,C-AUX,,Well Services,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-5fec93,Facility Engineer,SYN-bde766,HSE Advisor,SYN-af8487,Operations Superintendent,2024-07-31,SYN-45d2d0,Maintenance Supervisor,2024-08-13,"On July 23, 2023, a 880 yard wide by 3 miles long sheen was observed at Grand Isle
+HB-11BFCC2E3F,,Incident,2024-07-22,09:30,2024-07-23,,47,C-AUX,,Well Services,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-5fec93,Facility Engineer,SYN-bde766,HSE Advisor,SYN-af8487,Operations Superintendent,2024-07-31,SYN-45d2d0,Maintenance Supervisor,2024-08-13,"On July 23, 2023, a 880 yard wide by 3 miles long sheen was observed at Grand Isle
 (GI) Block 47 and is beleived to be coming from the containment caisson at the
 toppled GI 47 C AUX platform. Due to weather conditions, BP has been unable to pump
 off the caisson since July 13, 2024. An estimated 2.47 bbls of oil has been
@@ -3167,7 +3167,7 @@ Immediate Action Taken: The Seahorse VI is on location and deployed an absorbent
 boom for skimming operations.
 Corrective Actions: Seas should be subsiding by this evening which will allow for
 pumping operations to take place.",Reported as a pollution release.,Incident,,Incident,6,C,2,,,C,,,,,,
-CP-5AB375533E,,,2024-07-26,05:45,2024-07-27,GB,72,,,Maintenance,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-a4cea3,Operations Superintendent,SYN-879c9f,Operations Superintendent,SYN-f6ebff,Facility Engineer,2024-08-01,SYN-7859f5,Maintenance Supervisor,2024-08-30,"-
+HB-5AB375533E,,,2024-07-26,05:45,2024-07-27,GB,72,,,Maintenance,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-a4cea3,Operations Superintendent,SYN-879c9f,Operations Superintendent,SYN-f6ebff,Facility Engineer,2024-08-01,SYN-7859f5,Maintenance Supervisor,2024-08-30,"-
 On 26 July 2024 at approximately 0545 hours, an employee was injured while
 attempting to complete a pre-use inspection on a crane prior to lifting personnel
 from an offshore vessel. The injured employee (IE) began climbing the ladder on the
@@ -3182,7 +3182,7 @@ an open hole. The IE fell through the open hole approximately 9 feet 8 inches to
 second level, receiving severe injuries to his upper right arm and lacerations to his
 head. The IE was flown to Lafayette General for treatment and observation for a
 possible concussion.",The IE was flown to Lafayette General for treatment and observation for a possible concussion.,,,,,,,,,,,,,,,
-CP-E7CC208B33,,,2024-08-07,15:00,2024-08-10,EB,602,­ A(NANSEN SPAR),,Maintenance,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,,,SYN-5d2c71,Maintenance Supervisor,,,,,,,"­
+HB-E7CC208B33,,,2024-08-07,15:00,2024-08-10,EB,602,­ A(NANSEN SPAR),,Maintenance,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,,,SYN-5d2c71,Maintenance Supervisor,,,,,,,"­
 On 7 August 2024 at approximately 1500 hours, an injury requiring medical evacuation
 occurred at Anadarko Petroleum's East Breaks 602 'A' Nansen SPAR, Lease G-14205. The
 operation at the time of the incident involved two contract workers tasked with
@@ -3215,14 +3215,14 @@ pulsations can cause swivel sockets to release from the nut and cause injury. A 
 applies a steady pressure without extreme pressure pulsation and would alleviate the
 potential of the swivel socket releasing off the stud bolt, which struck the IP in
 the upper lip causing the injury.",The facility Medic's statement concluded the IP sustained a laceration to the right side of the mouth approximately one-quarter inch above the upper lip with possible maxilla fracture and dental trauma to the front teeth.,,,,,,,,,,,,,,,
-CP-B81BC32135,,,2024-08-20,13:45,2024-08-21,,6659,HILLHOUSE,,Production Operations,LIFTING DEVICE,,,,,SYN-ef3666,Marine Coordinator,SYN-5769a3,Maintenance Supervisor,SYN-473756,Operations Superintendent,2024-08-28,SYN-16fed5,Facility Engineer,2024-10-07,"The unit was inspected by a PTS Rentals technician and an oil leak in front of the
+HB-B81BC32135,,,2024-08-20,13:45,2024-08-21,,6659,HILLHOUSE,,Production Operations,LIFTING DEVICE,,,,,SYN-ef3666,Marine Coordinator,SYN-5769a3,Maintenance Supervisor,SYN-473756,Operations Superintendent,2024-08-28,SYN-16fed5,Facility Engineer,2024-10-07,"The unit was inspected by a PTS Rentals technician and an oil leak in front of the
 engine was found to be coming from a rubbed pin hole on a hose connecting to the
 crank case emissions absorber. There was a small amount of oil being blown the
 o~er
 top of the engine and landing on the intake manifold/Turbocharger. As the flash
 point of oil is 416 degrees and a piece of oil soaked gasket material was also found
 laying on top of the manifold, it is believed this was the cause of the fire.",,,,,,,,,,,,,,,,
-CP-EF12925A15,,Serious Incident,2024-08-21,09:00,2024-08-23,GC,468,A (Stampede),,Maintenance,LIFTING Rope access,Loss Event,Health & Safety,Injury TLI,,SYN-7104c9,Marine Coordinator,SYN-3bb9f8,Production Foreman,SYN-df9ea8,HSE Advisor,2024-08-31,SYN-72b4c0,Marine Coordinator,2024-10-25,"On August 21, 2024, Hess Corporation (Hess) notified the Bureau of Safety and
+HB-EF12925A15,,Serious Incident,2024-08-21,09:00,2024-08-23,GC,468,A (Stampede),,Maintenance,LIFTING Rope access,Loss Event,Health & Safety,Injury TLI,,SYN-7104c9,Marine Coordinator,SYN-3bb9f8,Production Foreman,SYN-df9ea8,HSE Advisor,2024-08-31,SYN-72b4c0,Marine Coordinator,2024-10-25,"On August 21, 2024, Hess Corporation (Hess) notified the Bureau of Safety and
 Environmental Enforcement (BSEE) that an injured person (IP) had been evacuated from
 their tension leg platform (TLP) “Stampede” located within Block 468 (Lease OCS-
 G26313) of the Green Canyon area. While inspecting the Seawater Reject Caisson
@@ -3346,7 +3346,7 @@ chair upstairs from the NE Hull ToC at 9:49. The IP received first aid treatment
 the onboard Medic and departed Stampede via helicopter at 11:35. A Safety Standdown
 of all RA work was called and the area of the incident surrounding the SWRC was
 barricaded.",The incident resulted in a lost-time accident with more than 3 days lost. Reported as a lifting-device incident. The facility was evacuated.,Serious Incident,,Serious Incident,20,D,5,,,,,,,,,
-CP-2243618BFC,,Very Serious Incident,2024-08-29,16:30,2024-08-31,SS,198,J-PRD,,Well Services,LIFTING DEVICE,Loss Event,Business Interruption & Cost,Equipment Damage,Combustion,SYN-19c174,Marine Coordinator,SYN-a13cb5,Operations Superintendent,SYN-5a3ca7,Marine Coordinator,2024-09-12,SYN-973d26,Operations Superintendent,2024-10-27,"On July 16,2017, an incident occurred on the Ship Shoal 198-J platform (OCS-G12355).
+HB-2243618BFC,,Very Serious Incident,2024-08-29,16:30,2024-08-31,SS,198,J-PRD,,Well Services,LIFTING DEVICE,Loss Event,Business Interruption & Cost,Equipment Damage,Combustion,SYN-19c174,Marine Coordinator,SYN-a13cb5,Operations Superintendent,SYN-5a3ca7,Marine Coordinator,2024-09-12,SYN-973d26,Operations Superintendent,2024-10-27,"On July 16,2017, an incident occurred on the Ship Shoal 198-J platform (OCS-G12355).
 Renaissance Offshore, LLC (Renaissance) is the Designated Operator of Record. The
 platform is located 44 miles from shore, with a water depth of 100 feet. The facility
 was installed in 1985 and has 13 well slots--8 drilled and 2 active.
@@ -3375,7 +3375,7 @@ however, the compressor mechanic (who was at the compressor panel at the time of
 incident) complained of mirgraines and dizziness five days later. Renaissance elected
 to send the Injured Person (IP) to Thibodeaux Regional Medical Center, where IP
 underwent a CAT scan and was subsequently released.","There were no injuries, fires, or spills observed at the time of the incident; however, the compressor mechanic (who was at the compressor panel at the time of the incident) complained of mirgraines and dizziness five days later.",Very Serious Incident,,Very Serious Incident,25,E,5,,,,,,,B,,
-CP-6E7C2B257D,,,2024-08-31,19:15,2024-08-31,EI,338,K,,Well Services,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-20f12f,Operations Superintendent,SYN-0a6bb3,Maintenance Supervisor,SYN-c3b266,Maintenance Supervisor,2024-09-04,SYN-44db35,HSE Advisor,2024-09-13,"On 31 August 2024 at approximately 1915 hours, a Contract Employee (CE) was injured
+HB-6E7C2B257D,,,2024-08-31,19:15,2024-08-31,EI,338,K,,Well Services,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-20f12f,Operations Superintendent,SYN-0a6bb3,Maintenance Supervisor,SYN-c3b266,Maintenance Supervisor,2024-09-04,SYN-44db35,HSE Advisor,2024-09-13,"On 31 August 2024 at approximately 1915 hours, a Contract Employee (CE) was injured
 while attempting to blow down piping with a 1"" airline due to prior sandblasting
 operations.
 The CE was attempting to blow down the pipeline pump skid on the cellar deck due to
@@ -3396,7 +3396,7 @@ inches, the left side of his back came in contact with fittings located on the P
 The CE received severe bruising and was transferred to a hospital the following day.
 The CE suffered three cracked ribs as a result of this incident.
 The BSEE Lafayette District conducted an onsite investigation 4 September 2024.",The CE suffered three cracked ribs as a result of this incident.,,,,,,,,,,,,,,,
-CP-40948C3B56,,,2024-10-12,02:40,2024-10-14,GC,743,,T.O. DEVELOPMENT,Drilling,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,,,SYN-00ce6a,Operations Superintendent,,,,,,,"On October 12, 2024, at approximately 02:40 hours, the crew on the Developmental
+HB-40948C3B56,,,2024-10-12,02:40,2024-10-14,GC,743,,T.O. DEVELOPMENT,Drilling,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,,,SYN-00ce6a,Operations Superintendent,,,,,,,"On October 12, 2024, at approximately 02:40 hours, the crew on the Developmental
 Driller II were in the process of breaking down stands of drill pipe into single
 joints and back loading them onto the boat. During the operation, the elevator on
 the drill floor struck a joint of pipe lying on the skate, forcing it out of position
@@ -3440,12 +3440,12 @@ The Banksman was checked out and given an over the counter medication and the re
 the tour off. He was able to return to full duty the following day. The Roustabout
 was examined and the decision was made to send him in for further evaluation. The
 Roustabout was sent in via Medevac at approximately",The incident resulted in a lost-time accident with more than 3 days lost. The facility was evacuated.,,,,,,,,,,,,,,,
-CP-340FA64A38,,,2024-10-16,18:05,2024-10-17,,,5. PLATFORM' GAIL,,Production Operations,LIFTING DEVICE,,,,,SYN-681494,Operations Superintendent,SYN-bf1580,Facility Engineer,SYN-268097,Marine Coordinator,2024-10-29,SYN-df796d,Maintenance Supervisor,2024-12-11,"Well E-6rd was routed to well Clean-Up Separator (V-33). V-33 LAL/LSL failed to shut
+HB-340FA64A38,,,2024-10-16,18:05,2024-10-17,,,5. PLATFORM' GAIL,,Production Operations,LIFTING DEVICE,,,,,SYN-681494,Operations Superintendent,SYN-bf1580,Facility Engineer,SYN-268097,Marine Coordinator,2024-10-29,SYN-df796d,Maintenance Supervisor,2024-12-11,"Well E-6rd was routed to well Clean-Up Separator (V-33). V-33 LAL/LSL failed to shut
 LCV that goes to T-Tank #1 (Slop Tank), with a 30• we
 Tank #1. T-Tank PSV operation indicated relief to the
 detector by the wellbay sample drain pot indicated H2S
 T-Tank P-trap into the Wellbay via the drain system.",,,,,,,,,,,,,,,,
-CP-AB45CF9DD8,,,2024-11-05,15:35,2024-11-08,GB,427,,NOBLE GLOBETROTTER,Well Services,LIFTING,Loss Event,Health & Safety,Injury TLI,,,,SYN-2a0b5e,Production Foreman,,,,,,,"On 5 November 2024, at approximately 15:35 hours, an injury occurred at Shell Offshore
+HB-AB45CF9DD8,,,2024-11-05,15:35,2024-11-08,GB,427,,NOBLE GLOBETROTTER,Well Services,LIFTING,Loss Event,Health & Safety,Injury TLI,,,,SYN-2a0b5e,Production Foreman,,,,,,,"On 5 November 2024, at approximately 15:35 hours, an injury occurred at Shell Offshore
 Inc.’s (Shell) Outer Continental Shelf G-07493 Garden Banks (GB) Block 427 on the
 Noble Drilling (Noble) Globetrotter I drillship.
 Sequence of Event:
@@ -3470,7 +3470,7 @@ On 6 November 2024, the IP was sent in onshore on a crew change flight for a med
 evaluation. The IP had X-rays on his right hand that revealed he had sustained a
 hairline fracture to his right index finger. The IP required surgery by an Orthopedic
 Surgeon to repair the right index finger hairline fracture.",The IP had X-rays on his right hand that revealed he had sustained a hairline fracture to his right index finger.,,,,,,,,,,,,,,,
-CP-05E0194B4E,,Serious Incident,2024-11-20,08:15,2024-11-22,SS,80,A,,Drilling,LIFTING,Loss Event,Health & Safety,Injury TLI,Combustion,SYN-423514,Facility Engineer,SYN-009f5c,Facility Engineer,SYN-f6ca8e,Maintenance Supervisor,2024-11-29,SYN-36be07,HSE Advisor,2025-01-23,"On November 20, 2024, W&T Offshore Inc. (W&T) notified the Bureau of Safety and
+HB-05E0194B4E,,Serious Incident,2024-11-20,08:15,2024-11-22,SS,80,A,,Drilling,LIFTING,Loss Event,Health & Safety,Injury TLI,Combustion,SYN-423514,Facility Engineer,SYN-009f5c,Facility Engineer,SYN-f6ca8e,Maintenance Supervisor,2024-11-29,SYN-36be07,HSE Advisor,2025-01-23,"On November 20, 2024, W&T Offshore Inc. (W&T) notified the Bureau of Safety and
 Environmental Enforcement (BSEE) Houma District Office that a fire incident occurred
 at its production facility located at Ship Shoal Block 80 (SS 80), Platform A, Lease
 OCS-G05537. The fire resulted in the injury and evacuation of two personnel. W&T
@@ -3607,7 +3607,7 @@ components, utilize gas detectors when performing startup procedures on engines 
 gas as a fuel source and/or as a pneumatic supply for starters, and conduct mandatory
 checks on engines with gas as a fuel source and/or as a pneumatic supply for starters
 to ensure proper installation of starter exhaust piping."
-CP-6185519FB7,,Serious Incident,2024-11-25,00:20,2024-11-26,VR,398,A,BLAKE 210,Maintenance,LIFTING DEVICE,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-21c9ef,Operations Superintendent,SYN-da5ca4,Facility Engineer,SYN-1107af,Maintenance Supervisor,2024-12-02,SYN-40db50,Facility Engineer,2025-01-05,"On November 25, 2024, preparations were made to test the Blowout Preventers (BOPs)after
+HB-6185519FB7,,Serious Incident,2024-11-25,00:20,2024-11-26,VR,398,A,BLAKE 210,Maintenance,LIFTING DEVICE,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-21c9ef,Operations Superintendent,SYN-da5ca4,Facility Engineer,SYN-1107af,Maintenance Supervisor,2024-12-02,SYN-40db50,Facility Engineer,2025-01-05,"On November 25, 2024, preparations were made to test the Blowout Preventers (BOPs)after
 rigging up the Blake 210 rig on location at VR 398 Well A002. The tubing hanger that
 was installed in the wellhead was found to be severely corroded, preventing testing
 the BOPs to the maximum anticipated surface pressure (MASP). The decision was made to
@@ -3653,7 +3653,7 @@ equalizing ports from being completely opened, as well as prevented fluids from 
 pumped down below the plug to kill the well. This debris prevented the equalizing
 prong from seating completely into the equalizing sub in the lower portion of the
 plug; thus, not allowing the equalizing collet to shift completely open.","Reported as structural damage. Personnel were mustered. Estimated property damage $289,636.",Serious Incident,,Serious Incident,15,E,3,,,,,,,C,,
-CP-21A51CBCFA,,,2024-11-26,15:00,2024-11-28,,,,DIAMOND OCEAN,Maintenance,LIFTING DEVICE,,,,,SYN-0ddcbc,Production Foreman,SYN-21296b,Maintenance Supervisor,SYN-be9133,HSE Advisor,2024-12-07,SYN-1975f8,Maintenance Supervisor,2024-12-25,"On 27 November 2023 at approximately 1100 hours, a contract employee was injured
+HB-21A51CBCFA,,,2024-11-26,15:00,2024-11-28,,,,DIAMOND OCEAN,Maintenance,LIFTING DEVICE,,,,,SYN-0ddcbc,Production Foreman,SYN-21296b,Maintenance Supervisor,SYN-be9133,HSE Advisor,2024-12-07,SYN-1975f8,Maintenance Supervisor,2024-12-25,"On 27 November 2023 at approximately 1100 hours, a contract employee was injured
 when a riser torque wrench that he was attempting to recover fell striking him on his
 right hand. It was determined that improper rigging procedures caused the incident.
 Due to the size and shape of the wrench and the tight clearance between the riser and
@@ -3670,7 +3670,7 @@ released from the hospital on 30 November 2024.",The IP suffered a 1 inch lacera
 3) After the wrench entered the diverter housing, the rigging (eyebolt) failed
 allowing the wrench, weighing 275 lbs, to fall approximately 3 feet striking the IP
 on the right hand that was placed on the riser flange bolt to maintain his balance."
-CP-99B5FE53E5,,Serious Incident,2024-11-28,17:45,2024-11-29,GC,645,A(HOLSTEIN SPAR,,Well Services,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,Combustion,SYN-583f03,Maintenance Supervisor,SYN-f687af,Maintenance Supervisor,SYN-152d41,HSE Advisor,2024-12-07,SYN-eae192,Production Foreman,2024-12-29,"On November 28, 2024, at approximately 1755 hours, a fire occurred inside a Pressurized
+HB-99B5FE53E5,,Serious Incident,2024-11-28,17:45,2024-11-29,GC,645,A(HOLSTEIN SPAR,,Well Services,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,Combustion,SYN-583f03,Maintenance Supervisor,SYN-f687af,Maintenance Supervisor,SYN-152d41,HSE Advisor,2024-12-07,SYN-eae192,Production Foreman,2024-12-29,"On November 28, 2024, at approximately 1755 hours, a fire occurred inside a Pressurized
 Welding Enclosure (PWE) on the Northeast side of Green Canyon (GC) Block 645 Platform
 A (Holstein). The facility is owned and operated by Anadarko Petroleum Corporation.",Reported as a fire and a damaged or disabled safety system.,Serious Incident,,Serious Incident,12,D,3,,,,,,,,,"Sequence of Events:
 At approximately 1655 hours, construction crew stopped hot work for the day while the
@@ -3723,7 +3723,7 @@ BSEE has two recommendations for this incident. One, adding a second Firewatch t
 hot work operations inside and to remain on station for the full 30 minutes after hot
 work is complete. The second is to add the ability of the control room to monitor
 the status of at least one fire and one gas detection at all times."
-CP-F68B93C2BB,,Very Serious Incident,2024-11-28,01:00,2024-11-29,SE,39,,MAERSK DEVELOPER,Construction,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-326dea,HSE Advisor,SYN-627c5a,Production Foreman,SYN-334639,Production Foreman,2024-12-06,SYN-878a64,Maintenance Supervisor,2025-01-19,"­
+HB-F68B93C2BB,,Very Serious Incident,2024-11-28,01:00,2024-11-29,SE,39,,MAERSK DEVELOPER,Construction,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-326dea,HSE Advisor,SYN-627c5a,Production Foreman,SYN-334639,Production Foreman,2024-12-06,SYN-878a64,Maintenance Supervisor,2025-01-19,"­
 At approximately 0100 hours on 28 November 2024, a Maersk Drilling USA Inc. (Maersk)
 Roustabout sustained an ankle injury on board the Maersk Developer semi-submersible
 rig while conducting drilling operations for Anadarko Petroleum Corporation
@@ -3747,7 +3747,7 @@ lift operations on the rig floor.
 Contributing causes of the accident was lack of supervision and the failure to
 recognize the injured Maersk roustabout was a SSE who lacked the skill and knowledge
 for conducting lifting operations on the rig floor.","On 4 December 2024, the injured Roustabout was diagnosed with a double fracture in his right ankle and he was consulting with a physician to determine if surgery will be necessary.",Very Serious Incident,,Very Serious Incident,25,E,5,,,,,,,,,
-CP-004E1BF2AC,,,2024-12-02,03:00,2024-12-03,EI,98,,HERCULES 251,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-261b8f,Operations Superintendent,SYN-ff4f6c,Facility Engineer,SYN-cc1ca6,Maintenance Supervisor,2024-12-14,SYN-2426e4,Facility Engineer,2025-01-13,"On December 2, 2024, at approximately 0300 hours, on Tana Exploration Company, LLC's
+HB-004E1BF2AC,,,2024-12-02,03:00,2024-12-03,EI,98,,HERCULES 251,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-261b8f,Operations Superintendent,SYN-ff4f6c,Facility Engineer,SYN-cc1ca6,Maintenance Supervisor,2024-12-14,SYN-2426e4,Facility Engineer,2025-01-13,"On December 2, 2024, at approximately 0300 hours, on Tana Exploration Company, LLC's
 Lease OCS-G 26023, Eugene Island Block 98, Hercules Rig 251, a Contract Wireline
 Operator (CWO) was struck on the right hand by a falling Packoff Assembly (PA) while
 guiding a wireline fishing tool string from the lubricator's side door inlet. At the
@@ -3770,7 +3770,7 @@ City, LA.
 Update: As of December 23, 2024, the injured CWO has not returned to work, and is
 being treated by a hand specialist in Baton Rouge. The right hand little finger has
 been amputated, and the thumb and index fingers now have pins installed.",The incident resulted in a lost-time accident with more than 3 days lost. The facility was evacuated.,,,,,,,,,,,,,,,
-CP-4357E9CAB7,,,2024-12-02,10:15,2024-12-03,GC,743,,SEADRILL WEST AURIGA -,Drilling,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-7a3530,Maintenance Supervisor,SYN-bfaf8f,Facility Engineer,SYN-a1e8d3,Marine Coordinator,2024-12-11,SYN-ca7b3f,Facility Engineer,2025-01-01,"-
+HB-4357E9CAB7,,,2024-12-02,10:15,2024-12-03,GC,743,,SEADRILL WEST AURIGA -,Drilling,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-7a3530,Maintenance Supervisor,SYN-bfaf8f,Facility Engineer,SYN-a1e8d3,Marine Coordinator,2024-12-11,SYN-ca7b3f,Facility Engineer,2025-01-01,"-
 On December 2, 2024, while performing Stump Testing on the Blow Out Preventers (BOPs), a
 Subsea Engineer was struck in the face with high pressure BOP fluid while attempting
 to replace the O-rings on an Sub Plate Mounted (SPM) valve on the BOP stack.
@@ -3809,7 +3809,7 @@ brought to the medic on board to be examined. Due to the extent of his injuries,
 medivac was called to transport the IP to an inland facility for further evaluation
 and treatment. The work site was secured and
 began.",The incident resulted in a lost-time accident with more than 3 days lost. The facility was evacuated.,,,,,,,,,,,,,,,
-CP-B0A2CC0395,,,2024-12-23,08:10,2024-12-24,HI,,A,,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,,,,,SYN-197925,Marine Coordinator,,,,,,,"An Island Operating Company (IOC) employee (the rigger) was performing rigging duties
+HB-B0A2CC0395,,,2024-12-23,08:10,2024-12-24,HI,,A,,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,,,,,SYN-197925,Marine Coordinator,,,,,,,"An Island Operating Company (IOC) employee (the rigger) was performing rigging duties
 and positioned his body outside of the ""safe zone of the lift"" and was standing
 between the tote tank and a basket which was positioned next to the tote tank on the
 deck while the lift was being made. Another IOC employee was operating the crane.
@@ -3820,7 +3820,7 @@ between the tote tank and the basked. The Apache area medic evaluated the injure
 rigger and deemed it necessary to have him transported to University Medical Center
 in Galveston, TX. Further evaluation determined that
 fractured right wrist and elbow.",The incident resulted in an injury recorded without a severity code.,,,,,,,,,,,,,,,
-CP-94D2604374,,,2024-12-27,15:00,2024-12-29,,,,MAERSK DEVELOPER,Construction,LIFTING DEVICEVDM,,,,,SYN-9f3c45,Operations Superintendent,SYN-31aa82,Operations Superintendent,SYN-5fc0c8,HSE Advisor,2025-01-03,SYN-754f04,Operations Superintendent,2025-01-20,"On 27-DEC-2024 at 0930 hours, the Maersk Developer Rig was picking up 16-inch casing
+HB-94D2604374,,,2024-12-27,15:00,2024-12-29,,,,MAERSK DEVELOPER,Construction,LIFTING DEVICEVDM,,,,,SYN-9f3c45,Operations Superintendent,SYN-31aa82,Operations Superintendent,SYN-5fc0c8,HSE Advisor,2025-01-03,SYN-754f04,Operations Superintendent,2025-01-20,"On 27-DEC-2024 at 0930 hours, the Maersk Developer Rig was picking up 16-inch casing
 joints from the Aux Riser Pipe Shuttle (RPS) with the VDoor Machine (VDM) Gripper
 heads to build three-joint stands of casing. There were already two joints of casing
 screwed together in the slips when the Assistant Driller went to go pick up the last
@@ -3845,7 +3845,7 @@ re-entered the RPS.
 At the time of the incident, there were no personnel located in the Red Zone with the
 exception of one authorized individual during movement of the pipe and or equipment.
 There were no personnel injuries associated with this incident.",,,,,,,,,,,,,,,,
-CP-586DF68FF1,,Incident,2024-12-28,14:00,2024-12-30,MC,429,RIG NAME,,Production Operations,,Loss Event,Environment & Reputation,Loss of Containment,,SYN-3fd5cd,Marine Coordinator,SYN-ebd056,Marine Coordinator,SYN-a388a2,Operations Superintendent,2025-01-12,SYN-b427a8,HSE Advisor,2025-01-19,"On Wednesday, March 30, a leak was found in the 1"" methanol supply tube which goes to
+HB-586DF68FF1,,Incident,2024-12-28,14:00,2024-12-30,MC,429,RIG NAME,,Production Operations,,Loss Event,Environment & Reputation,Loss of Containment,,SYN-3fd5cd,Marine Coordinator,SYN-ebd056,Marine Coordinator,SYN-a388a2,Operations Superintendent,2025-01-12,SYN-b427a8,HSE Advisor,2025-01-19,"On Wednesday, March 30, a leak was found in the 1"" methanol supply tube which goes to
 the Na Kika Kepler Well K-1 in Mississippi Canyon Area Block 429. The location of
 the leak was at the weld in the Na Kika Ariel hydraulic and chemical tubes for both
 Mississippi Canyon Area Block 429, Well A-4 and Kepler wells (K1 and K2 in MC 383).
@@ -3853,7 +3853,7 @@ The Well K-1 was brought on line using a spare umbilical tube, that will be used
 deliver methanol to MC 383, Well K-1 in the future. A failure analysis is being
 planned with the subsea equipment vendor, FMC. A repair of the failed umbilical tube
 is may not occur since it is not economically feasible.",Reported as a pollution release. Estimated property damage $75.,Incident,,Incident,6,C,2,,,C,,,,A,,
-CP-0183D1A1BF,,Serious Incident,2025-01-31,00:45,2025-02-03,SS,238,A,,Production Operations,LIFTING DEVICE,Loss Event,,,Combustion,SYN-bbccc3,Production Foreman,SYN-e297bc,Production Foreman,SYN-14fe9c,Production Foreman,2025-02-07,SYN-325bbc,Operations Superintendent,2025-02-25,"A fire occurred at the Ship Shoal Block 238 Platform A on January 31, 2025, at
+HB-0183D1A1BF,,Serious Incident,2025-01-31,00:45,2025-02-03,SS,238,A,,Production Operations,LIFTING DEVICE,Loss Event,,,Combustion,SYN-bbccc3,Production Foreman,SYN-e297bc,Production Foreman,SYN-14fe9c,Production Foreman,2025-02-07,SYN-325bbc,Operations Superintendent,2025-02-25,"A fire occurred at the Ship Shoal Block 238 Platform A on January 31, 2025, at
 approximately 0025 hours, and completely destroyed three temporary rental buildings;
 i.e., a galley, living quarters, and office building that were located on the top
 production deck adjacent to the crane. These buildings were installed during the
@@ -3889,7 +3889,7 @@ representatives conducted an onsite overview of the fire scene. On February 1, 2
 representatives, along with the W & T Offshore, Inc. personnel, visited the platform
 to investigate the fire. MMS Inspectors, however, were unable to determine the cause
 of the fire, because the scene was totally destroyed by the fire.","Reported as a fire. Estimated property damage $140,924.",Serious Incident,,Serious Incident,,,,,,,,,,C,,
-CP-24132264B3,,,2025-01-31,06:40,2025-02-02,,,,T.O. DISCOVERER CLEAR,Production Operations,LIFTING DEVICE,,,,,SYN-d5c663,Facility Engineer,SYN-ee5079,Marine Coordinator,SYN-86b27b,Facility Engineer,2025-02-08,SYN-4e77c4,Maintenance Supervisor,2025-04-06,"Upon completing Blowout Preventer (BOP) testing and before resuming drilling
+HB-24132264B3,,,2025-01-31,06:40,2025-02-02,,,,T.O. DISCOVERER CLEAR,Production Operations,LIFTING DEVICE,,,,,SYN-d5c663,Facility Engineer,SYN-ee5079,Marine Coordinator,SYN-86b27b,Facility Engineer,2025-02-08,SYN-4e77c4,Maintenance Supervisor,2025-04-06,"Upon completing Blowout Preventer (BOP) testing and before resuming drilling
 operations, the rig experienced a fire alarm and partial loss of power as a result of
 an electrical failure in the Dynamic Position (DP) system. The event led to all six
 thrusters going offline with the rig drifting 15-1/2 ft off location, and personnel
@@ -3912,7 +3912,7 @@ result of voltage fluctuations from power demand. Subsequent to the event the lo
 for the electrical controls of the DP system have been modified to better respond to
 power demands. These modifications have also been made to other Transocean rigs that
 utilize the same system.",,,,,,,,,,,,,,C,,
-CP-6A8DC9AF27,,Serious Incident,2025-02-04,06:08,2025-02-06,EW,910,A,,Drilling,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,Combustion,SYN-677119,HSE Advisor,SYN-02c0ea,Operations Superintendent,SYN-af935d,Maintenance Supervisor,2025-02-11,SYN-34a99a,Marine Coordinator,2025-05-11,"On February 4, 2025, W & T Offshore, Inc. (W & T) notified the Bureau of Safety and
+HB-6A8DC9AF27,,Serious Incident,2025-02-04,06:08,2025-02-06,EW,910,A,,Drilling,LIFTING,Loss Event,Business Interruption & Cost,Equipment Damage,Combustion,SYN-677119,HSE Advisor,SYN-02c0ea,Operations Superintendent,SYN-af935d,Maintenance Supervisor,2025-02-11,SYN-34a99a,Marine Coordinator,2025-05-11,"On February 4, 2025, W & T Offshore, Inc. (W & T) notified the Bureau of Safety and
 Environmental Enforcement (BSEE) Houma District Office that a fire incident occurred
 at Platform “A,” located within Block 910 of the Ewing Banks Area (EW 910 A), Lease
 OCS-G13079, approximately 70 miles offshore in the Gulf of America. The incident
@@ -3937,7 +3937,7 @@ ESD system. The PIC identified the location of the fire near the glycol regenera
 skid and notified the platform crew. Platform personnel responded to the scene
 utilizing firewater hoses and directed water at the base of the flames until the fire
 was extinguished. The estimated duration of the fire was five minutes.","Reported as a fire and damage over $25,000. Estimated property damage $51,917.",Serious Incident,,Serious Incident,12,D,3,,,,,,,B,,
-CP-D6CA82ECCB,,Serious Incident,2025-03-27,15:20,2025-04-02,EB,602,,DIAMOND OCEAN VALIANT,Maintenance,LIFTING DEVICE,Loss Event,,,Combustion,SYN-d18389,Operations Superintendent,SYN-7722d7,Production Foreman,SYN-f45bee,Operations Superintendent,2025-04-09,SYN-a3fa7f,HSE Advisor,2025-06-24,"Four contract workers (two two-man construction teams) were in SC-1 Area (dry storage
+HB-D6CA82ECCB,,Serious Incident,2025-03-27,15:20,2025-04-02,EB,602,,DIAMOND OCEAN VALIANT,Maintenance,LIFTING DEVICE,Loss Event,,,Combustion,SYN-d18389,Operations Superintendent,SYN-7722d7,Production Foreman,SYN-f45bee,Operations Superintendent,2025-04-09,SYN-a3fa7f,HSE Advisor,2025-06-24,"Four contract workers (two two-man construction teams) were in SC-1 Area (dry storage
 area located beneath the lower level of the living quarters) of the Diamond Ocean
 Valiant Semi-submersible drilling rig installing new plumbing for a drain line on new
 quarters. Cutting, grinding, and welding were being conducted on a four inch pipe.
@@ -3957,7 +3957,7 @@ efforts to extinguish the fire under heavy smoke and poor visibility. The second
 two-man group exited the area once air tanks were depleted. The first two-man team
 re-entered the area a second time and were successful in extinguishing the fire,
 giving the all clear approximately forty-five minutes after the initial alarm.","Reported as a fire. Estimated property damage $2,957.",Serious Incident,,Serious Incident,15,E,3,,,,,,,A,,
-CP-DAA226FBAE,,Serious Incident,2025-04-01,08:30,2025-04-06,HI,47,A,,Drilling,,Loss Event,Health & Safety,,Combustion,SYN-994426,Operations Superintendent,SYN-0dac01,Facility Engineer,SYN-af6b87,Production Foreman,2025-04-12,SYN-2155fa,Production Foreman,2025-06-27,"On Wednesday, April 1, 2025, at about 0735, a fire broke out on Spinnaker's High
+HB-DAA226FBAE,,Serious Incident,2025-04-01,08:30,2025-04-06,HI,47,A,,Drilling,,Loss Event,Health & Safety,,Combustion,SYN-994426,Operations Superintendent,SYN-0dac01,Facility Engineer,SYN-af6b87,Production Foreman,2025-04-12,SYN-2155fa,Production Foreman,2025-06-27,"On Wednesday, April 1, 2025, at about 0735, a fire broke out on Spinnaker's High
 Island (HI) Block 47 A platform. Two contract workers were injured. The Production
 foremen works for the Wood Group. The well on this platform has a shut in pressure of
 psi and produces with a FTP of psi. The well produces about MMCF/D,
@@ -3985,7 +3985,7 @@ blast from the open choke body was directly toward the living quarters located a
 in the blaze. The contract injured man with the burns worked for E S & H and was in
 the living quarters at the time of the incident, while the other contract man working
 for Schooner Chokes sustained the broken bone when he jumped to the lower deck.","The incident resulted in an injury recorded without a severity code. Reported as a fire. Estimated property damage $800,000.",Serious Incident,,Serious Incident,12,D,3,,,,,,,C,,
-CP-C081E1AA66,,Very Serious Incident,2025-04-10,21:00,2025-04-12,WR,634,,T.O. DEEPWATER CONQUEROR,Construction,LIFTING CMC,Loss Event,,,,,,SYN-b9a1a7,Facility Engineer,,,,,,,"On April 10, 2025, an incident occurred on the Transocean Deepwater Conqueror,
+HB-C081E1AA66,,Very Serious Incident,2025-04-10,21:00,2025-04-12,WR,634,,T.O. DEEPWATER CONQUEROR,Construction,LIFTING CMC,Loss Event,,,,,,SYN-b9a1a7,Facility Engineer,,,,,,,"On April 10, 2025, an incident occurred on the Transocean Deepwater Conqueror,
 operating for Chevron, located in Walker Ridge Block 634. The Driller was attempting
 to take the drill string weight with the Crown Motion Compensator (CMC), when the
 command was given to open the CMC valve while the CMC cylinders were at mid stroke.
@@ -4059,7 +4059,7 @@ interlocks of the Olmsted valve opening when it is activated. The software upgra
 prevent the CMC valve from unintentionally opening, if there is a differential pressure
 over the CMC valve in any direction. A successful function test was performed to verify
 and test the CMC valve after the software upgrade.",No injuries were reported and an onsite investigation was initiated.,Very Serious Incident,,Very Serious Incident,,,,,,,,,,,,
-CP-77EC5E32E6,,,2025-04-16,13:30,2025-04-19,GI,47,AP,,Marine & Logistics,LIFTING,Loss Event,Health & Safety,,,SYN-203428,Production Foreman,SYN-0f05bb,Maintenance Supervisor,SYN-ff5859,HSE Advisor,2025-04-25,SYN-1c0690,Marine Coordinator,2025-05-18,"On 16 April 2025, at approximately 1330 hours, an incident occurred at Grand Isle (GI)
+HB-77EC5E32E6,,,2025-04-16,13:30,2025-04-19,GI,47,AP,,Marine & Logistics,LIFTING,Loss Event,Health & Safety,,,SYN-203428,Production Foreman,SYN-0f05bb,Maintenance Supervisor,SYN-ff5859,HSE Advisor,2025-04-25,SYN-1c0690,Marine Coordinator,2025-05-18,"On 16 April 2025, at approximately 1330 hours, an incident occurred at Grand Isle (GI)
 47 AP platform. GI 47 AP platform is a fixed leg platform located in the Gulf of
 America that is owned and operated by GOM Shelf LLC (GOM Shelf). During the incident,
 a Louisiana Safety Systems, Inc. (LSS) Valve Technician (IP) was in the process of
@@ -4303,7 +4303,7 @@ unforeseen pressure releases.
 • Management will develop, distribute, and verify field-leadership review of a Safety
 Alert describing the case findings of this incident, the learnings, and the action
 necessary to prevent/avoid a future incident of this type."
-CP-333C0E1191,,Serious Incident,2025-04-17,16:20,2025-04-20,WD,71,E,,Production Operations,LIFTING DEVICE,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-a331ef,Marine Coordinator,SYN-07a11a,Marine Coordinator,SYN-c0c9f7,Production Foreman,2025-04-30,SYN-e0b0c7,Facility Engineer,2025-05-15,"On April 17, 2025 at approximately 1620 hours, the crane operator was in the process
+HB-333C0E1191,,Serious Incident,2025-04-17,16:20,2025-04-20,WD,71,E,,Production Operations,LIFTING DEVICE,Loss Event,Business Interruption & Cost,Equipment Damage,,SYN-a331ef,Marine Coordinator,SYN-07a11a,Marine Coordinator,SYN-c0c9f7,Production Foreman,2025-04-30,SYN-e0b0c7,Facility Engineer,2025-05-15,"On April 17, 2025 at approximately 1620 hours, the crane operator was in the process
 of lifting a 4' x 8' cargo basket which contained several blind flanges and valves,
 weighing approximately 9,500 pounds. The crane in question is a Model 500, Mariner,
 50 ton Mechanical (Friction) unit. At the time of the incident the operator was
@@ -4321,7 +4321,7 @@ engaged. It was determined that the racket pawl tension spring was not connected
 causing the device not to engage. The ratchet pawl mechanism on the boom hoist, on
 this type of crane, is present to prevent a loss boom control in the event of a brake
 failure.","Reported as damage over $25,000 and a crane incident. Estimated property damage $250,000.",Serious Incident,,Serious Incident,20,D,5,,,,,,,C,,
-CP-985A475390,,,2025-04-20,12:00,2025-04-22,GB,172,­ B(SALSA),,Marine & Logistics,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-f2dac7,HSE Advisor,SYN-44f271,Production Foreman,SYN-0edea9,Production Foreman,2025-05-01,SYN-da54b7,Marine Coordinator,2025-05-29,"-
+HB-985A475390,,,2025-04-20,12:00,2025-04-22,GB,172,­ B(SALSA),,Marine & Logistics,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-f2dac7,HSE Advisor,SYN-44f271,Production Foreman,SYN-0edea9,Production Foreman,2025-05-01,SYN-da54b7,Marine Coordinator,2025-05-29,"-
 On April 20, 2025 at approximately 1200 hours, a contract employee (CE) was injured
 while attempting to reposition a storage cabinet to be blasted and painted.
 Two contract employees were moving a storage cabinet to be blasted and painted. Prior
@@ -4343,11 +4343,11 @@ When the CE removed his glove he discovered his thumb nail had been nearly detac
 and was brought to the medic. The CE was flown in for additional treatment and was
 found to have a fractured left thumb.
 The BSEE Lafayette District conducted an onsite investigation April 27, 2025.",The incident resulted in restricted work or job transfer for more than 3 days. The facility was evacuated.,,,,,,,,,,,,,,,
-CP-150683939C,,,2025-04-25,11:30,2025-04-27,SM,6524,HIDALGO,,Maintenance,LIFTING DEVICE,,,,,SYN-dbada5,Maintenance Supervisor,SYN-a2ac77,HSE Advisor,SYN-777702,Operations Superintendent,2025-05-13,SYN-0b90cb,Facility Engineer,2025-05-30,"Mr. was tying off electric cables to a cable tray @ 20 1 7 11 above the drill
+HB-150683939C,,,2025-04-25,11:30,2025-04-27,SM,6524,HIDALGO,,Maintenance,LIFTING DEVICE,,,,,SYN-dbada5,Maintenance Supervisor,SYN-a2ac77,HSE Advisor,SYN-777702,Operations Superintendent,2025-05-13,SYN-0b90cb,Facility Engineer,2025-05-30,"Mr. was tying off electric cables to a cable tray @ 20 1 7 11 above the drill
 floor level.When he attempted to exit the tray he fell to the floor below.His fall
 was somewhat broken by a support pipe@ 9 1 below the cable tray.Marks on the pipe
 indicated a fall route. landed extremely hard,then he fell backwards ..",,,,,,,,,,,,,,,,
-CP-5004608A74,,,2025-06-19,09:40,2025-06-26,MP,153B,B,,Production Operations,LIFTING,,,,,SYN-586ec1,Operations Superintendent,SYN-12edab,HSE Advisor,SYN-b87774,Production Foreman,2025-07-03,SYN-bef289,Operations Superintendent,2025-07-18,"On 19 June 2025 at approximately 18:00, a backfire occurred while trying to start
+HB-5004608A74,,,2025-06-19,09:40,2025-06-26,MP,153B,B,,Production Operations,LIFTING,,,,,SYN-586ec1,Operations Superintendent,SYN-12edab,HSE Advisor,SYN-b87774,Production Foreman,2025-07-03,SYN-bef289,Operations Superintendent,2025-07-18,"On 19 June 2025 at approximately 18:00, a backfire occurred while trying to start
 the compressor engine at the Main Pass (MP) Block 153 “B” platform, owned and operated
 by Fieldwood Energy, LLC. (Fieldwood). The platform remained shut in as a result of
 the incident. No injuries were reported. There was damage to the wall siding, lights
@@ -4389,7 +4389,7 @@ Conclusion:
 A sticking relay in a pneumatic panel in the start fuel/ignition circuit allowed the
 engine to be saturated with unburnt fuel, which caused a backfire upon the second
 attempt to start the engine."
-CP-88C6FA6A72,,,2025-06-23,17:45,2025-06-25,EI,259,C,,Marine & Logistics,LIFTING,Loss Event,Health & Safety,Injury TLI,,,,SYN-687281,Facility Engineer,,,,,,,"On June 23, 2025, at approximately 1745 hours, a crane mechanic (CM) fell
+HB-88C6FA6A72,,,2025-06-23,17:45,2025-06-25,EI,259,C,,Marine & Logistics,LIFTING,Loss Event,Health & Safety,Injury TLI,,,,SYN-687281,Facility Engineer,,,,,,,"On June 23, 2025, at approximately 1745 hours, a crane mechanic (CM) fell
 approximately 96 ft. from the gantry of the crane. The incident occurred on the Cox
 Operating L.L.C. (Cox) OCS-G00985 Eugene Island (EI) 259 C Facility. While attempting
 to replace the auxiliary winch, a brace the CM was attempting to remove broke free.
@@ -4433,7 +4433,7 @@ During the duration that the CM and helper were replacing the winch, the person 
 charge of the platform did not monitor or visit the site where the incident occurred.
 Also, the CM failed to conduct a stop work authority and readdress the Job Safety
 Analysis when the decision was made to remove the brace."
-CP-E71BFC6DA7,,Incident,2025-06-23,16:30,2025-06-25,GC,826,RIG NAME DIAMOND OCEAN CONFIDENCE,,Marine & Logistics,pollution,Loss Event,Environment & Reputation,Loss of Containment,,,,SYN-327021,HSE Advisor,,,,,,,"The valve controller for the primary dump valve on the possum belly was discovered in
+HB-E71BFC6DA7,,Incident,2025-06-23,16:30,2025-06-25,GC,826,RIG NAME DIAMOND OCEAN CONFIDENCE,,Marine & Logistics,pollution,Loss Event,Environment & Reputation,Loss of Containment,,,,SYN-327021,HSE Advisor,,,,,,,"The valve controller for the primary dump valve on the possum belly was discovered in
 the open position at 1245 hours on June 23, 2025. For normal oil base mud
 practice, the handle for the valve controller is not left on the controller. A sign
 which says ""Do Not Operate"" is usually covering the hole. But for some reason the
@@ -4458,7 +4458,7 @@ point. A locking device was installed on the toggle to the air actuator and on t
 secondary barrier valve to prevent future incidents. The JSA will be revised for oil
 base mud or synthetic base mud loading, and for displacing the hole to oil base or
 synthetic base mud. The incident will be reviewed with all crews.",Reported as a pollution release.,Incident,,Incident,8,D,2,,,C,,,,,,
-CP-F5A151FC3D,,,2025-07-17,11:00,2025-07-19,SM,6636,HONDO,,Marine & Logistics,LIFTING DEVICE,,,,,SYN-a74211,Maintenance Supervisor,SYN-448090,Facility Engineer,SYN-063e37,Facility Engineer,2025-07-25,SYN-302622,Production Foreman,2025-10-03,"17. INVESTIGATION FINDINGS'
+HB-F5A151FC3D,,,2025-07-17,11:00,2025-07-19,SM,6636,HONDO,,Marine & Logistics,LIFTING DEVICE,,,,,SYN-a74211,Maintenance Supervisor,SYN-448090,Facility Engineer,SYN-063e37,Facility Engineer,2025-07-25,SYN-302622,Production Foreman,2025-10-03,"17. INVESTIGATION FINDINGS'
 Contract worker was having difficulty removing threaded studs on flow safety valve on
 4-inch flowline on Well #H-38, so he decided to use a pneumatic saw to cut through
 the studs. When he cut through the second to last stud, trapped pressure was released
@@ -4466,7 +4466,7 @@ spraying oil/water emulsion on chest and under worker's face shield and safety
 glasses. Trapped pressure was not anticipated because prior to attempting to remove
 the flow safety valve, the existing flow line was cold cut upstream of the check
 valve without incident.",,,,,,,,,,,,,,,,
-CP-D36DCDB2B7,,Incident,2025-07-20,06:00,2025-07-22,GI,43,AP-QRT,,Maintenance,LIFTING,Loss Event,Environment & Reputation,Loss of Containment,,SYN-59a41e,Facility Engineer,SYN-6f9523,Production Foreman,SYN-253807,Marine Coordinator,2025-07-26,SYN-c31715,HSE Advisor,2025-08-16,"On July 20, 2025, on the GI 43 AP (Pump Platform) Lease OCS-G00175, a loss of
+HB-D36DCDB2B7,,Incident,2025-07-20,06:00,2025-07-22,GI,43,AP-QRT,,Maintenance,LIFTING,Loss Event,Environment & Reputation,Loss of Containment,,SYN-59a41e,Facility Engineer,SYN-6f9523,Production Foreman,SYN-253807,Marine Coordinator,2025-07-26,SYN-c31715,HSE Advisor,2025-08-16,"On July 20, 2025, on the GI 43 AP (Pump Platform) Lease OCS-G00175, a loss of
 containment of hydrocarbons and gas releases occurred. The platform operators
 responded to the loss of containment ultimately shutting in the field several hours
 later once a sheen was observed coming from the platform. The sheen was reported to
@@ -4502,7 +4502,7 @@ photos, and conducting interviews with personnel. On January 26th at approximate
 miles and originating from the GI 43 AA facility. The inspectors then verified that
 the GI 43 AP Platform was shut-in and all production halted. BSEE requested that
 Fieldwood ensure the sources of the pollution had been identified and stopped. The",No injuries occurred from this incident.,Incident,,Incident,6,C,2,,,C,,,,A,,
-CP-FFCFEC9F13,,Incident,2025-07-22,16:10,2025-07-25,WC,20,D,,Production Operations,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,Gas/Vapour Release,SYN-243ea0,Maintenance Supervisor,SYN-ebbebf,HSE Advisor,SYN-afb1b6,Marine Coordinator,2025-08-03,SYN-575156,Production Foreman,2025-09-27,"On July 22, 2025, Black Elk Energy Offshore Operations (BEEOO) experienced a
+HB-FFCFEC9F13,,Incident,2025-07-22,16:10,2025-07-25,WC,20,D,,Production Operations,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,Gas/Vapour Release,SYN-243ea0,Maintenance Supervisor,SYN-ebbebf,HSE Advisor,SYN-afb1b6,Marine Coordinator,2025-08-03,SYN-575156,Production Foreman,2025-09-27,"On July 22, 2025, Black Elk Energy Offshore Operations (BEEOO) experienced a
 gasket failure on the West Cameron (WC) 20-D facility's 4-in departing pipeline
 riser, segment #17023. This incident caused a release of hydrocarbons into the Gulf
 of Mexico waters near the facility. At the time of the incident, there was a Lift
@@ -4561,7 +4561,7 @@ Environmental Management System (SEMS) Plan:
 * 9. Pre-Startup Review - a comprehensive Pre-Startup Checklist must be completed
 prior to placing any new or overhauled equipment system or production facility in
 operation.",Reported as a pollution release and a shutdown following a gas release.,Incident,,Incident,8,D,2,,,C,,,,,,
-CP-C45C57A1CF,,,2025-07-30,13:50,2025-07-31,SS,241,­ A-VALVE,* HYDRAULIC WORKOVER,Maintenance,LIFTING DEVICE,Loss Event,Health & Safety,,,SYN-e27bfb,Operations Superintendent,SYN-128a8e,Operations Superintendent,SYN-bcd531,Maintenance Supervisor,2025-08-03,SYN-311ef6,HSE Advisor,2025-08-26,"-
+HB-C45C57A1CF,,,2025-07-30,13:50,2025-07-31,SS,241,­ A-VALVE,* HYDRAULIC WORKOVER,Maintenance,LIFTING DEVICE,Loss Event,Health & Safety,,,SYN-e27bfb,Operations Superintendent,SYN-128a8e,Operations Superintendent,SYN-bcd531,Maintenance Supervisor,2025-08-03,SYN-311ef6,HSE Advisor,2025-08-26,"-
 On July 30, 2025, an employee working on the deck of Weatherford's Hydraulic
 Pulling Unit #4 was struck on the right arm by a piece of equipment that fell from
 the derrick.
@@ -4597,7 +4597,7 @@ led experts to believe that the fracture occurred due to overload (such as tensi
 bending, and/or torsional overload). Investigation findings were reviewed, and
 recommendations on how to prevent this type of incident were given to the companies
 involved.",The IP sustained no fractures or broken bones and was released to full duty the following day.,,,,,,,,,,,,,,,
-CP-219E2BD122,,,2025-08-15,21:40,2025-08-16,,,E,,Maintenance,LIFTING DEVICE,,,,,SYN-5eafbd,HSE Advisor,SYN-eb13f2,Facility Engineer,SYN-2d2649,Facility Engineer,2025-08-23,SYN-298d42,Marine Coordinator,2025-09-21,"On 15 August 2025, at approximately 1630 hours, an employee was struck by piping and
+HB-219E2BD122,,,2025-08-15,21:40,2025-08-16,,,E,,Maintenance,LIFTING DEVICE,,,,,SYN-5eafbd,HSE Advisor,SYN-eb13f2,Facility Engineer,SYN-2d2649,Facility Engineer,2025-08-23,SYN-298d42,Marine Coordinator,2025-09-21,"On 15 August 2025, at approximately 1630 hours, an employee was struck by piping and
 debris from a potable water tank that ruptured causing severe injuries to the
 employees face. The platform operators were experiencing low water pressure on the
 fresh water system and began to investigate to determine the cause. It was discovered
@@ -4622,7 +4622,7 @@ suffered severe injuries to his face. The IE was initially transported to Lafaye
 General, but due to the severity of the facial injuries he was then transported to
 Houston Memorial Herman Hospital for additional treatment. Due to the severity of the
 employee's injuries, the lessee has postponed questioning until a later date.",,,,,,,,,,,,,,,,
-CP-0799BDD27E,,Very Serious Incident,2025-08-17,20:20,2025-08-19,GB,244,,T.O. F100,Drilling,LIFTING DEVICE Top drive/derrick,Loss Event,Health & Safety,Injury TLI,,SYN-7dc8b4,Maintenance Supervisor,SYN-3f80ac,Maintenance Supervisor,SYN-9659cc,HSE Advisor,2025-08-31,SYN-f739e6,HSE Advisor,2025-09-06,"On 17 August 2025 at approximately 2020 hours, a fifty-three pound lifting-sub fell
+HB-0799BDD27E,,Very Serious Incident,2025-08-17,20:20,2025-08-19,GB,244,,T.O. F100,Drilling,LIFTING DEVICE Top drive/derrick,Loss Event,Health & Safety,Injury TLI,,SYN-7dc8b4,Maintenance Supervisor,SYN-3f80ac,Maintenance Supervisor,SYN-9659cc,HSE Advisor,2025-08-31,SYN-f739e6,HSE Advisor,2025-09-06,"On 17 August 2025 at approximately 2020 hours, a fifty-three pound lifting-sub fell
 sixty-five feet from the derrick striking and injuring two contractors. One
 contractor employed by Halliburton the other by Tesco, were installing a completion
 assembly to a joint of 2-3/8"" production tubing when the lifting-sub fell to the rig
@@ -4642,7 +4642,7 @@ made up into the completion assembly. It was observed by witness that the top dr
 elevators were not lowered enough to clear the lifting-sub. All operations were
 suspended to allow for safe removal of the two injured contractors from the rig
 floor.",The incident resulted in a lost-time accident with more than 3 days lost. Reported as a lifting-device incident. The facility was evacuated.,Very Serious Incident,,Very Serious Incident,25,E,5,,,,,,,,,
-CP-F8EC8FB423,,,2025-08-28,07:05,2025-08-30,WD,96,R,,Well Services,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-80af51,HSE Advisor,SYN-14dfbc,Production Foreman,SYN-764c81,Facility Engineer,2025-09-06,SYN-8caac0,Maintenance Supervisor,2025-10-23,"On August 28, 2025, at BP America Production Company's Lease OCS 00839 West Delta (WD)
+HB-F8EC8FB423,,,2025-08-28,07:05,2025-08-30,WD,96,R,,Well Services,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-80af51,HSE Advisor,SYN-14dfbc,Production Foreman,SYN-764c81,Facility Engineer,2025-09-06,SYN-8caac0,Maintenance Supervisor,2025-10-23,"On August 28, 2025, at BP America Production Company's Lease OCS 00839 West Delta (WD)
 Block 96, Platform R, a galley hand injured his back while lifting a large pot.
 Injured Person (IP) did not report the incident until 5-10-08. IP was treated by the
 Medic and evacuated for further evaluation. IP was placed on restricted duty until
@@ -4657,7 +4657,7 @@ evaluation at 08:14 hrs on 5/10/08.
 Final Report:
 Physician placed IP on restricted duty until 5/20/08
 full duty."
-CP-46FB188BB1,,,2025-08-31,15:50,2025-09-04,SP,38,A,,Maintenance,LIFTING DEVICE,Loss Event,Health & Safety,Injury Fatality,,SYN-1581b6,Marine Coordinator,SYN-730552,Marine Coordinator,SYN-6f0c7c,Operations Superintendent,2025-09-09,SYN-e98526,Marine Coordinator,2025-10-03,"On August 31, 2025, at approximately 1550 hours, an Air Logistics helicopter
+HB-46FB188BB1,,,2025-08-31,15:50,2025-09-04,SP,38,A,,Maintenance,LIFTING DEVICE,Loss Event,Health & Safety,Injury Fatality,,SYN-1581b6,Marine Coordinator,SYN-730552,Marine Coordinator,SYN-6f0c7c,Operations Superintendent,2025-09-09,SYN-e98526,Marine Coordinator,2025-10-03,"On August 31, 2025, at approximately 1550 hours, an Air Logistics helicopter
 contracted by Island Operators Company Inc., crashed into the Gulf of Mexico waters,
 100 yards away from Stone Energy Corporation's OCS-G 21695 South Pass (SP) 38A
 Platform, as the helicopter was attempting to land on the platform. Three Island
@@ -4703,7 +4703,7 @@ about 22-nautical miles to the northwest reported winds from 030 degrees at 7 kn
 visibility 10 statute miles, ceiling overcast at 1,000- feet, temperature 55 degrees
 Fahrenheit, dew point 51 degrees Fahrenheit, and a barometric pressure of 30.05
 inches of Mercury."
-CP-025477A654,,Incident,2025-09-11,19:00,2025-09-12,GB,667,,DIAMOND OCEAN STAR,Production Operations,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,,,SYN-914a13,Maintenance Supervisor,,,,,,,"On 11 September 2025 at 1900 hours, the Ocean Star completed testing/flushing the
+HB-025477A654,,Incident,2025-09-11,19:00,2025-09-12,GB,667,,DIAMOND OCEAN STAR,Production Operations,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,,,SYN-914a13,Maintenance Supervisor,,,,,,,"On 11 September 2025 at 1900 hours, the Ocean Star completed testing/flushing the
 choke line, but the Driller did not observe an increase in pressure. Subsequent to
 stopping the pumps, it was discovered that the choke droop hose connection on the
 gooseneck to the slip joint on the riser was disconnected. It was later determined
@@ -4713,7 +4713,7 @@ not recoverable. The actual product discharged was Rheliant 14.0, an olefin base
 drilling fluid.
 The repairs were completed and the gooseneck connection was tested to 250/8000 psi at
 approximately 1500 hours on 27 February 27 2008 when the weather conditions improved.","Reported as a pollution release. Estimated property damage $22,400.",Incident,,Incident,8,D,2,,,C,,,,A,,
-CP-E38FA6EFB8,,Incident,2025-09-12,00:55,2025-09-16,MC,199,,SEADRILL WEST NEPTUNE,Maintenance,LIFTING,Loss Event,Environment & Reputation,Loss of Containment,,SYN-e26f8f,HSE Advisor,SYN-694921,Production Foreman,SYN-75faca,Maintenance Supervisor,2025-09-29,SYN-2c2ca5,Production Foreman,2025-11-14,"At approximately 0055 hrs on 12 September 2025, LLOG Exploration Offshore LLC had a spill
+HB-E38FA6EFB8,,Incident,2025-09-12,00:55,2025-09-16,MC,199,,SEADRILL WEST NEPTUNE,Maintenance,LIFTING,Loss Event,Environment & Reputation,Loss of Containment,,SYN-e26f8f,HSE Advisor,SYN-694921,Production Foreman,SYN-75faca,Maintenance Supervisor,2025-09-29,SYN-2c2ca5,Production Foreman,2025-11-14,"At approximately 0055 hrs on 12 September 2025, LLOG Exploration Offshore LLC had a spill
 incident (61 bbls of Sythetic Oil-Based Mud [SBM]) on board Seadrill West Neptune
 Drillship while conducting drilling operations at Mississippi Canyon Block 199, OCS-G
 32301. Sixty-one barrels of Synthetic Oil-Based Mud (SBM) spilled in the Gulf of
@@ -4752,7 +4752,7 @@ valve alignment before all fluid transfers according to fluid transfer procedure
 Captain also informed the inspectors that the pit cleaning crews had possibly locked
 open the master dump valve and never returned it to its normally closed and locked
 position.",Reported as a pollution release.,Incident,,Incident,8,D,2,,,C,,,,,,
-CP-3EAAF529AA,,,2025-09-28,07:00,2025-09-29,MO,916,,,Construction,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-5bed27,Marine Coordinator,SYN-415aa9,Facility Engineer,SYN-00c580,HSE Advisor,2025-10-04,SYN-3c227e,Facility Engineer,2025-12-04,"On September 28, 2025, at approximately 7:00, at Chevron U.S.A. Inc.'s OCS-G 05753,
+HB-3EAAF529AA,,,2025-09-28,07:00,2025-09-29,MO,916,,,Construction,LIFTING DEVICE,Loss Event,Health & Safety,Injury Minor,,SYN-5bed27,Marine Coordinator,SYN-415aa9,Facility Engineer,SYN-00c580,HSE Advisor,2025-10-04,SYN-3c227e,Facility Engineer,2025-12-04,"On September 28, 2025, at approximately 7:00, at Chevron U.S.A. Inc.'s OCS-G 05753,
 Mobile (MO) 916 A Platform, an employee was injured when he smashed his own index
 finger on his left hand with a hammer and a hammer wrench, as a result of human
 error. Injured Person (IP) received stitches, no break or fracture. IP was placed on
@@ -4763,7 +4763,7 @@ Supervisor with Quality Energy Services reported that the IP did not have a brea
 a fracture, however did receive stitches to the open cut on his finger. IP has been
 on light duty since the accident and is expected
 follow up visit this week."
-CP-E46253EDAD,,,2025-11-05,03:05,2025-11-10,,,,T.O. DISCOVERER ENTERPRISE,Maintenance,LIFTING DEVICE,,,,,SYN-76bb94,Operations Superintendent,SYN-a72a14,HSE Advisor,SYN-27b79b,Operations Superintendent,2025-11-18,SYN-ab2c0b,Operations Superintendent,2026-01-01,"Well No. 6 was TD'd at 24,910' KB. Rig on the main rotary was in the process of
+HB-E46253EDAD,,,2025-11-05,03:05,2025-11-10,,,,T.O. DISCOVERER ENTERPRISE,Maintenance,LIFTING DEVICE,,,,,SYN-76bb94,Operations Superintendent,SYN-a72a14,HSE Advisor,SYN-27b79b,Operations Superintendent,2025-11-18,SYN-ab2c0b,Operations Superintendent,2026-01-01,"Well No. 6 was TD'd at 24,910' KB. Rig on the main rotary was in the process of
 pulling out of hole with drill pipe at 24,726' KB when the rig experienced a heave
 followed by a jarring action at 4:00 a.m. It was believed that riser had become
 unlatched or parted. The remote operated vehicle (ROV), which was observing 20""
@@ -4812,7 +4812,7 @@ located 40' below mud line. MMS Accident Investigation Team (Lars Herbst, David
 Trocquet, Fred Hefren) met with BP, Transocean, and Stress Engineering to discuss
 incident and get update of their investigation.
 17. INVESTIGATION FINDINGS (See",,,,,,,,,,,,,,D,,
-CP-1CE2872E60,,Incident,2025-11-08,10:50,2025-11-11,GC,177,,CAL DIVE Q-4000,Production Operations,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-d3f511,Production Foreman,SYN-a55a48,Operations Superintendent,SYN-ed44ff,Production Foreman,2025-11-17,SYN-7b43ca,HSE Advisor,2025-12-24,"A coil tubing unit was rigged up to the pipeline at Green Canyon 177 to clean out a
+HB-1CE2872E60,,Incident,2025-11-08,10:50,2025-11-11,GC,177,,CAL DIVE Q-4000,Production Operations,LIFTING DEVICE,Loss Event,Environment & Reputation,Loss of Containment,,SYN-d3f511,Production Foreman,SYN-a55a48,Operations Superintendent,SYN-ed44ff,Production Foreman,2025-11-17,SYN-7b43ca,HSE Advisor,2025-12-24,"A coil tubing unit was rigged up to the pipeline at Green Canyon 177 to clean out a
 paraffin plug. The crew was using diesel to wash out the paraffin. A two
 compartment tank was being used for fluids. One side of the tank held diesel and the
 other side held seawater. The seawater was held to flush out the lines after the job
@@ -4827,7 +4827,7 @@ was ten percent diesel soaked paraffin and ninety percent seawater. This made th
 total amount of diesel overboard to be one barrel. The drain hose was removed and
 the valve closed and sealed. A helicopter overflight was conducted the following
 morning but no sign of a slick could be located.",Reported as a pollution release.,Incident,,Incident,,,,,,C,,,,,,
-CP-49E8044B52,,Incident,2025-11-22,19:15,2025-11-24,GC,652,RIG NAME ENSCO 7500,,Drilling,,Loss Event,Environment & Reputation,Loss of Containment,,SYN-7fcde8,Marine Coordinator,SYN-0daa56,Operations Superintendent,SYN-9c6d40,Facility Engineer,2025-11-28,SYN-a458c6,Marine Coordinator,2026-01-04,"In the process of drilling the well, the crew was attempting maintenance on the spare
+HB-49E8044B52,,Incident,2025-11-22,19:15,2025-11-24,GC,652,RIG NAME ENSCO 7500,,Drilling,,Loss Event,Environment & Reputation,Loss of Containment,,SYN-7fcde8,Marine Coordinator,SYN-0daa56,Operations Superintendent,SYN-9c6d40,Facility Engineer,2025-11-28,SYN-a458c6,Marine Coordinator,2026-01-04,"In the process of drilling the well, the crew was attempting maintenance on the spare
 BOP fail safe valve. The main diverter supply valve was closed, resulting in a
 pressure loss to the slip joint packer. After the loss of pressure occurred, the
 slip joint packer seal retracted causing 15 barrels of synthetic base mud to spill
@@ -4835,7 +4835,7 @@ into the Gulf of Mexico. The Assistant Subsea Engineer failed to execute the sco
 of the work planned out and discussed by the supervisor during the pre-tour safety
 meeting. In addition, no permit to work as required by Ensco's Safety System of Work
 Policy was prepared prior to the operation.",Reported as a pollution release.,Incident,,Incident,8,D,2,,,C,,,,,,
-CP-E267A319DC,,Very Serious Incident,2025-12-08,22:40,2025-12-09,GC,653,,T.O. DEVELOPMENT,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-0fa81c,Facility Engineer,SYN-bf7171,Operations Superintendent,SYN-6fe262,Maintenance Supervisor,2025-12-14,SYN-6ba439,Operations Superintendent,2026-01-16,"-
+HB-E267A319DC,,Very Serious Incident,2025-12-08,22:40,2025-12-09,GC,653,,T.O. DEVELOPMENT,Production Operations,LIFTING DEVICE,Loss Event,Health & Safety,Injury TLI,,SYN-0fa81c,Facility Engineer,SYN-bf7171,Operations Superintendent,SYN-6fe262,Maintenance Supervisor,2025-12-14,SYN-6ba439,Operations Superintendent,2026-01-16,"-
 On December 8, 2025, a Roustabout was struck on the left knee by a joint of 9 5/8""
 casing. The crane crew was moving a bundle of slings from the deck to a container.
 While performing this operation, one of the slings caught the edge of a deck beam.
@@ -4854,7 +4854,7 @@ rough.
 The Crane Operator also had warned the IP of poor body placement earlier in the same
 operation. He also noted the casing was not secured prior to the lift but this was
 not considered a hazard since the rig was not experiencing rough seas.",The incident resulted in a lost-time accident with more than 3 days lost. Reported as a crane incident. The facility was evacuated.,Very Serious Incident,,Very Serious Incident,25,E,5,,,,,,,,,
-CP-683FF38E7B,,Serious Incident,2025-12-11,04:15,2025-12-14,SS,259,JA,,Drilling,LIFTING DEVICE,Loss Event,,,Combustion,SYN-38bdc3,Maintenance Supervisor,SYN-d0f4d3,Production Foreman,SYN-2d3607,Maintenance Supervisor,2025-12-23,SYN-30f848,Marine Coordinator,2026-01-31,"On Saturday, December 11, 2025, a fire occurred in an auxiliary living quarters
+HB-683FF38E7B,,Serious Incident,2025-12-11,04:15,2025-12-14,SS,259,JA,,Drilling,LIFTING DEVICE,Loss Event,,,Combustion,SYN-38bdc3,Maintenance Supervisor,SYN-d0f4d3,Production Foreman,SYN-2d3607,Maintenance Supervisor,2025-12-23,SYN-30f848,Marine Coordinator,2026-01-31,"On Saturday, December 11, 2025, a fire occurred in an auxiliary living quarters
 building at SS-259 that eventually completely destroyed the interior of the building.
 At the time of this incident, a total of six personnel were aboard the facility. Four
 men were assigned to bunks in the main living quarters facility and the other two men
@@ -4980,7 +4980,7 @@ The fire was declared officially extinguished between 1:00 and 1:10PM on
 operation. The Pro-Valve employee who was initially rescued from the burning building
 was examined by a physician as a precautionary measure due to some smoke inhalation,
 but was discharged after examination.",There were no injuries to any personnel involved in any aspect of this operation.,Serious Incident,,Serious Incident,12,D,3,,,,,,,C,,
-CP-DB073185DD,,,2025-12-22,01:00,2025-12-25,WC,294,,,Well Services,LIFTING DEVICE,,,,,,,SYN-33ab8a,HSE Advisor,,,,,,,"In March of 2005, WC 294 C-2 well was operated by Newfield. A leak occurred on the
+HB-DB073185DD,,,2025-12-22,01:00,2025-12-25,WC,294,,,Well Services,LIFTING DEVICE,,,,,,,SYN-33ab8a,HSE Advisor,,,,,,,"In March of 2005, WC 294 C-2 well was operated by Newfield. A leak occurred on the
 surface controlled subsurface safety valve (SCSSV) control line, but the leak was
 stopped with Seal-Tite. In August 2006, repeated leak problems led to the
 installation of a Seal-Tite cylinder which provided intermittent injection of Seal-
@@ -5044,7 +5044,7 @@ head and tubing head adaptor thus compressing the air/gas in the void. The press
 that was in the void ejected the tubing hanger pin when it was improperly backed off
 of the compression ring. The IP should have made sure the stem of the pin was turning
 and not the packing nut.",,,,,,,,,,,,,,,,
-CP-80C3B52DBD,,Serious Incident,2025-12-23,16:20,2025-12-26,WD,73,D,,Marine & Logistics,LIFTING DEVICE,Loss Event,,,,SYN-a5c421,HSE Advisor,SYN-60068c,HSE Advisor,SYN-81959a,Facility Engineer,2026-01-21,SYN-5357de,Operations Superintendent,2026-01-13,"On 23-DEC-2025 at 1620 hrs at the West Delta (WD) 73-D, OCS-G 1083 Energy XXI
+HB-80C3B52DBD,,Serious Incident,2025-12-23,16:20,2025-12-26,WD,73,D,,Marine & Logistics,LIFTING DEVICE,Loss Event,,,,SYN-a5c421,HSE Advisor,SYN-60068c,HSE Advisor,SYN-81959a,Facility Engineer,2026-01-21,SYN-5357de,Operations Superintendent,2026-01-13,"On 23-DEC-2025 at 1620 hrs at the West Delta (WD) 73-D, OCS-G 1083 Energy XXI
 Platform, a crane incident occurred while offloading the 4.75 ton rental diesel
 generator from the Motor Vessel (M/V) Jessica Faye crew change boat to the platform.
 During the lift, the sea state was observed to be choppy resulting in the M/V

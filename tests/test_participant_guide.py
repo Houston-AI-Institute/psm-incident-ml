@@ -273,7 +273,7 @@ def test_template_claims_that_were_false():
     assert "The reports name real operators, so do not judge them." in text
     gl = section(text, "Glossary")
     assert "`real_only` holds only real values" not in gl
-    for must in ("`xw`", "`pseud`", "`key`", "generated cells left blank", "only `enriched` has provenance files"):
+    for must in ("`xw`", "`pseud`", "`key`", "generated cells left blank", "in `core/`, only `enriched` has provenance files"):
         assert must in gl, must
     assert "recommendations with no close-out" not in text
     assert "Tracks 3 and 4" in section(text, "Folders")
@@ -589,7 +589,7 @@ def test_no_llm_or_gold_cells_in_any_mode(modes):
 
 def test_real_only_holds_no_generated_cells(b_nocomp):
     """The glossary: real_only has real, xw, pseud and key cells; generated cells are blank;
-    only enriched has provenance files."""
+    in core/, only enriched has provenance files."""
     def rd(rel):
         with (b_nocomp / rel).open(encoding="utf-8", newline="") as fh:
             return list(csv.DictReader(fh))

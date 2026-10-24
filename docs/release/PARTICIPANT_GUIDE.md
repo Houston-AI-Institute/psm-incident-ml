@@ -72,7 +72,7 @@ There are no independent (gold) labels: nothing in this bundle is validated. The
 - **E19**: Element 19 of the EI PSM Framework, incident reporting and investigation. The tables follow its layout.
 - **Incident, cause, recommendation and close-out tables**: one row per incident, cause statement, recommended action, and recommendation closing.
 - **TLI / LTA**: injury levels. LTA is BSEE's code for an injury with days away from work. This project does not know what TLI stands for.
-- **`real_only` vs `enriched`**: `real_only` has real values, rule-derived (`xw`) values, pseudonyms (`pseud`) and keys (`key`), with generated cells left blank. `enriched` adds the generated (`syn`) cells, and only `enriched` has provenance files.
+- **`real_only` vs `enriched`**: `real_only` has real values, rule-derived (`xw`) values, pseudonyms (`pseud`) and keys (`key`), with generated cells left blank. `enriched` adds the generated (`syn`) cells, and in `core/`, only `enriched` has provenance files.
 
 ## Quick start
 

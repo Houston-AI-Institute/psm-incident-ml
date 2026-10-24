@@ -3662,3 +3662,50 @@ loop; set `stems = frozenset()` for phrases-only), point
 `psm.cause_task.strip_category` at each, and count
 `len(build_cause_task(REAL_ONLY))`, modern_six rows, and `_lookup_hits` from
 `tests/test_cause_task.py`.
+
+## 2026-10-24 — Fictional companies renamed (northstar, meridian, coastal)
+
+| old slug | new slug | label | ID prefix | `seed_key` / `seed_prefix` |
+|---|---|---|---|---|
+| northstar | alder | Alder | AL | northstar / NS |
+| meridian | hazel | Hazel | HZ | meridian / MR |
+| meridian_nt (test only) | hazel_nt | none | HZT | meridian_nt / MNT |
+| coastal | hornbeam | Hornbeam | HB | coastal / CP |
+
+**Why.** "NorthStar" collided with the real operator Northstar Offshore, and the
+names Meridian and Coastal match historical Gulf operators. The 2026-10-19 check
+of the BSEE company register (`data.bsee.gov/Company/Files/1070.pdf`, 4,621
+entries) found 0 entries for Alder, Hazel and Hornbeam. It found 3 Juniper
+entries, 2 of them with no termination date, so Juniper was not used. Larch was
+rejected because of Larch Oil & Gas Corp. (WV). (That register check was done on
+2026-10-19 and recorded in the task brief; it was not re-run for this entry.)
+
+**Draws are unchanged.** Every draw is keyed on the slug and on the incident
+number's prefix (`f"{company}|{sid}|..."`). A plain rename re-draws everything
+and fails the Hazel negative-control test (renamed `test_hazel_negative_controls`;
+|0.728 - 0.873| = 0.145 > 0.10, reproduced on 2026-10-19). Each
+`scenarios/*.yaml` therefore carries `seed_key` and `seed_prefix`, and
+`psm.scenario` hashes `_seed(company)` and `_seed_sid(sid)` (the visible prefix
+swapped for the seed prefix). Only the visible slug, label and ID prefix change.
+
+**Verified, by what method.**
+* `tests/test_scenario_rename.py::test_rename_preserves_draws` reads the
+  pre-rename register from the pinned commit `d41622e` (`git show`), swaps the
+  old ID prefixes for the new ones, and compares every column of the four value
+  CSVs except the free-text columns, for each company. It passed. The companion
+  test generates under the new slug without the seed and shows the register then
+  differs.
+* One-off, not a test: all 24 files (4 value CSVs and their 4 provenance CSVs,
+  for 3 companies) compared byte for byte against `d41622e` after the same
+  prefix substitution. 24 of 24 identical. `manifest.json` differs by design:
+  `company`, `scenario_sha256`, `resolved_knobs` (the two new seed keys) and the
+  `ref` strings.
+* After REGEN with the new slugs, `git diff --stat` showed changes only under
+  `data/companies/` (paths renamed), `scenarios/`, `src/`, `tests/` and the
+  participant guide. No other data file changed. `uv run pytest -q`: 734 passed,
+  2 skipped.
+
+**Where the old names remain.** The `seed_key` lines in `scenarios/*.yaml`, and
+so `resolved_knobs.seed_key` in each committed `data/companies/*/manifest.json`
+(manifests are not shipped in the release bundle). Old names also remain in git
+history and in dated entries above, which are not rewritten.

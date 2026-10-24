@@ -10,8 +10,8 @@ from psm.templates import classify_action
 ROOT = Path(__file__).resolve().parents[1] / "data" / "companies"
 
 
-def test_generate_northstar_shape_and_closed_provenance():
-    res = sc.generate("northstar")
+def test_generate_alder_shape_and_closed_provenance():
+    res = sc.generate("alder")
     t = res["tables"]
     assert set(t) == {"incidents", "causes", "recommendations", "closeout"}
     cols, rows, prov = t["incidents"]
@@ -24,7 +24,7 @@ def test_generate_northstar_shape_and_closed_provenance():
 
 
 def test_every_rec_has_a_closeout_row_and_registry_text():
-    res = sc.generate("northstar")
+    res = sc.generate("alder")
     _, recs, _ = res["tables"]["recommendations"]
     _, close, _ = res["tables"]["closeout"]
     assert len(recs) == len(close)
@@ -39,7 +39,7 @@ def test_every_rec_has_a_closeout_row_and_registry_text():
 
 
 def test_schedule_status_matches_the_date_comparison():
-    res = sc.generate("northstar")
+    res = sc.generate("alder")
     _, recs, _ = res["tables"]["recommendations"]
     _, close, _ = res["tables"]["closeout"]
     agreed = {(r["Incident Number"], r["Recommendation Number"]):
@@ -51,8 +51,8 @@ def test_schedule_status_matches_the_date_comparison():
         assert c["Schedule Status"] == expect
 
 
-def test_meridian_plants_eight_maintenance_pairs_and_detector_finds_them():
-    res = sc.generate("meridian")
+def test_hazel_plants_eight_maintenance_pairs_and_detector_finds_them():
+    res = sc.generate("hazel")
     pairs = res["planted_pairs"]
     assert len(pairs) == 8
     _, incs, _ = res["tables"]["incidents"]
@@ -64,18 +64,18 @@ def test_meridian_plants_eight_maintenance_pairs_and_detector_finds_them():
     assert set(map(tuple, pairs)) <= detected
 
 
-def test_coastal_planted_recurrence_pairs_are_a_subset_of_detected():
-    """Mirrors the meridian detector test above for Coastal (its `>= 6`
+def test_hornbeam_planted_recurrence_pairs_are_a_subset_of_detected():
+    """Mirrors the hazel detector test above for Hornbeam (its `>= 6`
     margin over the coincidence bound of 5 had no equivalent planted-vs-
     detected check). Reads the committed manifest's documented plant rather
     than a fresh sc.generate() call, so this validates what the manifest
     actually claims against the committed register."""
-    manifest = json.loads((ROOT / "coastal" / "manifest.json")
+    manifest = json.loads((ROOT / "hornbeam" / "manifest.json")
                           .read_text(encoding="utf-8"))
     recurrence_plant = next(p for p in manifest["plants"]
                             if p["kpi"] == "recurrence_rate")
     planted = {tuple(pair) for pair in recurrence_plant["affected_ids"]}
-    tables = load_company(ROOT / "coastal")
+    tables = load_company(ROOT / "hornbeam")
     detected = set(map(tuple,
                        sc.detect_recurrence_pairs(tables["incidents"],
                                                    tables["causes"], 365)))
@@ -83,7 +83,7 @@ def test_coastal_planted_recurrence_pairs_are_a_subset_of_detected():
 
 
 def test_planted_pair_ordering_invariants():
-    res = sc.generate("meridian")
+    res = sc.generate("hazel")
     _, incs, _ = res["tables"]["incidents"]
     by_id = {r["Incident Number"]: r for r in incs}
     for a, b in res["planted_pairs"]:
@@ -96,13 +96,13 @@ def test_planted_pair_ordering_invariants():
 
 
 def test_generate_is_deterministic_in_process():
-    a = sc.generate("northstar")
-    b = sc.generate("northstar")
+    a = sc.generate("alder")
+    b = sc.generate("alder")
     assert a["tables"] == b["tables"]
 
 
 def test_element_override_touches_only_the_first_cause_row():
-    res = sc.generate("meridian")
+    res = sc.generate("hazel")
     planted = {s for pair in res["planted_pairs"] for s in pair}
     _, causes, cprov = res["tables"]["causes"]
     for r, pr in zip(causes, cprov):

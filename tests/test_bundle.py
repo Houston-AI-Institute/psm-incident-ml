@@ -26,7 +26,7 @@ csv.field_size_limit(10**8)
 REPO = Path(__file__).resolve().parents[1]
 E19 = REPO / "data" / "processed" / "e19"
 COMP = REPO / "data" / "companies"
-COMPANIES = ["northstar", "meridian", "coastal"]
+COMPANIES = ["alder", "hazel", "hornbeam"]
 NARRATIVE = [
     "What happened?  ", "What was the outcome?", "How did the incident occur",
     "Description", "incident Title", "Detail",
@@ -265,11 +265,25 @@ def test_zip_matches_directory(b):
             assert z.read(n) == (b / n.split("/", 1)[1]).read_bytes()
 
 
+def test_company_folders_match_the_readme_names(b):
+    """R40: the bundle's companies/ folders are exactly the three renamed slugs, and every
+    company named in README_FIRST.md's "About the companies" section has a folder."""
+    folders = sorted(p.name for p in (b / "companies").iterdir())
+    assert folders == ["alder", "hazel", "hornbeam"]
+    readme = (b / "README_FIRST.md").read_text(encoding="utf-8")
+    m = re.search(r"^## About the companies\n(.*?)(?=^## |\Z)", readme, re.S | re.M)
+    assert m, "companies-mode README lacks the About the companies section"
+    named = re.search(r"^(\w+), (\w+) and (\w+) are fictional", m.group(1), re.M)
+    assert named, "the section no longer names the companies in its first sentence"
+    assert sorted(n.lower() for n in named.groups()) == folders
+    for name in named.groups():
+        assert (b / "companies" / name.lower() / "incidents.csv").is_file(), name
+
+
 def test_withheld_absent(any_b):
     names = " ".join(map(str, rel_files(any_b)))
-    # Task 8 adds "northstar", "meridian", "coastal" (the company slugs are renamed there).
     for bad in ["manifest.json", "llm_", "filled", "gold", ".xlsx", "scenarios", "e19_labels",
-                "investigations_index"]:
+                "investigations_index", "northstar", "meridian", "coastal"]:
         assert bad not in names
 
 
@@ -278,7 +292,7 @@ def test_withheld_absent(any_b):
 def test_pinned_fatal_ids_and_company_ids():
     s = fatal_sets()
     assert s["core"] == PINNED_FATAL
-    assert len(s["meridian"]) >= 1 and len(s["coastal"]) >= 1     # company layers hold fatal ids
+    assert len(s["hazel"]) >= 1 and len(s["hornbeam"]) >= 1     # company layers hold fatal ids
 
 
 def test_no_fatal_trace_anywhere(any_b):
@@ -345,16 +359,16 @@ def test_exclusions_drop_whole_incident(tmp_path, monkeypatch):
     """Deliberate violation: list a non-fatal id in the exclusions and see it vanish everywhere,
     including the company row minted from it."""
     task_ids = {r["Incident Number"] for r in rows(E19 / "cause_task.csv")}
-    donors = scenario.donor_partition("northstar")
+    donors = scenario.donor_partition("alder")
     victim = next(d for d in donors if d in task_ids and d not in PINNED_FATAL)
-    company_id = scenario.scenario_incident_number("northstar", victim)
+    company_id = scenario.scenario_incident_number("alder", victim)
     assert victim in {r["Incident Number"] for r in rows(E19 / "enriched/incidents.csv")}
-    assert company_id in {r["Incident Number"] for r in rows(COMP / "northstar/incidents.csv")}
+    assert company_id in {r["Incident Number"] for r in rows(COMP / "alder/incidents.csv")}
     monkeypatch.setattr(bundle, "load_exclusions", lambda *a, **k: [victim])
     out = bundle.build_bundle(tmp_path / "x", allow_dirty=True, allow_placeholder_terms=True)
     assert fatal_trace(out, all_fatal(extra=[victim])) == []
     assert victim not in {i for t in out.rglob("*.csv") for r in rows(t) for i in [r.get("Incident Number", "")]}
-    assert company_id not in {r["Incident Number"] for r in rows(out / "companies/northstar/incidents.csv")}
+    assert company_id not in {r["Incident Number"] for r in rows(out / "companies/alder/incidents.csv")}
     splits = json.loads((out / "core/real_only/splits.json").read_text(encoding="utf-8"))
     assert victim not in {i for v in splits["incident_ids"].values() for i in v}
 
@@ -773,13 +787,13 @@ def test_text_light_has_no_narrative(b_light, b):
     # control: the full bundle does carry them
     assert "Cause Description" in header(b / "core/enriched/causes.csv")
     assert "Recommendation Description" in header(b / "core/real_only/recommendations.csv")
-    assert "Recommendation Description" in header(b / "companies/northstar/recommendations.csv")
+    assert "Recommendation Description" in header(b / "companies/alder/recommendations.csv")
     # R29: the recommendations value and provenance files lose the column together
-    for rel in ("companies/northstar/recommendations.csv", "companies/northstar/recommendations_provenance.csv",
+    for rel in ("companies/alder/recommendations.csv", "companies/alder/recommendations_provenance.csv",
                 "core/real_only/recommendations.csv"):
         assert "Recommendation Description" not in header(b_light / rel), rel
-    assert header(b_light / "companies/northstar/recommendations.csv") == header(
-        b_light / "companies/northstar/recommendations_provenance.csv")
+    assert header(b_light / "companies/alder/recommendations.csv") == header(
+        b_light / "companies/alder/recommendations_provenance.csv")
     assert nrows(b_light / "core/real_only/recommendations.csv") == nrows(b / "core/real_only/recommendations.csv")
     assert "src_text_stripped" in header(b / "core/cause_task.csv")
     assert "What happened?  " in header(b / "core/enriched/incidents.csv")

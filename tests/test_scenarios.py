@@ -1,7 +1,7 @@
 # tests/test_scenarios.py
 """Finish line: every planted pathology recovered, negative controls bounded,
 near-threshold resolution proven, registers reproducible and clean.
-Companies are auto-discovered from data/companies/ so Task 13 (coastal)
+Companies are auto-discovered from data/companies/ so Task 13 (hornbeam)
 extends coverage by committing data, not by editing this file's core tests."""
 import json
 import math
@@ -31,7 +31,7 @@ def _mem(company):
 @pytest.fixture(scope="module")
 def kpis():
     out = {c: compute_kpis(load_company(ROOT / c)) for c in COMPANIES}
-    out["meridian_nt"] = compute_kpis(_mem("meridian_nt"))
+    out["hazel_nt"] = compute_kpis(_mem("hazel_nt"))
     return out
 
 
@@ -69,21 +69,21 @@ def test_engine_has_no_wall_clock_or_random_dependence():
             assert banned not in src, (mod.__name__, banned)
 
 
-# ---- planted vs measured: Meridian --------------------------------------
+# ---- planted vs measured: Hazel --------------------------------------
 
-def test_meridian_report_lag_planted(kpis):
-    assert kpis["meridian"]["median_report_lag"] > 3 * kpis["northstar"]["median_report_lag"]
-
-
-def test_meridian_closeout_decay_planted(kpis):
-    assert kpis["meridian"]["median_closeout_days"] > 2 * kpis["northstar"]["median_closeout_days"]
+def test_hazel_report_lag_planted(kpis):
+    assert kpis["hazel"]["median_report_lag"] > 3 * kpis["alder"]["median_report_lag"]
 
 
-def test_meridian_recurrence_planted_and_northstar_bounded(kpis, manifests):
-    assert kpis["meridian"]["recurrence_rate"] >= 8
-    # NorthStar planted 0: measured count IS the recorded coincidence count
-    assert kpis["northstar"]["recurrence_rate"] == \
-        manifests["northstar"]["analytic_expectations"]["recurrence_coincidence"]
+def test_hazel_closeout_decay_planted(kpis):
+    assert kpis["hazel"]["median_closeout_days"] > 2 * kpis["alder"]["median_closeout_days"]
+
+
+def test_hazel_recurrence_planted_and_alder_bounded(kpis, manifests):
+    assert kpis["hazel"]["recurrence_rate"] >= 8
+    # Alder planted 0: measured count IS the recorded coincidence count
+    assert kpis["alder"]["recurrence_rate"] == \
+        manifests["alder"]["analytic_expectations"]["recurrence_coincidence"]
 
 
 def test_overdue_is_emergent_and_matches_the_analytic_expectation(kpis, manifests):
@@ -94,22 +94,22 @@ def test_overdue_is_emergent_and_matches_the_analytic_expectation(kpis, manifest
     # RULING (carry-forward from Task 4, adjudicated two independent ways):
     # the plan's ">3x" assertion is based on the same arithmetic error
     # corrected in tests/test_quantiles.py. Analytic overdue rates are
-    # fast~=0.354 (northstar's (45, 0.6) mix) and slow~=0.827 (meridian's
+    # fast~=0.354 (alder's (45, 0.6) mix) and slow~=0.827 (hazel's
     # (130, 0.8) mix) -- true ratio ~=2.335, so 3x is unsatisfiable by
     # construction (3*0.354 > 1.0). Corrected to 2x per that ruling.
-    assert kpis["meridian"]["overdue_rate"] > 2 * kpis["northstar"]["overdue_rate"]
+    assert kpis["hazel"]["overdue_rate"] > 2 * kpis["alder"]["overdue_rate"]
 
 
-# ---- negative controls on Meridian (aids attribution) -------------------
+# ---- negative controls on Hazel (aids attribution) -------------------
 
-def test_meridian_negative_controls(kpis):
-    kn, km = kpis["northstar"], kpis["meridian"]
+def test_hazel_negative_controls(kpis):
+    kn, km = kpis["alder"], kpis["hazel"]
     assert abs(km["skip_rate"] - kn["skip_rate"]) <= tol(0.03, 150, 0.02)
     assert abs(km["root_cause_depth"] - kn["root_cause_depth"]) <= tol(0.85, 150, 0.10)
     assert abs(km["admin_ppe_share"] - kn["admin_ppe_share"]) <= tol(0.45, 180, 0.05)
     # scenario yamls deliberately differ (owner_assigned_rate 0.98 vs 0.95, spec "data discipline"
-    # differential); this negative control means "meridian is not owner-pathological
-    # (coastal-class ~0.60)", not "identical rates" — bound = designed offset + floor.
+    # differential); this negative control means "hazel is not owner-pathological
+    # (hornbeam-class ~0.60)", not "identical rates" — bound = designed offset + floor.
     assert abs(km["owner_completeness"] - kn["owner_completeness"]) <= 0.03 + tol(0.95, 180, 0.05)
     assert abs(km["hs_completeness"] - kn["hs_completeness"]) <= tol(0.53, 150, 0.05)
 
@@ -117,14 +117,14 @@ def test_meridian_negative_controls(kpis):
 # ---- near-threshold resolution (test-only variant, never on disk) -------
 
 def test_near_threshold_variant_is_still_detected(kpis):
-    nt, kn = kpis["meridian_nt"], kpis["northstar"]
+    nt, kn = kpis["hazel_nt"], kpis["alder"]
     assert nt["median_closeout_days"] > 1.2 * kn["median_closeout_days"]
     # and ONLY the closeout knob moved: report lag stays at baseline
     assert abs(nt["median_report_lag"] - kn["median_report_lag"]) <= 2
 
 
-def test_meridian_nt_never_exists_on_disk():
-    assert not (ROOT / "meridian_nt").exists()
+def test_hazel_nt_never_exists_on_disk():
+    assert not (ROOT / "hazel_nt").exists()
 
 
 # ---- prose-date window --------------------------------------------------
@@ -211,51 +211,51 @@ def test_manifest_leaves_no_kpi_unasserted(company, manifests):
     assert KPIS <= covered, KPIS - covered
 
 
-# ---- planted vs measured: Coastal (bundle-level attribution) ------------
-# Coastal's pathologies co-move by design; this suite claims bundle-level
-# detection for Coastal, NOT per-pathology attribution (parked in the spec).
+# ---- planted vs measured: Hornbeam (bundle-level attribution) ------------
+# Hornbeam's pathologies co-move by design; this suite claims bundle-level
+# detection for Hornbeam, NOT per-pathology attribution (parked in the spec).
 
-def test_coastal_skip_planted(kpis):
-    kn, kc = kpis["northstar"], kpis["coastal"]
+def test_hornbeam_skip_planted(kpis):
+    kn, kc = kpis["alder"], kpis["hornbeam"]
     assert kc["skip_rate"] > 5 * kn["skip_rate"]
 
 
-def test_coastal_shallow_investigation_planted(kpis):
-    assert kpis["coastal"]["root_cause_depth"] < 0.5 * kpis["northstar"]["root_cause_depth"]
+def test_hornbeam_shallow_investigation_planted(kpis):
+    assert kpis["hornbeam"]["root_cause_depth"] < 0.5 * kpis["alder"]["root_cause_depth"]
 
 
-def test_coastal_weak_controls_planted(kpis):
-    assert kpis["coastal"]["admin_ppe_share"] > kpis["northstar"]["admin_ppe_share"] + 0.25
+def test_hornbeam_weak_controls_planted(kpis):
+    assert kpis["hornbeam"]["admin_ppe_share"] > kpis["alder"]["admin_ppe_share"] + 0.25
 
 
-def test_coastal_missing_owners_planted(kpis):
-    assert kpis["coastal"]["owner_completeness"] < kpis["northstar"]["owner_completeness"] - 0.25
+def test_hornbeam_missing_owners_planted(kpis):
+    assert kpis["hornbeam"]["owner_completeness"] < kpis["alder"]["owner_completeness"] - 0.25
 
 
-def test_coastal_hs_decay_planted_and_baseline_adjusted(kpis, manifests):
+def test_hornbeam_hs_decay_planted_and_baseline_adjusted(kpis, manifests):
     # ADJUDICATED correction (plan-text error, same class as the 3x->2x ruling):
     # the brief's "< baseline - 0.15" is unsatisfiable IN EXPECTATION -- the
-    # coastal donor partition is already 49.33% HS-blank (74/150), and
-    # extra_hs_blank_rate (0.25, scenarios/coastal.yaml) is OR-composed on top,
+    # hornbeam donor partition is already 49.33% HS-blank (74/150), and
+    # extra_hs_blank_rate (0.25, scenarios/hornbeam.yaml) is OR-composed on top,
     # so max expected decay = 0.5067 * 0.25 = 12.7pt < 15pt. Claim reduced to
     # (a) consistency with the analytic expectation, (b) a meaningful decay
     # direction floor (absent the plant, decay is exactly 0 -- donors are fixed).
-    baseline = 1 - manifests["coastal"]["analytic_expectations"]["hs_blank_baseline"]
-    extra_hs_blank_rate = manifests["coastal"]["resolved_knobs"][
+    baseline = 1 - manifests["hornbeam"]["analytic_expectations"]["hs_blank_baseline"]
+    extra_hs_blank_rate = manifests["hornbeam"]["resolved_knobs"][
         "data_discipline"]["extra_hs_blank_rate"]
     expected = baseline * (1 - extra_hs_blank_rate)  # OR-semantics: survivors * (1-extra)
-    measured = kpis["coastal"]["hs_completeness"]
+    measured = kpis["hornbeam"]["hs_completeness"]
     assert abs(measured - expected) <= tol(expected, 150, 0.05)
     assert measured < baseline - 0.05
 
 
-def test_coastal_recurrence_planted(kpis):
-    assert kpis["coastal"]["recurrence_rate"] >= 6
+def test_hornbeam_recurrence_planted(kpis):
+    assert kpis["hornbeam"]["recurrence_rate"] >= 6
 
 
-def test_coastal_negative_controls(kpis):
-    kn, kc = kpis["northstar"], kpis["coastal"]
+def test_hornbeam_negative_controls(kpis):
+    kn, kc = kpis["alder"], kpis["hornbeam"]
     assert abs(kc["median_report_lag"] - kn["median_report_lag"]) <= \
         max(1.0, 0.3 * kn["median_report_lag"])          # spec: within +/-30%
-    # fast-on-paper: coastal closeout must NOT trip the decay direction
+    # fast-on-paper: hornbeam closeout must NOT trip the decay direction
     assert kc["median_closeout_days"] < 2 * kn["median_closeout_days"]

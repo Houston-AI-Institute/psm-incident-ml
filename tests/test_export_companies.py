@@ -8,7 +8,7 @@ def test_company_about_discloses_without_leaking_the_answer_key():
     # Render against every real label -- the raw ABOUT_TEMPLATE has an
     # unformatted "{label}" placeholder, so checking it directly can never
     # catch a banned token that only appears once {label} is substituted
-    # (e.g. the identity statement "Coastal is a SYNTHETIC company").
+    # (e.g. the identity statement "Hornbeam is a SYNTHETIC company").
     for label in COMPANY_LABELS.values():
         text = "\n".join(line.format(label=label) for line in ABOUT_TEMPLATE)
         text = text.lower()
@@ -34,7 +34,7 @@ def test_export_writes_three_company_workbooks_and_the_comparison(tmp_path):
 
 def test_incident_number_column_is_shaded_key_green(tmp_path):
     export_all(out_dir=tmp_path)
-    wb = load_workbook(tmp_path / "NorthStar_E19_Register.xlsx")
+    wb = load_workbook(tmp_path / "Alder_E19_Register.xlsx")
     ws = wb["Incidents"]
     hdr = [c.value for c in ws[1]]
     i = hdr.index("Incident Number") + 1

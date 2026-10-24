@@ -1,4 +1,7 @@
-report_lag:      {median_days: 2,  sigma: 0.6}          # = NorthStar (negative control)
+# hash seed preserved from pre-2026-10-18 name so draws are unchanged
+seed_key:    coastal
+seed_prefix: CP
+report_lag:      {median_days: 2,  sigma: 0.6}          # = Alder (negative control)
 investigation:   {skip_rate: 0.20, root_cause_prob: 0.25, duration_median_days: 7, duration_sigma: 0.5}  # planted
 closeout:        {median_days: 40, sigma: 0.5}          # fast on paper
 agreed_offset:   {min_days: 30, max_days: 90}

@@ -30,15 +30,15 @@ def test_median_bucket_lands_on_the_configured_median(median, sigma):
 
 
 def test_draw_days_is_deterministic_and_reads_the_table():
-    a = q.draw_days("northstar|X|closeout|salt", 45, 0.6)
-    b = q.draw_days("northstar|X|closeout|salt", 45, 0.6)
+    a = q.draw_days("alder|X|closeout|salt", 45, 0.6)
+    b = q.draw_days("alder|X|closeout|salt", 45, 0.6)
     assert a == b
     assert a in q.load_table(45, 0.6)
 
 
 def test_analytic_overdue_orders_slow_above_fast():
-    fast = q.analytic_overdue_rate(45, 0.6, 30, 90)    # NorthStar shape
-    slow = q.analytic_overdue_rate(130, 0.8, 30, 90)   # Meridian shape
+    fast = q.analytic_overdue_rate(45, 0.6, 30, 90)    # Alder shape
+    slow = q.analytic_overdue_rate(130, 0.8, 30, 90)   # Hazel shape
     assert 0.0 < fast < slow < 1.0
     # DEVIATION from task-4-brief.md (factor 3): for these exact configs and
     # agreed_offset window the true ratio is ~2.33x (verified both via this

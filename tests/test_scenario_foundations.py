@@ -17,23 +17,23 @@ def test_partitions_are_disjoint_exact_150_and_deterministic():
         assert set(parts[c]) <= all_ids
         assert not (set(parts[c]) & seen)
         seen |= set(parts[c])
-    assert parts["northstar"] == sc.donor_partition("northstar")  # stable
-    # the test-only variant reuses northstar's slice (it is never exported,
+    assert parts["alder"] == sc.donor_partition("alder")  # stable
+    # the test-only variant reuses alder's slice (it is never exported,
     # so exported-company disjointness is preserved)
-    assert sc.donor_partition("meridian_nt") == parts["northstar"]
+    assert sc.donor_partition("hazel_nt") == parts["alder"]
 
 
 def test_scenario_incident_number_never_leaks_the_donor_date():
-    sid = sc.scenario_incident_number("northstar", "GC-478-20240502-1620")
-    assert sid.startswith("NS-")
+    sid = sc.scenario_incident_number("alder", "GC-478-20240502-1620")
+    assert sid.startswith("AL-")
     assert "20240502" not in sid and "GC-478" not in sid
-    assert sid == sc.scenario_incident_number("northstar", "GC-478-20240502-1620")
+    assert sid == sc.scenario_incident_number("alder", "GC-478-20240502-1620")
 
 
 def test_base_incident_date_is_inside_the_window():
-    for donor in sc.donor_partition("northstar")[:25]:
-        sid = sc.scenario_incident_number("northstar", donor)
-        d = sc.base_incident_date("northstar", sid)
+    for donor in sc.donor_partition("alder")[:25]:
+        sid = sc.scenario_incident_number("alder", donor)
+        d = sc.base_incident_date("alder", sid)
         assert sc.WINDOW_START <= d <= sc.WINDOW_END
 
 
@@ -43,7 +43,7 @@ def test_pick_weighted_is_exhaustive_and_deterministic():
 
 
 def test_load_scenario_has_all_knob_groups():
-    for name in ("northstar", "meridian", "coastal", "meridian_nt"):
+    for name in ("alder", "hazel", "hornbeam", "hazel_nt"):
         cfg = sc.load_scenario(name)
         assert set(cfg) >= {"report_lag", "investigation", "closeout",
                             "agreed_offset", "recurrence", "controls_mix",
@@ -76,6 +76,6 @@ def test_find_prose_dates_reports_every_parseable_date():
 
 
 def test_syn_person_is_deterministic_syn_prefixed():
-    name, pos = sc.syn_person("northstar|X|leader")
+    name, pos = sc.syn_person("alder|X|leader")
     assert name.startswith("SYN-")
-    assert (name, pos) == sc.syn_person("northstar|X|leader")
+    assert (name, pos) == sc.syn_person("alder|X|leader")

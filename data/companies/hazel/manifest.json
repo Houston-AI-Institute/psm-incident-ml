@@ -9,7 +9,7 @@
     "overdue_rate": 0.8271644467213115,
     "recurrence_coincidence": 20
   },
-  "company": "meridian",
+  "company": "hazel",
   "donor_partition": [
     "ST-177-20120712-0130",
     "MI-657-20170314-2330",
@@ -165,7 +165,7 @@
   "negative_controls": [
     "skip_rate(near-baseline)",
     "root_cause_depth(near-baseline)",
-    "admin_ppe_share(=northstar)",
+    "admin_ppe_share(=alder)",
     "owner_completeness(near-baseline)",
     "hs_completeness(=baseline)"
   ],
@@ -175,7 +175,7 @@
       "expected": {
         "factor": 3.0,
         "op": ">",
-        "ref": "northstar"
+        "ref": "alder"
       },
       "kpi": "median_report_lag",
       "pathology": "report_lag"
@@ -185,7 +185,7 @@
       "expected": {
         "factor": 2.0,
         "op": ">",
-        "ref": "northstar"
+        "ref": "alder"
       },
       "kpi": "median_closeout_days",
       "pathology": "closeout_decay"
@@ -193,36 +193,36 @@
     {
       "affected_ids": [
         [
-          "MR-040E29E564",
-          "MR-095AD5D787"
+          "HZ-040E29E564",
+          "HZ-095AD5D787"
         ],
         [
-          "MR-0998CD05CC",
-          "MR-0D7DD27DF5"
+          "HZ-0998CD05CC",
+          "HZ-0D7DD27DF5"
         ],
         [
-          "MR-0FDCA07752",
-          "MR-1267817FB1"
+          "HZ-0FDCA07752",
+          "HZ-1267817FB1"
         ],
         [
-          "MR-1377723F20",
-          "MR-1431DEA19D"
+          "HZ-1377723F20",
+          "HZ-1431DEA19D"
         ],
         [
-          "MR-187B12B4E9",
-          "MR-20295303B2"
+          "HZ-187B12B4E9",
+          "HZ-20295303B2"
         ],
         [
-          "MR-2792493DB3",
-          "MR-29A9D9DEE5"
+          "HZ-2792493DB3",
+          "HZ-29A9D9DEE5"
         ],
         [
-          "MR-2B8915895B",
-          "MR-2A92C8CB9C"
+          "HZ-2B8915895B",
+          "HZ-2A92C8CB9C"
         ],
         [
-          "MR-2FFEB579D1",
-          "MR-3957ACD21E"
+          "HZ-2FFEB579D1",
+          "HZ-3957ACD21E"
         ]
       ],
       "expected": {
@@ -266,9 +266,11 @@
     "report_lag": {
       "median_days": 10,
       "sigma": 0.8
-    }
+    },
+    "seed_key": "meridian",
+    "seed_prefix": "MR"
   },
-  "scenario_sha256": "4f0416e5fb0fc44cc96ff6bff2f0530cf5c2bb3cb8ea2c0432719494ca8ff601",
+  "scenario_sha256": "52b4abec3172e4e503e105abc1547393e01c892dbcf9cfa6d0b2e77125eeb26a",
   "window": {
     "end": "2025-12-31",
     "start": "2021-01-01"

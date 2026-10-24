@@ -1,3 +1,5 @@
+[2026-10-18: companies renamed northstar→alder, meridian→hazel, coastal→hornbeam (hash seeds kept); see findings.md]
+
 # Scenario-Planted E19 Registers + KPI Validation — Design
 
 Status: approved direction (post 5-critic adversarial review, 2026-08-31).

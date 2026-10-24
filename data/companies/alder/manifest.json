@@ -9,7 +9,7 @@
     "overdue_rate": 0.35428406762295084,
     "recurrence_coincidence": 21
   },
-  "company": "northstar",
+  "company": "alder",
   "donor_partition": [
     "EI-175-20110510-0930",
     "VK-900-20080327-1400",
@@ -204,9 +204,11 @@
     "report_lag": {
       "median_days": 2,
       "sigma": 0.6
-    }
+    },
+    "seed_key": "northstar",
+    "seed_prefix": "NS"
   },
-  "scenario_sha256": "c2a3ea0535fc73d56cb1f8fc7d3012620c880ba96a5fa705e9a142b44fd06b14",
+  "scenario_sha256": "ffdc14287cb49a884d21fb932cc859b1324938e458d6c727bf6970a494a2bb88",
   "window": {
     "end": "2025-12-31",
     "start": "2021-01-01"

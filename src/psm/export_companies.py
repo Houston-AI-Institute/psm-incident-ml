@@ -19,8 +19,7 @@ from psm.scenario import COMPANY_ORDER, OUT_ROOT
 REPO = Path(__file__).resolve().parents[2]
 OUT_DIR = REPO / "deliverables" / "companies"
 
-COMPANY_LABELS = {"northstar": "NorthStar", "meridian": "Meridian",
-                  "coastal": "Coastal"}
+COMPANY_LABELS = {"alder": "Alder", "hazel": "Hazel", "hornbeam": "Hornbeam"}
 
 _SHEETS = (("Incidents", "incidents", "provenance.csv"),
            ("Causes", "causes", "causes_provenance.csv"),
@@ -70,8 +69,8 @@ _COMPARISON_ABOUT = [
     "Withholding this workbook alone does not blind an evaluator who has repo",
     "access -- blinding requires distribution control of the repo context itself.",
     "",
-    "Attribution honesty: Coastal's pathologies co-move by construction, so",
-    "results for Coastal are claimed at bundle-level detection only --",
+    "Attribution honesty: Hornbeam's pathologies co-move by construction, so",
+    "results for Hornbeam are claimed at bundle-level detection only --",
     "per-pathology attribution is out of scope (parked in the spec).",
 ]
 

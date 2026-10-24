@@ -15,7 +15,7 @@ def _mem_tables(company):
 
 
 def test_kpis_have_exactly_the_nine_keys_and_sane_ranges():
-    k = compute_kpis(_mem_tables("northstar"))
+    k = compute_kpis(_mem_tables("alder"))
     assert set(k) == KEYS
     for name in ("skip_rate", "root_cause_depth", "overdue_rate",
                  "admin_ppe_share", "owner_completeness", "hs_completeness"):
@@ -28,22 +28,22 @@ ROOT = Path(__file__).resolve().parents[1] / "data" / "companies"
 
 
 def test_load_company_reads_the_committed_register():
-    tables = load_company(ROOT / "northstar")
+    tables = load_company(ROOT / "alder")
     assert len(tables["incidents"]) == 150
     k = compute_kpis(tables)
     assert set(k) == KEYS
 
 
 def test_kpis_move_in_the_planted_directions():
-    kn = compute_kpis(_mem_tables("northstar"))
-    km = compute_kpis(_mem_tables("meridian"))
+    kn = compute_kpis(_mem_tables("alder"))
+    km = compute_kpis(_mem_tables("hazel"))
     assert km["median_report_lag"] > kn["median_report_lag"]
     assert km["median_closeout_days"] > kn["median_closeout_days"]
     assert km["recurrence_rate"] >= 8
 
 
 def test_skip_rate_uses_the_and_of_both_conditions():
-    tables = _mem_tables("coastal")
+    tables = _mem_tables("hornbeam")
     # every counted skip must have BOTH markers, not either
     causes_by = {}
     for c in tables["causes"]:
@@ -55,7 +55,7 @@ def test_skip_rate_uses_the_and_of_both_conditions():
 
 
 def test_skip_rate_and_semantics_survive_marker_decorrelation():
-    """coastal's generated incidents always correlate the two skip markers
+    """hornbeam's generated incidents always correlate the two skip markers
     (blank leader <-> zero cause rows), so an AND-to-OR mutation is invisible
     against real scenario data. This hand-built fixture decorrelates them so
     the AND-specific behavior is actually observable by a test."""

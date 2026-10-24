@@ -9,7 +9,7 @@
     "overdue_rate": 0.2662173411885246,
     "recurrence_coincidence": 5
   },
-  "company": "coastal",
+  "company": "hornbeam",
   "donor_partition": [
     "GC-858-20090804-1130",
     "ST-193-20070401-1645",
@@ -163,7 +163,7 @@
     "EI-338-20130809-1915"
   ],
   "negative_controls": [
-    "median_report_lag(=northstar)",
+    "median_report_lag(=alder)",
     "median_closeout_days(fast-on-paper)"
   ],
   "plants": [
@@ -172,7 +172,7 @@
       "expected": {
         "factor": 5.0,
         "op": ">",
-        "ref": "northstar"
+        "ref": "alder"
       },
       "kpi": "skip_rate",
       "pathology": "investigation_skip"
@@ -182,7 +182,7 @@
       "expected": {
         "factor": 0.5,
         "op": "<",
-        "ref": "northstar"
+        "ref": "alder"
       },
       "kpi": "root_cause_depth",
       "pathology": "shallow_investigation"
@@ -192,7 +192,7 @@
       "expected": {
         "delta_pts": 25,
         "op": ">",
-        "ref": "northstar"
+        "ref": "alder"
       },
       "kpi": "admin_ppe_share",
       "pathology": "weak_controls"
@@ -202,7 +202,7 @@
       "expected": {
         "delta_pts": -25,
         "op": "<",
-        "ref": "northstar"
+        "ref": "alder"
       },
       "kpi": "owner_completeness",
       "pathology": "missing_owners"
@@ -220,28 +220,28 @@
     {
       "affected_ids": [
         [
-          "CP-004E1BF2AC",
-          "CP-0183D1A1BF"
+          "HB-004E1BF2AC",
+          "HB-0183D1A1BF"
         ],
         [
-          "CP-02C26650DB",
-          "CP-046ACB062E"
+          "HB-02C26650DB",
+          "HB-046ACB062E"
         ],
         [
-          "CP-05E0194B4E",
-          "CP-0799BDD27E"
+          "HB-05E0194B4E",
+          "HB-0799BDD27E"
         ],
         [
-          "CP-09636DAF8E",
-          "CP-0D19E3D5BC"
+          "HB-09636DAF8E",
+          "HB-0D19E3D5BC"
         ],
         [
-          "CP-0D35A2BD08",
-          "CP-11BFCC2E3F"
+          "HB-0D35A2BD08",
+          "HB-11BFCC2E3F"
         ],
         [
-          "CP-13A8820D4B",
-          "CP-150683939C"
+          "HB-13A8820D4B",
+          "HB-150683939C"
         ]
       ],
       "expected": {
@@ -284,9 +284,11 @@
     "report_lag": {
       "median_days": 2,
       "sigma": 0.6
-    }
+    },
+    "seed_key": "coastal",
+    "seed_prefix": "CP"
   },
-  "scenario_sha256": "9afbb4ec3f2ddb09fcacbf7ab9da92d2772b17094498942f436e1a935402ab56",
+  "scenario_sha256": "4be3aa9fa8697898f93d3356a313c839409a9adad43d7fd953345de7cec08f78",
   "window": {
     "end": "2025-12-31",
     "start": "2021-01-01"
