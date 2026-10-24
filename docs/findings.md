@@ -3709,3 +3709,48 @@ swapped for the seed prefix). Only the visible slug, label and ID prefix change.
 so `resolved_knobs.seed_key` in each committed `data/companies/*/manifest.json`
 (manifests are not shipped in the release bundle). Old names also remain in git
 history and in dated entries above, which are not rewritten.
+
+## 2026-10-24 — Donor provenance carried into the company registers; real operators masked
+
+The three fictional registers (alder, hazel, hornbeam) used to emit every
+donor-derived cell with an empty or `src` token. They now keep the donor's
+token (`src`, `xw`, `llm`, and so on, read by row index from
+`enriched/provenance.csv` and `enriched/causes_provenance.csv`), and real
+operator names in free text are masked as `[company]`. A new token, `mod`,
+marks a real-source cell this project altered (dates shifted or an operator
+masked). `mod` may only replace `src`; it never replaces `xw`, `llm` or `gold`.
+
+**Masking policy.** `src/psm/masking.py` builds one pattern from two sources:
+operator and contractor-party names derived from the `bsee_operator` column of
+`data/processed/e19/bsee_unmapped.csv` (legal suffixes stripped, at least two
+tokens, generic-word stoplist), and the hand-kept aliases in
+`schema/operator_aliases.yaml`. Ambiguous words (Shell, Apache, Stone, Cox and
+similar) match bare only when capitalized in exact case; any other casing needs
+a corporate suffix (Inc, LLC, Corporation, USA, LP and so on). Noble and Helix
+need a suffix in every case, and so does Taylor (its hits are mostly a rig name,
+not an operator). Only `src` and `mod` free text is touched. Generated text is
+checked by `tests/test_masking.py::test_generated_text_has_no_operator_name`.
+
+**Counts after this round.**
+
+| | Alder | Hazel | Hornbeam |
+|---|---|---|---|
+| `xw` retokens (donor token kept) | 1093 | 1038 | 988 |
+| `mod` cells | 188 | 167 | 153 |
+| masked mentions | 390 | 305 | 346 |
+| distinct masked strings | 85 | 84 | 96 |
+
+Across the three registers: 1041 masked mentions, 171 distinct masked strings
+(162 before the R52/R53 changes: bare capitalized words and the U.S.A., LP tail).
+
+**Left named on purpose.** Contractor, rig and vessel names (Transocean,
+Rowan, Ensco, Nabors, Seadrill, Hercules, Maersk, Noble, Helix, and
+back-references such as "(Supreme)") are not masked: the dashboard scores the
+operator, not the contractor. The place name "Intracoastal City" is unmasked too.
+The participant guide and the xlsx About sheet say so.
+
+**Limits.** Masking is a speed bump, not anonymisation. The narratives are
+verbatim real text, so a determined reader can search distinctive phrases or
+platform names and recover the operator. Some masks are probably false positives
+(for example a capitalized "Hess" that is part of a software name).
+`core/` and `advanced/` bundles are unchanged and keep operator names.

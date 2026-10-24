@@ -1,0 +1,63 @@
+# Real operator names masked as [company] in the fictional company registers.
+# Read by src/psm/masking.py. Two sources feed the mask pattern: names derived
+# from the scrubbed bsee_operator column (data/processed/e19/bsee_unmapped.csv),
+# and the short forms below. Edit here, not in code.
+#
+#   name             short form to mask (matched as whole words)
+#   case_sensitive   true for short forms that are also ordinary lowercase words
+#                    or abbreviations (bp, eni)
+#   require_suffix   true for ordinary English words that are also operator names
+#                    (shell, stone, apache...). These match only when followed by
+#                    a corporate word such as Offshore, Oil, Energy or Company.
+#   bare_capitalized  true for require_suffix names that are operators in this
+#                    corpus (Shell, Apache...): the exact-case form (Shell) also
+#                    matches with no suffix; shell, SHELL, stone still need one.
+#                    Noble and Helix are mostly drilling contractors and rigs,
+#                    and Taylor is mostly the rig "Noble Don Taylor", so they
+#                    stay suffix-required in every case (contractors and rigs
+#                    are deliberately left named).
+#
+# stoplist: generic words. A derived name made only of these is never masked.
+# suffix_words: the corporate words that unlock a require_suffix short form.
+suffix_words: [Offshore, Oil, Energy, Exploration, Petroleum, Production,
+  Operating, Company, Corporation, Inc, LLC, "E&P"]
+
+stoplist: [a, and, boats, coast, companies, company, corporation, drilling, dynamic,
+  elevating, energy, exploration, gas, gom, gulf, group, holdings, inc, international,
+  lift, limited, listed, llc, logistics, ltd, marine, mexico, not, of, offshore, oil,
+  operating, operations, operator, operators, partners, petroleum, producing,
+  production, properties, quality, resource, resources, royal, safety, services,
+  specialty, systems, technologies, technology, the, united, usa]
+
+aliases:
+  - {name: BP, case_sensitive: true, require_suffix: false}
+  - {name: "W&T", case_sensitive: true, require_suffix: false}
+  - {name: Shell, case_sensitive: false, require_suffix: true, bare_capitalized: true}
+  - {name: Chevron, case_sensitive: false, require_suffix: false}
+  - {name: Fieldwood, case_sensitive: false, require_suffix: false}
+  - {name: Talos, case_sensitive: false, require_suffix: false}
+  - {name: LLOG, case_sensitive: true, require_suffix: false}
+  - {name: Anadarko, case_sensitive: false, require_suffix: false}
+  - {name: Apache, case_sensitive: false, require_suffix: true, bare_capitalized: true}
+  - {name: Stone, case_sensitive: false, require_suffix: true, bare_capitalized: true}
+  - {name: Cox, case_sensitive: false, require_suffix: true, bare_capitalized: true}
+  - {name: Noble, case_sensitive: false, require_suffix: true}
+  - {name: Walter, case_sensitive: false, require_suffix: true, bare_capitalized: true}
+  - {name: Taylor, case_sensitive: false, require_suffix: true}
+  - {name: Arena, case_sensitive: false, require_suffix: true, bare_capitalized: true}
+  - {name: Hess, case_sensitive: false, require_suffix: true, bare_capitalized: true}
+  - {name: Murphy, case_sensitive: false, require_suffix: true, bare_capitalized: true}
+  - {name: ENI, case_sensitive: true, require_suffix: false}
+  - {name: Marathon, case_sensitive: false, require_suffix: false}
+  - {name: ConocoPhillips, case_sensitive: false, require_suffix: false}
+  - {name: Petrobras, case_sensitive: false, require_suffix: false}
+  - {name: Byron, case_sensitive: false, require_suffix: false}
+  - {name: McMoRan, case_sensitive: false, require_suffix: false}
+  - {name: Energy XXI, case_sensitive: false, require_suffix: false}
+  - {name: Black Elk, case_sensitive: false, require_suffix: false}
+  - {name: Renaissance, case_sensitive: false, require_suffix: false}
+  - {name: Northstar, case_sensitive: false, require_suffix: false}
+  # "Northstar Offshore Group, LLC" must go in one piece, not leave "Offshore Group".
+  - {name: Northstar Offshore, case_sensitive: false, require_suffix: false}
+  - {name: Helix, case_sensitive: false, require_suffix: true}
+  - {name: Devon, case_sensitive: false, require_suffix: true, bare_capitalized: true}

@@ -243,7 +243,8 @@ def test_about_the_companies_uses_the_final_names():
     text = template()
     body = section(text, "About the companies")
     for must in ("Alder, Hazel and Hornbeam are fictional", "generated", "masked as `[company]`",
-                 "attribution, not secrecy"):
+                 "attribution, not secrecy", "generic templates, not linked to their incident",
+                 "Contractor and rig names are not masked"):
         assert must in body, must
     assert not re.search(r"northstar|meridian|coastal", text, re.I)
 
@@ -619,12 +620,13 @@ def test_the_small_regime_numbers_in_track_4_are_the_bundles(b_nocomp):
 
 
 def test_track_6_gaps_exist_in_every_company(b):
-    """The guide names two gaps: close-outs marked Behind, and incidents with no recommendation.
-    Both must exist in all three companies in the bundle."""
+    """The guide names one gap, close-outs marked Behind. The second gap (incidents with no
+    recommendation) is no longer named in the guide (word cap), but must still exist in all
+    three companies in the bundle."""
     def rd(rel):
         with (b / rel).open(encoding="utf-8", newline="") as fh:
             return list(csv.DictReader(fh))
-    assert '"Behind"' in section(template(), "Tracks") and "incidents with no recommendations" in template()
+    assert '"Behind"' in section(template(), "Tracks")
     for co in sorted(p.name for p in (b / "companies").iterdir()):
         inc = {r["Incident Number"] for r in rd(f"companies/{co}/incidents.csv")}
         rec = {r["Incident Number"] for r in rd(f"companies/{co}/recommendations.csv")}

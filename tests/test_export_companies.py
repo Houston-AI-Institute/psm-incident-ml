@@ -14,6 +14,11 @@ def test_company_about_discloses_without_leaking_the_answer_key():
         text = text.lower()
         for needed in ("synthetic", "template", "shifted", "deliberately"):
             assert needed in text, (label, needed)
+        for needed in ("what is real", "what is generated", "masked as [company]",
+                       "contractor and rig names are left as written",
+                       "50 template actions", "not linked to the incident",
+                       "describe no real company"):
+            assert needed in " ".join(text.split()), (label, needed)
         for banned in ("pathology", "answer key", "closeout decay",
                        "no real names"):
             assert banned not in text, (label, banned)

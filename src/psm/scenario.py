@@ -16,10 +16,12 @@ from pathlib import Path
 
 import yaml
 
+from psm.masking import mask_operators, operator_pattern
 from psm.quantiles import analytic_overdue_rate, draw_days
 
 REPO = Path(__file__).resolve().parents[2]
 REAL = REPO / "data" / "processed" / "e19" / "real_only"
+ENRICHED = REAL.parent / "enriched"
 SCENARIO_DIR = REPO / "scenarios"
 OUT_ROOT = REPO / "data" / "companies"
 
@@ -328,6 +330,56 @@ def donor_delta(plan: IncidentPlan) -> int:
         return 0
 
 
+def _read_rows(path: Path) -> list[dict]:
+    with path.open(encoding="utf-8", newline="") as fh:
+        return list(csv.DictReader(fh))
+
+
+@lru_cache(maxsize=None)
+def donor_incident_tokens() -> dict[str, dict]:
+    """Incident Number -> the donor's per-cell provenance row. enriched/provenance.csv
+    is row-aligned with real_only/incidents.csv (both are projections of the same
+    rows); the alignment is checked here against enriched/incidents.csv."""
+    _, real = _real_table("incidents.csv")
+    prov = _read_rows(ENRICHED / "provenance.csv")
+    enr = _read_rows(ENRICHED / "incidents.csv")
+    assert len(real) == len(prov) == len(enr), "donor provenance is not row-aligned"
+    out = {}
+    for r, e, pv in zip(real, enr, prov):
+        assert r["Incident Number"] == e["Incident Number"], "donor rows misaligned"
+        out[r["Incident Number"]] = pv
+    return out
+
+
+@lru_cache(maxsize=None)
+def donor_cause_tokens() -> dict[tuple[str, str], dict]:
+    """(Incident Number, Cause number) -> the donor cause's per-cell provenance row,
+    by the same row-index alignment against real_only/causes.csv."""
+    _, real = _real_table("causes.csv")
+    prov = _read_rows(ENRICHED / "causes_provenance.csv")
+    enr = _read_rows(ENRICHED / "causes.csv")
+    assert len(real) == len(prov) == len(enr), "donor cause provenance is not row-aligned"
+    out = {}
+    for r, e, pv in zip(real, enr, prov):
+        assert r["Incident Number"] == e["Incident Number"], "donor cause rows misaligned"
+        out[(r["Incident Number"], r["Cause number"])] = pv
+    return out
+
+
+def _carry(value: str, token: str, delta: int, *, free_text: bool) -> tuple[str, str]:
+    """A donor-copied cell keeps the donor's token. Real free text (token src, or
+    mod) also has its prose dates shifted and real operator names masked; it
+    becomes mod when that changed it. Every other cell passes through unchanged."""
+    if not value.strip():
+        return value, ""
+    if not token:
+        raise ValueError("donor cell has a value but no provenance token")
+    if free_text and token in ("src", "mod"):
+        new = mask_operators(shift_prose_dates(value, delta), operator_pattern())
+        return new, ("mod" if new != value else token)
+    return value, token
+
+
 # columns copied from the donor with prose-date shifting applied
 _FREE_TEXT = ("incident Title", "Detail", "Description", "What happened?  ",
               "What was the outcome?",
@@ -413,17 +465,17 @@ def build_incident_row(plan: IncidentPlan, donor_row: dict) -> tuple[dict, dict]
     put("Date of Incident", plan.doi.isoformat(), "syn")
     put("Date of Report", plan.report_date.isoformat(), "syn")
     put("Work Group", plan.work_group, "syn")
+    dtok = donor_incident_tokens()[plan.donor_id]
     donor_time = (donor_row.get("Time of Incident") or "").strip()
     if donor_time:
-        put("Time of Incident", donor_time, "src")
+        put("Time of Incident", donor_time, dtok["Time of Incident"])
     else:
         h = _hash(f"{_key(plan.company, plan.sid)}|time|{SALT}")
         put("Time of Incident", f"{h % 24:02d}:{(h // 24) % 12 * 5:02d}", "syn")
     for c in _FREE_TEXT:
-        text = (donor_row.get(c) or "")
-        put(c, shift_prose_dates(text, delta) if text.strip() else "", "src")
+        put(c, *_carry(donor_row.get(c) or "", dtok[c], delta, free_text=True))
     for c in _VERBATIM:
-        put(c, (donor_row.get(c) or ""), "src")
+        put(c, *_carry(donor_row.get(c) or "", dtok[c], delta, free_text=False))
     if plan.hs_blanked:
         for c in _HS_TRIO:
             put(c, "", "")
@@ -479,15 +531,20 @@ def build_cause_rows(plan: IncidentPlan,
         put("Cause type", _CHAIN[i], "syn")
         if donors:
             src = donors[i % len(donors)]
+            ctok = donor_cause_tokens()[(plan.donor_id, src["Cause number"])]
             put("Cause Description",
-                shift_prose_dates(src.get("Cause Description") or "", delta), "src")
-            put("Risk Management Cause", src.get("Risk Management Cause") or "", "src")
-            put("Human Factors  Cause", src.get("Human Factors  Cause") or "", "src")
+                *_carry(src.get("Cause Description") or "", ctok["Cause Description"],
+                        delta, free_text=True))
+            for col in ("Risk Management Cause", "Human Factors  Cause"):
+                put(col, *_carry(src.get(col) or "", ctok[col], delta, free_text=False))
             put(" Failed PSM Framework Element",
-                (src.get(" Failed PSM Framework Element") or "").strip(), "src")
+                *_carry((src.get(" Failed PSM Framework Element") or "").strip(),
+                        ctok[" Failed PSM Framework Element"], delta, free_text=False))
         else:  # 4 donors have zero cause rows: fall back to the incident text
             put("Cause Description",
-                shift_prose_dates(donor_row.get("Description") or "", delta), "src")
+                *_carry(donor_row.get("Description") or "",
+                        donor_incident_tokens()[plan.donor_id]["Description"],
+                        delta, free_text=True))
         if plan.element_override and i == 0:
             put(" Failed PSM Framework Element", plan.element_override, "syn")
         rows.append(row)
@@ -685,6 +742,24 @@ import json
 import sys
 
 
+_INPUT_FILES = (
+    "schema/operator_aliases.yaml",
+    "data/processed/e19/enriched/provenance.csv",
+    "data/processed/e19/enriched/causes_provenance.csv",
+    "data/processed/e19/bsee_unmapped.csv",
+    "data/processed/e19/real_only/incidents.csv",
+    "data/processed/e19/real_only/causes.csv",
+    "data/processed/e19/real_only/recommendations.csv",
+    "data/processed/e19/real_only/closeout.csv",
+)
+
+
+def input_sha256() -> dict[str, str]:
+    """Hashes of the files the donor text, donor tokens and the operator mask come from."""
+    return {rel: hashlib.sha256((REPO / rel).read_bytes()).hexdigest()
+            for rel in sorted(_INPUT_FILES)}
+
+
 def build_manifest(company: str, result: dict) -> dict:
     cfg = result["cfg"]
     tables = result["tables"]
@@ -758,6 +833,7 @@ def build_manifest(company: str, result: dict) -> dict:
     return {
         "company": company,
         "scenario_sha256": scenario_sha256(company),
+        "input_sha256": input_sha256(),
         "donor_partition": donor_partition(company),
         "window": {"start": WINDOW_START.isoformat(),
                    "end": WINDOW_END.isoformat()},

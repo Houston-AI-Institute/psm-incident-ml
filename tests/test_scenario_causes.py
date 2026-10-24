@@ -27,9 +27,12 @@ def test_rows_carry_sid_ordinals_and_closed_provenance():
         assert r["Incident Number"] == p.sid and pr["Incident Number"] == "key"
         assert r["Cause number"] == str(i) and pr["Cause number"] == "syn"
         assert pr["Cause type"] == "syn"
-        assert set(pr.values()) <= {"", "src", "syn", "key"}
+        assert set(pr.values()) <= {"", "src", "xw", "mod", "syn", "key"}
         assert r["Cause Description"].strip()
-        assert pr["Cause Description"] == "src"
+        # donor text is src; it becomes mod only when shifting or masking changed it
+        donor_text = [d for d in sc.donor_causes().get(donor, [])
+                      if d["Cause Description"] == r["Cause Description"]]
+        assert pr["Cause Description"] == ("src" if donor_text else "mod")
 
 
 def test_element_override_wins_and_is_syn():

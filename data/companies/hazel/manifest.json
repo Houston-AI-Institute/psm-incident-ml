@@ -162,6 +162,16 @@
     "GC-743-20151107-2100",
     "EI-208-20120819-1300"
   ],
+  "input_sha256": {
+    "data/processed/e19/bsee_unmapped.csv": "3bba69848f9f16582530d7ab3939b880765d68eb786b996be18fcd050d05722b",
+    "data/processed/e19/enriched/causes_provenance.csv": "782117a6c60b1139479f740f62f8706fe7ad0ce0c684c58a972eefe714890bcc",
+    "data/processed/e19/enriched/provenance.csv": "cd4a63b974eb61ac550e6fb91edaa28026c47cad17a5ddfa35f2cc2af1e962e4",
+    "data/processed/e19/real_only/causes.csv": "afe686489330a5bbc73522b6e273e49c421ce81794d2d5b858ff452f23ea92e4",
+    "data/processed/e19/real_only/closeout.csv": "4c43fe7862df91817086cdfe9b5e6ae5b6e53ac39e1054ac2a59f0a7ec9cc9d6",
+    "data/processed/e19/real_only/incidents.csv": "3434effb6267920e7146a22a8aaa683f7da52c199de4ef8d73ffc156860515fd",
+    "data/processed/e19/real_only/recommendations.csv": "9d4f8c6471cb9944552ca0ddffe2ed6f4602fb615fbfccb04225d2468c4d024a",
+    "schema/operator_aliases.yaml": "ecbf705ebcdecf5bf02a47b2b158b57b159aee42a569abda18df29a5d19f32a7"
+  },
   "negative_controls": [
     "skip_rate(near-baseline)",
     "root_cause_depth(near-baseline)",

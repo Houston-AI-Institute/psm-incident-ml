@@ -128,7 +128,7 @@ Tags: `[no-code ok]` works in a spreadsheet. `[code]` needs programming. `[AI to
 5. **LLM structured extraction** `[code]` `[AI tool]`. Choose the field and the rows (at least 30, by a stated rule) before you run anything. Two teammates label the rows independently, then compare and resolve. Only then run the model. Report "agreement with our n hand labels: k/n" with an interval. Never call it accuracy. It shows agreement with your own labels, not truth.
 <!-- /text -->
 <!-- companies -->
-6. **Company register audit** `[no-code ok]`. Look for gaps and odd entries in a fictional company's tables, such as close-outs marked "Behind", or incidents with no recommendations. The records are generated, so say so.
+6. **Company register audit** `[no-code ok]`. Look for gaps or oddities in a fictional company's generated tables, such as close-outs marked "Behind".
 <!-- /companies -->
 
 ## Do not attempt
@@ -144,9 +144,9 @@ Tags: `[no-code ok]` works in a spreadsheet. `[code]` needs programming. `[AI to
 <!-- companies -->
 ## About the companies
 
-Alder, Hazel and Hornbeam are fictional. Their process records (dates, owners, actions, recommendations) are generated.
+Alder, Hazel and Hornbeam are fictional. Their process records (dates, owners, actions) are generated. Recommendations are generic templates, not linked to their incident.
 <!-- text -->
-Their narratives are real BSEE text from other operators, with dates shifted and real company names masked as `[company]`. The same unmasked narratives appear in `core/`, so the masking is about attribution, not secrecy.
+Their narratives are real BSEE text from other operators, with dates shifted and real operator names masked as `[company]`. Contractor and rig names are not masked. The same unmasked narratives appear in `core/`, so the masking is about attribution, not secrecy.
 <!-- /text -->
 They describe no real company's conduct.
 <!-- /companies -->

@@ -20,7 +20,7 @@ def test_generate_alder_shape_and_closed_provenance():
         _, rws, prv = t[name]
         assert len(rws) == len(prv)
         for p in prv:
-            assert set(p.values()) <= {"", "src", "syn", "key"}, name
+            assert set(p.values()) <= {"", "src", "xw", "mod", "syn", "key"}, name
 
 
 def test_every_rec_has_a_closeout_row_and_registry_text():
@@ -108,4 +108,4 @@ def test_element_override_touches_only_the_first_cause_row():
     for r, pr in zip(causes, cprov):
         if r["Incident Number"] in planted and r["Cause number"] != "1":
             # rows past the first keep their donor-sourced element untouched
-            assert pr[" Failed PSM Framework Element"] in ("", "src")
+            assert pr[" Failed PSM Framework Element"] in ("", "xw")

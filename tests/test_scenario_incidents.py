@@ -28,7 +28,7 @@ def test_row_covers_every_column_and_provenance_is_closed_subset():
         p = _plan(d)
         row, prov = sc.build_incident_row(p, sc.donor_incidents()[d])
         assert set(row) == cols and set(prov) == cols
-        assert set(prov.values()) <= {"", "src", "syn", "key"}
+        assert set(prov.values()) <= {"", "src", "xw", "mod", "syn", "key"}
         assert prov["Incident Number"] == "key"
         for c in cols:
             assert (prov[c] == "") == (not row[c].strip()), c
@@ -71,7 +71,9 @@ def test_narratives_are_shifted_by_the_rebase_delta():
     delta = sc.donor_delta(p)
     shifted = date(2024, 5, 2) + __import__("datetime").timedelta(days=delta)
     assert f"{shifted.strftime('%B')} {shifted.day}, {shifted.year}" in row["What happened?  "]
-    assert prov["What happened?  "] == "src"          # shifted text stays src; About discloses
+    # shifted text is altered real text: mod if it changed, else the donor token (src)
+    changed = row["What happened?  "] != donor_row["What happened?  "]
+    assert changed and prov["What happened?  "] == "mod"
 
 
 def test_anchor_clamp_reserves_room_for_near_incident_prose_dates():

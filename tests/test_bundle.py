@@ -643,7 +643,7 @@ def test_mod_only_replaces_src(b):
                 if tok == "mod":
                     n_mod += 1
                     assert rp[c] in ("src", "mod"), (rel, c, rp[c])
-                    assert vr[c] != rv[c], (rel, c)          # 'mod' means the text really changed
+                    assert rp[c] == "mod" or vr[c] != rv[c], (rel, c)   # src -> mod must really change the text
                 elif c in rp:
                     assert tok == rp[c], (rel, c, tok, rp[c])
     assert n_mod > 0
