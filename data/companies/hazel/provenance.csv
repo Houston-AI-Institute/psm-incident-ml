@@ -139,9 +139,9 @@ key,,,syn,src,syn,src,src,src,,syn,src,xw,xw,xw,,syn,syn,syn,syn,syn,syn,syn,syn
 key,,,syn,src,syn,src,src,src,,syn,src,,,,,syn,syn,syn,syn,syn,syn,syn,syn,syn,syn,src,,,,,,,,,,,,,,,,
 key,,xw,syn,src,syn,src,src,src,,syn,src,xw,,,xw,syn,syn,syn,syn,syn,syn,syn,syn,syn,syn,mod,src,xw,,xw,xw,xw,xw,,,,,,,,,
 key,,xw,syn,src,syn,src,src,src,,syn,src,xw,,,xw,syn,syn,syn,syn,syn,syn,syn,syn,syn,syn,mod,src,xw,,xw,xw,xw,xw,,,,,,,xw,,
-key,,,syn,src,syn,src,src,src,,syn,src,xw,xw,xw,,syn,syn,syn,syn,syn,syn,syn,syn,syn,syn,mod,xw,,,,,,,,,,,,,,,
+key,,,syn,src,syn,src,src,src,,syn,src,xw,xw,xw,,syn,syn,syn,syn,syn,syn,syn,syn,syn,syn,src,xw,,,,,,,,,,,,,,,
 key,,xw,syn,src,syn,src,src,src,,syn,src,xw,,,xw,syn,syn,syn,syn,syn,syn,syn,syn,syn,syn,mod,xw,xw,,xw,xw,xw,xw,,,,,,,xw,,
-key,,,syn,src,syn,src,src,src,,syn,src,xw,xw,xw,,syn,syn,syn,syn,syn,syn,syn,syn,syn,syn,mod,xw,,,,,,,,,,,,,,,mod
+key,,,syn,src,syn,src,src,src,,syn,src,xw,xw,xw,,syn,syn,syn,syn,syn,syn,syn,syn,syn,syn,mod,xw,,,,,,,,,,,,,,,src
 key,,,syn,src,syn,src,,src,src,syn,src,xw,xw,xw,,syn,syn,syn,syn,syn,syn,syn,syn,syn,syn,mod,src,,,,,,,,,,,,,,,
 key,,,syn,src,syn,src,src,,src,syn,src,xw,xw,xw,,syn,syn,syn,syn,syn,syn,syn,syn,syn,syn,mod,xw,,,,,,,,,,,,,,,mod
 key,,,syn,src,syn,src,src,src,,syn,src,,,,,syn,syn,syn,syn,syn,syn,syn,syn,syn,syn,mod,,,,,,,,,,,,,,,,

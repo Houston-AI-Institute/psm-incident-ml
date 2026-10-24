@@ -3721,19 +3721,21 @@ marks a real-source cell this project altered (dates shifted or an operator
 masked). `mod` may only replace `src`; it never replaces `xw`, `llm` or `gold`.
 
 **Masking policy.** `src/psm/masking.py` builds one pattern from two sources:
-operator and contractor-party names derived from the `bsee_operator` column of
-`data/processed/e19/bsee_unmapped.csv` (legal suffixes stripped, at least two
-tokens, generic-word stoplist), and the hand-kept aliases in
+names derived from the operator part of the `bsee_operator` column of
+`data/processed/e19/bsee_unmapped.csv` (the `CONTRACTOR:` part is never used;
+legal suffixes stripped, at least two tokens, generic-word stoplist), and the hand-kept aliases in
 `schema/operator_aliases.yaml`. Each operator part also contributes its first
 token as a short form (at least four letters, not a stoplist word, not an
 alias, not the first token of a contractor part, not on the yaml's
 `first_token_exclude` list), matched only as written, Capitalized or UPPER. The
 exclusions are words where the lowercase form outnumbers the capitalized one in
 the donor text (High, Union, Hydro, Probe, Palm), a nautical noun (Fairways), a
-contractor (Wild) and a platform (Marlin). Ambiguous words (Shell, Apache, Stone, Cox and
+contractor (Wild) and a platform (Marlin). Helix has no alias: in the sidecar it
+is only ever a contractor. "Wild Well Control" sits in the operator field of two
+sidecar rows, so `derived_exclude` in the yaml removes it. Ambiguous words (Shell, Apache, Stone, Cox and
 similar) match bare only when capitalized in exact case; any other casing needs
-a corporate suffix (Inc, LLC, Corporation, USA, LP and so on). Noble and Helix
-need a suffix in every case, and so does Taylor (its hits are mostly a rig name,
+a corporate suffix (Inc, LLC, Corporation, USA, LP and so on). Noble
+needs a suffix in every case, and so does Taylor (its hits are mostly a rig name,
 not an operator). Only `src` and `mod` free text is touched. Generated text is
 checked by `tests/test_masking.py::test_generated_text_has_no_operator_name`.
 
@@ -3742,25 +3744,28 @@ checked by `tests/test_masking.py::test_generated_text_has_no_operator_name`.
 | | Alder | Hazel | Hornbeam |
 |---|---|---|---|
 | `xw` retokens (donor token kept) | 1093 | 1038 | 988 |
-| `mod` cells | 194 | 171 | 156 |
-| masked mentions | 445 | 359 | 408 |
-| distinct masked strings (case kept) | 100 | 97 | 115 |
+| `mod` cells | 193 | 168 | 155 |
+| masked mentions | 412 | 338 | 383 |
+| distinct masked strings (case kept) | 84 | 84 | 98 |
 
-Across the three registers: 1212 masked mentions, 207 distinct masked strings
-with case kept (199 when case is folded, the earlier method; that figure was
-162, then 171, in the previous rounds). The growth is the short-form operators
-that first shipped unmasked (Cantium alone is 53 mentions), plus the corporate
-tail now stopping at a word boundary: it had been eating the start of a word
-that follows an operator name ("McMoRan Incident" came out as "[company]ident").
+Across the three registers: 1133 masked mentions, 172 distinct masked strings
+with case kept (166 when case is folded, the earlier method; that figure was
+162, then 171, then 199 in the previous rounds). Round 2 added the short-form
+operators that first shipped unmasked (Cantium alone is 53 mentions) and made
+the corporate tail stop at a word boundary: it had been eating the start of a
+word that follows an operator name ("McMoRan Incident" came out as
+"[company]ident"). Round 3 dropped 35 contractor names (see below).
 
 **Left named on purpose.** Contractor, rig and vessel names (Transocean,
 Rowan, Ensco, Nabors, Seadrill, Hercules, Maersk, Noble, Helix, and
-back-references such as "(Supreme)") are not masked on their own, because the
-incident-health dashboards participants build score the fictional operator,
-not the contractor. A contractor's full registered name in the sidecar still
-masks, because full names come from the derived list; only short forms such as
-"Transocean" stay named. The place name "Intracoastal City" is unmasked too.
-The participant guide and the xlsx About sheet say so.
+back-references such as "(Supreme)") are not masked, full names included, because
+the incident-health dashboards participants build score the fictional operator,
+not the contractor. Derived names use the operator part of `bsee_operator` only;
+a contractor's first token is also never derived as an operator short form.
+Three full names appear as both an operator and a contractor part in the sidecar
+(Badger Oil, Murphy Exploration, Noble Energy); they are still masked as
+operators. The place name "Intracoastal City" is unmasked too. The participant
+guide and the xlsx About sheet say so.
 
 **Limits.** Masking is pattern-based, so a few operator names may remain; the
 guide and the About sheet say that too. It is a speed bump, not anonymisation. The narratives are

@@ -68,7 +68,7 @@ key,,xw,syn,src,syn,src,src,,src,syn,src,xw,xw,xw,,syn,syn,syn,syn,syn,syn,syn,s
 key,,,syn,src,syn,src,src,,src,syn,src,xw,xw,xw,,,,syn,syn,,,,,,,mod,xw,,,,,,,,,,,,,,,src
 key,,xw,syn,syn,syn,src,src,src,src,syn,src,xw,,,,syn,syn,syn,syn,syn,syn,syn,syn,syn,syn,mod,src,xw,,xw,,,,,,,,,,xw,,mod
 key,,xw,syn,src,syn,src,src,src,,syn,src,xw,xw,xw,,syn,syn,syn,syn,syn,syn,syn,syn,syn,syn,mod,xw,xw,,xw,xw,xw,xw,,,,,,,xw,,
-key,,,syn,src,syn,src,src,src,src,syn,src,xw,xw,xw,,,,syn,syn,,,,,,,mod,xw,,,,,,,,,,,,,,,
+key,,,syn,src,syn,src,src,src,src,syn,src,xw,xw,xw,,,,syn,syn,,,,,,,src,xw,,,,,,,,,,,,,,,
 key,,xw,syn,src,syn,src,src,src,src,syn,src,xw,,,,syn,syn,syn,syn,syn,syn,syn,syn,syn,syn,mod,xw,xw,,xw,xw,xw,xw,,,,,,,,,
 key,,,syn,src,syn,src,src,src,src,syn,src,,,,,syn,syn,syn,syn,syn,syn,syn,syn,syn,syn,src,,,,,,,,,,,,,,,,
 key,,,syn,src,syn,src,src,src,,syn,src,xw,xw,xw,,,,syn,syn,,,,,,,mod,src,,,,,,,,,,,,,,,

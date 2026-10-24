@@ -289,7 +289,7 @@ def test_top_masked_strings_reported(p):
     # The counter keeps case. An ambiguous word may be masked only as written with a
     # capital (Shell) or with a corporate suffix, never as bare lowercase (shell, stone).
     ambiguous = {"shell", "apache", "stone", "cox", "arena", "hess", "murphy", "walter",
-                 "devon", "noble", "taylor", "helix", "mariner", "cobalt", "nippon",
+                 "devon", "noble", "taylor", "mariner", "cobalt", "nippon",
                  "paloma", "panther", "marlin"}
     bare_lower = [s for s in masked_strings(donor, p) if s in ambiguous]
     assert not bare_lower, bare_lower
@@ -336,6 +336,24 @@ def test_mask_leaves_common_words_and_contractors_alone(p, s):
     assert mask_operators(s, p) == s
 
 
+@pytest.mark.parametrize("s", ["Transocean Offshore", "Wild Well Control", "Diamond Offshore Drilling",
+                               "Noble Drilling (U.S.) Inc.", "Rowan Companies", "Nabors Offshore crew",
+                               "Helix Energy Solutions", "Helix Energy vessel Q4000"])
+def test_full_contractor_names_are_left_named(p, s):
+    # owner decision: contractors and rigs stay named; only operators are masked
+    assert mask_operators(s, p) == s
+
+
+def test_derived_names_come_from_the_operator_part_only():
+    from psm.masking import derived_names
+    names = {n.lower() for n in derived_names()}
+    # these full names appear only as CONTRACTOR parts (or, Wild Well Control, as a
+    # contractor in the operator field, listed in derived_exclude)
+    assert not ({"transocean offshore", "diamond offshore", "rowan drilling",
+                 "maersk drilling", "wild well control"} & names)
+    assert "shell offshore inc" in names or any(n.startswith("shell offshore") for n in names)
+
+
 # -- independent scan for first tokens (F1). Does NOT use operator_pattern() or any
 # psm.masking helper: its own simple rule on the scrubbed bsee_operator column.
 
@@ -348,7 +366,7 @@ FIRST_TOKEN_ALLOW = {
     "black",      # a colour; "Black Elk" itself is masked by its own alias
     "noble", "murphy", "exxon", "pioneer", "pacific", "total", "white", "badger",
                   # also first tokens of contractors, kept named by owner decision
-    "taylor", "helix",    # rigs / vessels; masked only with a corporate suffix
+    "taylor", "helix",    # rigs / vessels / a contractor; Helix is never masked, Taylor only with a suffix
     "marlin",     # a platform name: the verbatim Unit column of one incident (not free text)
     "forest", "plains", "merit", "guardian", "magnum", "manta",    # ordinary words; only a hit if the text uses them capitalized
 }

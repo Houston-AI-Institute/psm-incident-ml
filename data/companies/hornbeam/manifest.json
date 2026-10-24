@@ -170,7 +170,7 @@
     "data/processed/e19/real_only/closeout.csv": "4c43fe7862df91817086cdfe9b5e6ae5b6e53ac39e1054ac2a59f0a7ec9cc9d6",
     "data/processed/e19/real_only/incidents.csv": "3434effb6267920e7146a22a8aaa683f7da52c199de4ef8d73ffc156860515fd",
     "data/processed/e19/real_only/recommendations.csv": "9d4f8c6471cb9944552ca0ddffe2ed6f4602fb615fbfccb04225d2468c4d024a",
-    "schema/operator_aliases.yaml": "648b6b4e13a33259b7577d36f8d5a12c07016824009f5ffe4bb040b057f67e4e"
+    "schema/operator_aliases.yaml": "254005adb7f1a24f3e0f978dfe94d5a842263de5d3cb8813a8940cb1f765eec6"
   },
   "negative_controls": [
     "median_report_lag(=alder)",

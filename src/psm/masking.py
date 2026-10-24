@@ -6,8 +6,9 @@ claim about that operator, so every real operator name in company text becomes
 ``[company]``. The ``core/`` and ``advanced/`` BSEE tables keep the names.
 
 The pattern is built from two sources:
-  * names derived from the ``bsee_operator`` column of ``bsee_unmapped.csv``
-    (operator and CONTRACTOR parts, legal suffixes stripped), and
+  * names derived from the operator part of the ``bsee_operator`` column of
+    ``bsee_unmapped.csv`` (the CONTRACTOR part is never used: contractors and rigs
+    stay named), legal suffixes stripped, and
   * the short forms in ``schema/operator_aliases.yaml``.
 
 Deterministic: alternatives are sorted by (-len, str), so the pattern text does
@@ -105,17 +106,21 @@ def _alias_config() -> dict:
 
 
 def derived_names() -> list[str]:
-    """Company names derived from bsee_operator, deduplicated case-insensitively."""
+    """Operator names derived from bsee_operator (operator part only, never the
+    CONTRACTOR part), deduplicated case-insensitively."""
     stop = set(_alias_config()["stoplist"])
+    never = {n.lower() for n in _alias_config().get("derived_exclude", [])}
     seen: dict[str, str] = {}
     with BSEE_UNMAPPED.open(encoding="utf-8", newline="") as fh:
         for row in csv.DictReader(fh):
-            for part in re.split(r"CONTRACTOR:", row["bsee_operator"] or ""):
+            # operator part only: a CONTRACTOR part is a contractor or rig, which stays
+            # named by owner decision
+            for part in re.split(r"CONTRACTOR:", row["bsee_operator"] or "")[:1]:
                 name = _strip_name(part)
                 toks = _tokens(name)
                 if len(toks) < 2 or sum(ch.isalpha() for ch in name) < 3:
                     continue
-                if name.lower() in _PLACEHOLDERS:
+                if name.lower() in _PLACEHOLDERS or name.lower() in never:
                     continue
                 if all(t.strip(".,()") in stop for t in toks):
                     continue
