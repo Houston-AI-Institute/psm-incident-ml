@@ -26,6 +26,22 @@ IGNORED = set(scenario._FREE_TEXT) | {"Cause Description"}
 ID_RE = re.compile(r"\b(NS|MR|CP)-(?=[0-9A-F]{10}\b)")
 
 
+def _commit_available(sha: str, cwd: Path = REPO) -> bool:
+    """True if `sha` is a commit in this repo. False only when the commit is missing (after a
+    squash merge, or in a shallow clone); any other git failure raises."""
+    if subprocess.run(["git", "cat-file", "-e", f"{sha}^{{commit}}"], cwd=cwd,
+                      capture_output=True).returncode == 0:
+        return True
+    subprocess.run(["git", "rev-parse", "--git-dir"], cwd=cwd, check=True, capture_output=True)
+    return False
+
+
+needs_pinned_commit = pytest.mark.skipif(
+    not _commit_available(PRE_RENAME),
+    reason=f"the pinned pre-rename commit {PRE_RENAME} is unavailable (after a squash merge or in "
+           "a shallow clone); the one-off result is recorded in docs/findings.md 2026-10-24")
+
+
 def _old_rows(old: str, name: str) -> list[dict]:
     blob = subprocess.run(["git", "show", f"{PRE_RENAME}:data/companies/{old}/{name}"],
                           cwd=REPO, check=True, capture_output=True).stdout.decode("utf-8")
@@ -37,6 +53,7 @@ def _new_rows(new: str, name: str) -> list[dict]:
         return list(csv.DictReader(fh))
 
 
+@needs_pinned_commit
 @pytest.mark.parametrize("old", sorted(RENAMES))
 def test_rename_preserves_draws(old):
     new, old_prefix, new_prefix = RENAMES[old]
@@ -58,6 +75,7 @@ def test_rename_preserves_draws(old):
     assert len(ids) == 150 and all(i.startswith(new_prefix + "-") for i in ids)
 
 
+@needs_pinned_commit
 def test_rename_check_catches_a_redraw(monkeypatch):
     """Deliberate violation: key the draws on the NEW slug instead of the seed and the
     generated register no longer matches the pre-rename one."""
@@ -76,3 +94,9 @@ def test_seed_helpers():
     assert scenario._seed("hazel_nt") == "meridian_nt"
     assert scenario._seed_sid("AL-0000000000") == "NS-0000000000"
     assert scenario._seed_sid("HZT-0000000000") == "MNT-0000000000"
+
+
+def test_missing_pinned_commit_is_reported_unavailable(tmp_path):
+    assert _commit_available("0" * 40) is False
+    with pytest.raises(subprocess.CalledProcessError):      # not a repo: a real failure, not a skip
+        _commit_available("0" * 40, cwd=tmp_path)

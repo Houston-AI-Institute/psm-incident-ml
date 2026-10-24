@@ -75,8 +75,8 @@ def _key(company: str, sid: str) -> str:
 @lru_cache(maxsize=None)
 def load_scenario(name: str) -> dict:
     cfg = yaml.safe_load((SCENARIO_DIR / f"{name}.yaml").read_text(encoding="utf-8"))
-    required = {"seed_key", "seed_prefix", "report_lag", "investigation", "closeout", "agreed_offset",
-                "recurrence", "controls_mix", "data_discipline"}
+    required = {"seed_key", "seed_prefix", "report_lag", "investigation", "closeout",
+                "agreed_offset", "recurrence", "controls_mix", "data_discipline"}
     missing = required - set(cfg)
     assert not missing, f"{name}: missing knob groups {missing}"
     return cfg
