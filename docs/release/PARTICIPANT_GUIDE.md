@@ -17,7 +17,7 @@ The data mixes real and generated values. Every cell says which: see **Provenanc
 
 <!-- /no-text -->
 <!-- companies -->
-**Company tables.** The company registers are fictional.
+**Company tables.** They are fictional.
 
 <!-- /companies -->
 
@@ -44,7 +44,7 @@ Tracks marked `[AI tool]` use an AI model. Follow the tool rules above, and ask 
 - `core/` is the main data. `real_only/` has the four tables with generated cells left blank. `enriched/` fills them in, with a `provenance` file that tags every cell. <!-- text -->`cause_task.csv` is for Tracks 3 and 4.<!-- /text --> <!-- no-text -->`cause_task.csv` has the labels and folds but no text.<!-- /no-text --> `cells_long.csv` is one row per cell. `content_flags.csv` marks sensitive rows. `redactions.csv` lists the redacted cells in tables with no provenance file. In the others, redacted cells are marked `mod` in the provenance file. `data_dictionary.csv` describes every column.
 - `advanced/` has extra cause files, `bsee_unmapped.csv` and `schema/`, the crosswalk files. The crosswalk is an opinion.
 <!-- companies -->
-- `companies/` has one folder for each fictional company.
+- `companies/`: one folder per fictional company.
 <!-- /companies -->
 - `BASELINE.md` is a simple model to compare against.
 
@@ -146,7 +146,7 @@ Tags: `[no-code ok]` works in a spreadsheet. `[code]` needs programming. `[AI to
 
 Alder, Hazel and Hornbeam are fictional. Their process records (dates, owners, actions) are generated. Recommendations are generic templates, not linked to their incident.
 <!-- text -->
-Their narratives are real BSEE text from other operators, with dates shifted and real operator names masked as `[company]`. Contractor and rig names are not masked. The same unmasked narratives appear in `core/`, so the masking is about attribution, not secrecy.
+Their narratives are real BSEE text from other operators, with dates shifted and operator names pattern-masked as `[company]`, so a few may remain. Contractor and rig names are not masked. The same unmasked narratives appear in `core/`, so the masking is about attribution, not secrecy.
 <!-- /text -->
 They describe no real company's conduct.
 <!-- /companies -->

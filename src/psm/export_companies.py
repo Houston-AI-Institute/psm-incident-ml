@@ -51,7 +51,8 @@ ABOUT_TEMPLATE = [
     "What is real, and what is generated:",
     "- REAL: the incident narratives and cause statements. They are copied from",
     "  public BSEE incident reports, with dates shifted. Real operator names are",
-    "  masked as [company]. Contractor and rig names are left as written.",
+    "  masked as [company] by pattern matching, so a few may remain. Contractor",
+    "  and rig names are left as written.",
     "- GENERATED: incident dates, report and close dates, owners and approvers,",
     "  schedule statuses, cause types and element overrides, and the",
     "  recommendations.",
@@ -68,9 +69,9 @@ ABOUT_TEMPLATE = [
     "  real operator-voice recommendations; repetition across incidents is",
     "  intentional corporate boilerplate.",
     "- Structured name fields are SYN- tokens; narrative text is public BSEE",
-    "  report text. Real operator names are masked as [company]; the text still",
-    "  names real contractors, rigs, vessels, facilities and -- occasionally --",
-    "  individuals involved.",
+    "  report text. Real operator names are masked as [company] by pattern, so a",
+    "  few may remain; the text still names real contractors, rigs, vessels,",
+    "  facilities and -- occasionally -- individuals involved.",
 ]
 
 _COMPARISON_ABOUT = [

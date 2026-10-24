@@ -36,11 +36,15 @@ _LEGAL_SUFFIXES = frozenset({"llc", "l.l.c.", "inc.", "inc", "company", "corpora
 _DANGLING = frozenset({"&", "of", "and", "-"})        # the sidecar truncates mid-name
 _JUNK_CHARS = "\xad\x01"
 
-# Optional corporate tail consumed after a match. Title-case and upper-case only,
-# so ordinary prose ("the BP company man") is not swallowed.
-_GROUP_WORDS = ("Group", "Partners", "Holdings", "Energy Partners")
+# Optional corporate tail consumed after a match. Title-case and upper-case only
+# (plus lowercase inc/llc), so ordinary prose ("the BP company man") is not
+# swallowed. Every alternative ends at a word boundary: "McMoRan Incident" keeps
+# "Incident", "Talos LPG" keeps "LPG".
+_GROUP_WORDS = ("Group", "Partners", "Holdings", "Operations", "Energy Partners")
 _LEGAL_TAIL = ("LLC", "L.L.C.", "Inc", "Inc.", "Corp", "Corp.", "Corporation",
-               "Company", "Co.", "USA", "U.S.A.", "LP", "L.P.")
+               "Company", "Co.", "Incorporated", "USA", "U.S.A.", "LP",
+               "L.P.")
+_LOWER_TAIL = ("inc", "inc.", "llc")
 
 
 def _cased(words) -> list[str]:
@@ -52,8 +56,12 @@ def _cased(words) -> list[str]:
 
 def _tail() -> str:
     group = "|".join(re.escape(w) for w in _cased(_GROUP_WORDS))
-    legal = "|".join(re.escape(w) for w in _cased(_LEGAL_TAIL))
-    return rf"(?:\s+(?:{group}))?(?:,?\s*(?:{legal}))*"
+    legal = "|".join(re.escape(w) for w in
+                     sorted(set(_cased(_LEGAL_TAIL)) | set(_LOWER_TAIL),
+                            key=lambda s: (-len(s), s)))
+    # ", LLC", " LLC" and " - USA" all count as a separator
+    return (rf"(?:\s+(?:{group})(?!\w))?"
+            rf"(?:(?:,\s*|\s+-\s+|\s+)(?:{legal})(?!\w))*")
 
 
 def _name_regex(name: str) -> str:
@@ -115,6 +123,45 @@ def derived_names() -> list[str]:
     return sorted(seen.values(), key=lambda s: (-len(s), s))
 
 
+def first_token_forms() -> dict[str, list[str]]:
+    """Short forms derived from each OPERATOR part of bsee_operator: its first token.
+
+    Rules (all in code and yaml, none tuned per name):
+      * operator parts only; the first token of a CONTRACTOR part is a contractor's
+        and is never masked (contractors and rigs stay named by owner decision);
+      * letters only, at least 4 of them, not on the stoplist;
+      * not on ``first_token_exclude`` in the yaml (words that are also ordinary
+        words, places, platforms or rigs; reasons are written there);
+      * not already an alias, or the first word of one (the alias carries the flags).
+    A form matches only as written, Capitalized or UPPER, never lowercase.
+    Returns {lowercase token: sorted forms}.
+    """
+    cfg = _alias_config()
+    stop = set(cfg["stoplist"])
+    exclude = {w.lower() for w in cfg.get("first_token_exclude", [])}
+    alias_heads = {a["name"].split()[0].lower() for a in cfg["aliases"]}
+    alias_heads |= {re.sub(r"\s*&\s*", "&", a["name"].lower()) for a in cfg["aliases"]}
+    raw: dict[str, set[str]] = {}
+    contractor: set[str] = set()
+    with BSEE_UNMAPPED.open(encoding="utf-8", newline="") as fh:
+        for row in csv.DictReader(fh):
+            for i, part in enumerate(re.split(r"CONTRACTOR:", row["bsee_operator"] or "")):
+                toks = _strip_name(part).split()
+                if not toks:
+                    continue
+                tok = toks[0].strip(",.()")
+                if i:
+                    contractor.add(tok.lower())
+                elif tok.isalpha() and tok.isascii() and len(tok) >= 4:
+                    raw.setdefault(tok.lower(), set()).add(tok)
+    out = {}
+    for low, spellings in raw.items():
+        if low in stop or low in exclude or low in contractor or low in alias_heads:
+            continue
+        out[low] = sorted(spellings | {low.upper(), low.capitalize()})
+    return dict(sorted(out.items()))
+
+
 @lru_cache(maxsize=1)
 def operator_pattern() -> re.Pattern:
     cfg = _alias_config()
@@ -137,6 +184,9 @@ def operator_pattern() -> re.Pattern:
         if re.sub(r"\s*&\s*", "&", name.lower()) in alias_keys:
             continue                       # the alias entry carries the flags
         alts[name] = rf"(?i:{_name_regex(name)})"
+    for low, forms in first_token_forms().items():
+        body = "|".join(re.escape(f) for f in sorted(forms, key=lambda f: (-len(f), f)))
+        alts[low] = rf"(?-i:{body})"
     ordered = [alts[k] for k in sorted(alts, key=lambda s: (-len(s), s))]
     return re.compile(rf"(?<!\w)(?:{'|'.join(ordered)})(?!\w){_tail()}")
 
@@ -147,11 +197,11 @@ def mask_operators(text: str, pattern: re.Pattern) -> str:
 
 def masked_strings(texts, pattern: re.Pattern) -> Counter:
     """Counter of the strings mask_operators would replace (whitespace collapsed,
-    case folded), for the owner's pre-release review of what gets masked."""
+    original case kept), for the owner's pre-release review of what gets masked."""
     c: Counter = Counter()
     for t in texts:
         for m in pattern.finditer(t or ""):
-            c[" ".join(m.group(0).split()).casefold()] += 1
+            c[" ".join(m.group(0).split())] += 1
     return c
 
 

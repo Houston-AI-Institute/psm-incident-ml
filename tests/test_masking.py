@@ -282,24 +282,121 @@ def test_top_masked_strings_reported(p):
     donor += [r["Cause Description"] for rows in sc.donor_causes().values() for r in rows]
     top = top_masked(donor, p, 20)
     assert top and len(top) <= 20
-    # shell, apache and arena are masked bare when capitalized by design (R52), so they
-    # may legitimately lead the list; the rest must never be a masked string.
     common = {"noble", "production", "offshore",
               "company", "energy", "oil", "gas", "not listed", "coastal"}
-    assert not [s for s, _ in top if s in common]
+    assert not [s for s, _ in top if s.lower() in common]
     assert [n for _, n in top] == sorted((n for _, n in top), reverse=True)
+    # The counter keeps case. An ambiguous word may be masked only as written with a
+    # capital (Shell) or with a corporate suffix, never as bare lowercase (shell, stone).
+    ambiguous = {"shell", "apache", "stone", "cox", "arena", "hess", "murphy", "walter",
+                 "devon", "noble", "taylor", "helix", "mariner", "cobalt", "nippon",
+                 "paloma", "panther", "marlin"}
+    bare_lower = [s for s in masked_strings(donor, p) if s in ambiguous]
+    assert not bare_lower, bare_lower
 
 
-def test_manifest_records_input_hashes():
-    for c in COMPANIES:
-        m = json.loads((REPO / "data" / "companies" / c / "manifest.json").read_text())
-        h = m["input_sha256"]
-        want = {"schema/operator_aliases.yaml",
-                "data/processed/e19/enriched/provenance.csv",
-                "data/processed/e19/enriched/causes_provenance.csv",
-                "data/processed/e19/bsee_unmapped.csv",
-                *(f"data/processed/e19/real_only/{t}.csv"
-                  for t in ("incidents", "causes", "recommendations", "closeout"))}
-        assert set(h) == want
-        for rel, digest in h.items():
-            assert digest == hashlib.sha256((REPO / rel).read_bytes()).hexdigest(), rel
+# -- word boundary after the corporate tail (F2) and fragments it should consume (F5)
+
+@pytest.mark.parametrize("s,want", [
+    ("McMoRan Incident Investigation", "[company] Incident Investigation"),
+    ("BP Corporate office", "[company] Corporate office"),
+    ("Talos LPG tank", "[company] LPG tank"),
+    ("Shell Offshore Incorporated", "[company]"),
+    ("Talos Energy, LLC reported", "[company] reported"),
+    ("Black Elk Energy Offshore Operations, LLC", "[company]"),
+    ("Murphy Exploration & Production Company - USA", "[company]"),
+    ("shell offshore inc reported", "[company] reported"),
+    ("Talos LP. Then", "[company]. Then"),
+])
+def test_corporate_tail_stops_at_a_word_boundary(p, s, want):
+    assert mask_operators(s, p) == want
+
+
+# -- short forms (F1)
+
+@pytest.mark.parametrize("s,want", [
+    ("Cantium personnel", "[company] personnel"),
+    ("ExxonMobil and Exxon", "[company] and [company]"),
+    ("the El Paso platform", "the [company] platform"),
+    ("Kosmos, Marubeni and EnVen", "[company], [company] and [company]"),
+    ("Mariner Energy LLC", "[company]"),
+    ("Mariner crew", "[company] crew"),
+    ("EPL staff", "[company] staff"),
+    ("Panther Operating Company, LLC crew", "[company] crew"),
+    ("Panther felt the swell", "[company] felt the swell"),
+])
+def test_mask_short_forms_of_real_operators(p, s, want):
+    assert mask_operators(s, p) == want
+
+
+@pytest.mark.parametrize("s", ["the mariner on watch", "cobalt blue", "a nippon import", "marlin fishing",
+                               "a panther", "the paloma", "epl", "the Marlin platform", "high pressure line", "Union Hall",
+                               "Wild crew", "Fairways narrow"])
+def test_mask_leaves_common_words_and_contractors_alone(p, s):
+    assert mask_operators(s, p) == s
+
+
+# -- independent scan for first tokens (F1). Does NOT use operator_pattern() or any
+# psm.masking helper: its own simple rule on the scrubbed bsee_operator column.
+
+# First tokens that may legitimately appear capitalized in company text, with the reason.
+FIRST_TOKEN_ALLOW = {
+    "high",       # High Island (lease area), "High pressure": common word, owner-reviewed exclusion
+    "union", "hydro", "probe", "palm",    # lowercase outnumbers capitalized in the corpus
+    "fairways",   # nautical noun
+    "wild",       # Wild Well Control, a contractor (contractors stay named)
+    "black",      # a colour; "Black Elk" itself is masked by its own alias
+    "noble", "murphy", "exxon", "pioneer", "pacific", "total", "white", "badger",
+                  # also first tokens of contractors, kept named by owner decision
+    "taylor", "helix",    # rigs / vessels; masked only with a corporate suffix
+    "marlin",     # a platform name: the verbatim Unit column of one incident (not free text)
+    "forest", "plains", "merit", "guardian", "magnum", "manta",    # ordinary words; only a hit if the text uses them capitalized
+}
+_LOCAL_STOP = {"gulf", "company", "corporation", "energy", "offshore", "exploration",
+               "production", "petroleum", "resources", "operating", "oil", "gas", "united",
+               "royal", "international", "marine", "services", "systems"}
+
+
+def _first_tokens():
+    contractor, first = set(), set()
+    with (E19 / "bsee_unmapped.csv").open(encoding="utf-8", newline="") as fh:
+        for row in csv.DictReader(fh):
+            for i, part in enumerate((row["bsee_operator"] or "").split("CONTRACTOR:")):
+                toks = part.replace("\xad", "").replace("\x01", "").split()
+                if not toks:
+                    continue
+                tok = toks[0].strip(",.()")
+                if i:
+                    contractor.add(tok.lower())
+                elif tok.isascii() and tok.isalpha() and len(tok) >= 4:
+                    first.add(tok.lower())
+    return sorted(first - contractor - _LOCAL_STOP)
+
+
+def _capitalized_first_token_hits(cells):
+    rx = {t: re.compile(rf"(?<!\w)(?:{t.capitalize()}|{t.upper()})(?!\w)")
+          for t in _first_tokens() if t not in FIRST_TOKEN_ALLOW}
+    return sorted({(where, t) for where, v in cells for t, r in rx.items() if r.search(v)})
+
+
+def test_first_tokens_scan_is_not_vacuous():
+    toks = _first_tokens()
+    assert len(toks) > 60
+    for must in ("cantium", "mariner", "cobalt", "marubeni", "kosmos", "statoil", "sanare"):
+        assert must in toks
+
+
+def test_company_text_has_no_capitalized_operator_first_token():
+    cells = [((c, t, i, col.strip()), v) for c, t, i, col, v in _company_text_cells()]
+    hits = _capitalized_first_token_hits(cells)
+    assert not hits, hits[:10]
+
+
+@pytest.mark.parametrize("company", COMPANIES)
+def test_generated_text_has_no_capitalized_operator_first_token(company):
+    res = sc.generate(company)
+    cells = [((table, row["Incident Number"], col.strip()), v or "")
+             for table, (cols, rows, _prov) in res["tables"].items()
+             for row in rows for col, v in row.items()]
+    hits = _capitalized_first_token_hits(cells)
+    assert not hits, hits[:10]

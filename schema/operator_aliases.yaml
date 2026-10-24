@@ -29,6 +29,22 @@ stoplist: [a, and, boats, coast, companies, company, corporation, drilling, dyna
   production, properties, quality, resource, resources, royal, safety, services,
   specialty, systems, technologies, technology, the, united, usa]
 
+# first_token_exclude: first tokens of operator names in bsee_operator that are
+# NOT masked on their own (see first_token_forms in src/psm/masking.py for the
+# rule that derives the rest). Two reasons, counted on the donor free text
+# (incidents and causes):
+#   common word: the lowercase form occurs more often than the capitalized one,
+#     so the word is ordinary English (lowercase / capitalized counts):
+#     High 443/113, Union 19/0, Hydro 6/2, Probe 4/1, Palm 4/0.
+#   not an operator reference: "Fairways" is the nautical noun, and "Wild"
+#     is Wild Well Control, a well-control contractor, so its short form stays named.
+#   a platform: "Marlin" is the platform in the verbatim Unit column of one
+#     incident, and its free-text mentions are "(Marlin)" back-references to it.
+#     Masking the text and not the Unit cell would protect nothing.
+# Their full derived names (for example "Union Oil Company of California" and
+# "Wild Well Control") are still masked: full names come from the derived list.
+first_token_exclude: [High, Union, Hydro, Probe, Palm, Fairways, Wild, Marlin]
+
 aliases:
   - {name: BP, case_sensitive: true, require_suffix: false}
   - {name: "W&T", case_sensitive: true, require_suffix: false}
@@ -61,3 +77,30 @@ aliases:
   - {name: Northstar Offshore, case_sensitive: false, require_suffix: false}
   - {name: Helix, case_sensitive: false, require_suffix: true}
   - {name: Devon, case_sensitive: false, require_suffix: true, bare_capitalized: true}
+  # Added in fix round 2 (operators that shipped unmasked as short forms).
+  # Words that are also ordinary words, vessels or platforms are case_sensitive:
+  # they match only when capitalized exactly.
+  - {name: Cantium, case_sensitive: false, require_suffix: false}
+  - {name: Mariner, case_sensitive: true, require_suffix: false}
+  - {name: Cobalt, case_sensitive: true, require_suffix: false}
+  - {name: ExxonMobil, case_sensitive: false, require_suffix: false}
+  - {name: Exxon, case_sensitive: false, require_suffix: false}
+  - {name: Marubeni, case_sensitive: false, require_suffix: false}
+  - {name: EPL, case_sensitive: true, require_suffix: false}
+  - {name: El Paso, case_sensitive: false, require_suffix: false}
+  - {name: Kosmos, case_sensitive: false, require_suffix: false}
+  - {name: Nippon, case_sensitive: true, require_suffix: false}
+  - {name: Venoco, case_sensitive: false, require_suffix: false}
+  - {name: Nugulf, case_sensitive: false, require_suffix: false}
+  - {name: Castex, case_sensitive: false, require_suffix: false}
+  - {name: Medco, case_sensitive: false, require_suffix: false}
+  - {name: EnVen, case_sensitive: false, require_suffix: false}
+  - {name: Statoil, case_sensitive: false, require_suffix: false}
+  - {name: Newfield, case_sensitive: false, require_suffix: false}
+  - {name: Spinnaker, case_sensitive: false, require_suffix: false}
+  - {name: Nexen, case_sensitive: false, require_suffix: false}
+  - {name: Paloma, case_sensitive: true, require_suffix: false}
+  - {name: Maritech, case_sensitive: false, require_suffix: false}
+  - {name: Helis, case_sensitive: false, require_suffix: false}
+  - {name: Panther, case_sensitive: true, require_suffix: false}
+  - {name: "Bois d'Arc", case_sensitive: false, require_suffix: false}
