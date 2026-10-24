@@ -75,10 +75,11 @@ def test_deterministic(bundle, tmp_path):
 
 def test_columns_and_reasons(bundle, tmp_path):
     out = build_review_pack(bundle, n_random=3, out_path=tmp_path / "o.csv")
+    want = ["file", "Incident Number", "row_key", "column", "reason", "text", "n_cells"]
     with out.open(encoding="utf-8", newline="") as fh:
-        assert next(csv.reader(fh)) == ["file", "Incident Number", "row_key", "column", "reason", "text"]
-    assert COLUMNS == ["file", "Incident Number", "row_key", "column", "reason", "text"]
-    assert len(REASONS) == 6
+        assert next(csv.reader(fh)) == want
+    assert COLUMNS == want
+    assert len(REASONS) == 7
     assert {r["reason"] for r in _read(out)} <= set(REASONS)
 
 
@@ -107,19 +108,24 @@ def test_random_follows_rank(bundle, tmp_path):
 
 def test_flag_reasons(bundle, tmp_path):
     rows = _read(build_review_pack(bundle, n_random=0, out_path=tmp_path / "o.csv"))
-    got = {(r["reason"], r["row_key"]) for r in rows if r["reason"] != "capitalised_pair"}
+    got = {(r["reason"], r["row_key"]) for r in rows if not r["reason"].startswith("capitalised_pair")}
     assert got == {("near_fatal", "A2"), ("name_redacted", "A2"),
                    ("death_mention", "A3"), ("contact_redacted", "A3")}   # serious_injury is not a reason
     a2 = [r for r in rows if r["row_key"] == "A2" and r["reason"] == "name_redacted"][0]
     assert a2["text"] == "[name] was found unconscious near the tank."     # as shipped
     assert a2["Incident Number"] == "A2" and a2["file"] == "core/real_only/incidents.csv"
+    assert a2["n_cells"] == ""
 
 
 def test_capitalised_pair_violation(bundle, tmp_path):
     rows = _read(build_review_pack(bundle, n_random=0, out_path=tmp_path / "o.csv"))
     cp = [r for r in rows if r["reason"] == "capitalised_pair"]
-    assert ("core/real_only/incidents.csv", "A1") in {(r["file"], r["row_key"]) for r in cp}
-    assert not any(r["file"].startswith("advanced/") for r in cp)
+    zork = [r for r in cp if "Zork Quux" in r["text"]]
+    assert len(zork) == 1
+    z = zork[0]
+    assert (z["file"], z["row_key"], z["column"]) == ("core/real_only/incidents.csv", "A1", NARR)
+    assert z["n_cells"] == "1" and z["Incident Number"] == "A1"
+    assert not any(r["file"].startswith("advanced/") for r in rows if r["reason"].startswith("capitalised_pair"))
 
 
 def test_capitalised_pair_rules(tmp_path):
@@ -142,9 +148,57 @@ def test_sorted_output(bundle, tmp_path):
     assert keys == sorted(keys)
 
 
+def _mini(tmp_path, cells):
+    b = tmp_path / "mini"
+    _w(b / "core/real_only/incidents.csv", ["Incident Number", NARR],
+       [{"Incident Number": k, NARR: v} for k, v in cells.items()])
+    _w(b / "core/content_flags.csv", ["Incident Number", "table", "row_key", "column", "flag"], [])
+    return b
+
+
+def _pairs(b, tmp_path, name="o.csv"):
+    rows = _read(build_review_pack(b, n_random=0, out_path=tmp_path / name))
+    return [r for r in rows if r["reason"].startswith("capitalised_pair")]
+
+
+def test_common_pair_goes_to_its_own_reason(tmp_path):
+    b = _mini(tmp_path, {"A1": "Hit by a Crane Operator who was injured.",
+                         "A2": "Then the crane operator waved."})
+    rows = _pairs(b, tmp_path)
+    assert [(r["reason"], r["n_cells"]) for r in rows] == [("capitalised_pair_common", "1")]
+    assert "Crane Operator" in rows[0]["text"]
+
+
+def test_pair_in_two_cells_is_one_row(tmp_path):
+    b = _mini(tmp_path, {"B2": "Zork Quux was injured again.", "B1": "Zork Quux was injured."})
+    rows = _pairs(b, tmp_path)
+    assert len(rows) == 1
+    r = rows[0]
+    assert r["reason"] == "capitalised_pair" and r["n_cells"] == "2"
+    assert r["row_key"] == "B1" and r["Incident Number"] == "B1"      # first in sort order
+
+
+def test_pair_row_text_is_a_60_char_window(tmp_path):
+    text = "x" * 100 + " Zork Quux was injured " + "y" * 100
+    b = _mini(tmp_path, {"C1": text})
+    (r,) = _pairs(b, tmp_path)
+    s = text.index("Zork Quux")
+    assert r["text"] == text[s - 60: s + len("Zork Quux") + 60]
+    short = _mini(tmp_path / "s", {"C1": "Zork Quux was injured.\nNext line."})
+    (r,) = _pairs(short, tmp_path / "s", "p.csv")
+    assert r["text"] == "Zork Quux was injured.\nNext line."      # cut at cell bounds, newline kept
+
+
+def test_distinct_pairs_in_one_cell_each_get_a_row(tmp_path):
+    b = _mini(tmp_path, {"D1": "Zork Quux and Blarg Fnord were injured."})
+    rows = _pairs(b, tmp_path)
+    assert len(rows) == 2 and {r["n_cells"] for r in rows} == {"1"}
+
+
 def test_one_row_per_cell_and_reason(bundle, tmp_path):
     rows = _read(build_review_pack(bundle, n_random=10_000, out_path=tmp_path / "o.csv"))
-    keys = [(r["reason"], r["file"], r["row_key"], r["column"]) for r in rows]
+    keys = [(r["reason"], r["file"], r["row_key"], r["column"]) for r in rows
+            if not r["reason"].startswith("capitalised_pair")]
     assert len(keys) == len(set(keys))
 
 
