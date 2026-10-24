@@ -148,11 +148,12 @@ def test_sorted_output(bundle, tmp_path):
     assert keys == sorted(keys)
 
 
-def _mini(tmp_path, cells):
+def _mini(tmp_path, cells, flags=True):
     b = tmp_path / "mini"
     _w(b / "core/real_only/incidents.csv", ["Incident Number", NARR],
        [{"Incident Number": k, NARR: v} for k, v in cells.items()])
-    _w(b / "core/content_flags.csv", ["Incident Number", "table", "row_key", "column", "flag"], [])
+    if flags:
+        _w(b / "core/content_flags.csv", ["Incident Number", "table", "row_key", "column", "flag"], [])
     return b
 
 
@@ -207,3 +208,54 @@ def test_default_out_path_is_gitignored_deliverables():
     from psm import review_pack
     assert inspect.signature(review_pack.build_review_pack).parameters["out_path"].default is None
     assert review_pack.DEFAULT_OUT.as_posix().endswith("deliverables/release/review_sample.csv")
+
+
+def test_overlapping_pairs_are_all_considered(tmp_path):
+    # "Then Zork" would absorb "Zork" under left-to-right matching and hide "Zork Quux".
+    b = _mini(tmp_path, {"E1": "Then Zork Quux was injured.", "E2": "Zork Quux was injured."})
+    rows = _pairs(b, tmp_path)
+    by_n = {r["n_cells"] for r in rows}
+    assert len(rows) == 2 and by_n == {"1", "2"}               # "Then Zork" x1 and "Zork Quux" x2
+    assert [r for r in rows if r["n_cells"] == "2"][0]["reason"] == "capitalised_pair"
+
+
+def test_empty_pool_fails_loud(tmp_path):
+    b = tmp_path / "empty"
+    _w(b / "core/real_only/incidents.csv", ["Incident Number"], [{"Incident Number": "A1"}])  # text-light
+    _w(b / "core/content_flags.csv", ["Incident Number", "table", "row_key", "column", "flag"], [])
+    out = tmp_path / "o.csv"
+    with pytest.raises(SystemExit, match="no narrative cells"):
+        build_review_pack(b, out_path=out)
+    assert not out.exists()
+    blank = _mini(tmp_path / "blank", {"A1": ""})
+    with pytest.raises(SystemExit, match="no narrative cells"):
+        build_review_pack(blank, out_path=tmp_path / "o2.csv")
+
+
+def test_flag_for_missing_cell_fails_loud(tmp_path):
+    b = _mini(tmp_path, {"A1": "Fine."})
+    _w(b / "core/content_flags.csv", ["Incident Number", "table", "row_key", "column", "flag"], [
+        {"Incident Number": "ZZ", "table": "core/real_only/incidents.csv", "row_key": "ZZ",
+         "column": NARR, "flag": "near_fatal"}])
+    with pytest.raises(SystemExit, match="flagged cell not found"):
+        build_review_pack(b, out_path=tmp_path / "o.csv")
+
+
+def test_missing_flags_file_fails_loud(tmp_path):
+    b = _mini(tmp_path, {"A1": "Fine."}, flags=False)
+    with pytest.raises(SystemExit, match="not a built bundle"):
+        build_review_pack(b, out_path=tmp_path / "o.csv")
+
+
+def test_output_independent_of_hash_seed(bundle, tmp_path):
+    import os
+    import subprocess
+    import sys
+    outs = []
+    for seed in ("1", "2"):
+        o = tmp_path / f"seed{seed}.csv"
+        subprocess.run([sys.executable, "-m", "psm.review_pack", str(bundle), "--n-random", "5",
+                        "--out", str(o)], check=True, capture_output=True,
+                       env={**os.environ, "PYTHONHASHSEED": seed})
+        outs.append(o.read_bytes())
+    assert outs[0] == outs[1] and len(outs[0]) > 0

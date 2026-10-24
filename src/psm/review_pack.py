@@ -13,6 +13,9 @@ Reasons:
                     occurrence and ``n_cells`` counts the cells where the pair occurs near a role
   capitalised_pair_common
                     the same, for pairs whose two words both appear in lower case in the pool
+  Pairs overlap ("Then Mark Smith" gives "Then Mark" and "Mark Smith"); each distinct pair is
+  one row. The pair regex misses all-caps, McX, hyphenated, initial-only and single-word names;
+  only the random sample covers those.
 
 ``serious_injury`` flags are not a reason. Narrative columns and row keys come from
 ``psm.bundle`` (``FLAG_COLS``, ``KEY_COLS``); the table kind of a bundle file comes from
@@ -44,7 +47,8 @@ FLAGS_REL = "core/content_flags.csv"
 GAP = 40
 WINDOW = 60
 
-_PAIR_RE = re.compile(r"\b[A-Z][a-z]+ [A-Z][a-z]+\b")
+# Lookahead: overlapping pairs are all found ("Then Mark Smith" gives "Then Mark" and "Mark Smith").
+_PAIR_RE = re.compile(r"\b(?=([A-Z][a-z]+ [A-Z][a-z]+)\b)")
 _TRIGGER_RE = re.compile(r"\b(?:injured|employee|supervisor|operator|crane operator|worker)\b", re.I)
 _TRIGGER_IP_RE = re.compile(r"\bIP\b")           # case-sensitive: "ip" is not the injured person
 _LOWER_WORD_RE = re.compile(r"\b[a-z]+\b")
@@ -52,8 +56,9 @@ _LOWER_WORD_RE = re.compile(r"\b[a-z]+\b")
 
 def near_pairs(text: str) -> list[tuple[int, int]]:
     """Spans of every Capitalised Capitalised pair within 40 characters of a role word, on
-    either side. The gap is measured between the two spans; overlapping spans don't count."""
-    pairs = [m.span() for m in _PAIR_RE.finditer(text)]
+    either side. Pairs may overlap each other. The gap is measured between the pair and the
+    role word; a role word that overlaps the pair doesn't count."""
+    pairs = [m.span(1) for m in _PAIR_RE.finditer(text)]
     if not pairs:
         return []
     trig = [m.span() for rx in (_TRIGGER_RE, _TRIGGER_IP_RE) for m in rx.finditer(text)]
@@ -117,6 +122,9 @@ def build_review_pack(bundle_dir: Path, n_random: int = 150, seed_text: str = "r
     if not flags_path.is_file():
         raise SystemExit(f"not a built bundle: {flags_path} is missing")
     cells = _cells(bundle_dir)
+    if not cells:
+        raise SystemExit(f"no narrative cells to review in {bundle_dir} "
+                         "(text-light bundle, or no narrative table found)")
 
     rows: list[tuple] = []        # (reason, file, row_key, column, Incident Number, text, n_cells)
 
