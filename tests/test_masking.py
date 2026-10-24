@@ -295,6 +295,21 @@ def test_top_masked_strings_reported(p):
     assert not bare_lower, bare_lower
 
 
+def test_manifest_records_input_hashes():
+    for c in COMPANIES:
+        m = json.loads((REPO / "data" / "companies" / c / "manifest.json").read_text())
+        h = m["input_sha256"]
+        want = {"schema/operator_aliases.yaml",
+                "data/processed/e19/enriched/provenance.csv",
+                "data/processed/e19/enriched/causes_provenance.csv",
+                "data/processed/e19/bsee_unmapped.csv",
+                *(f"data/processed/e19/real_only/{t}.csv"
+                  for t in ("incidents", "causes", "recommendations", "closeout"))}
+        assert set(h) == want
+        for rel, digest in h.items():
+            assert digest == hashlib.sha256((REPO / rel).read_bytes()).hexdigest(), rel
+
+
 # -- word boundary after the corporate tail (F2) and fragments it should consume (F5)
 
 @pytest.mark.parametrize("s,want", [
@@ -307,6 +322,11 @@ def test_top_masked_strings_reported(p):
     ("Murphy Exploration & Production Company - USA", "[company]"),
     ("shell offshore inc reported", "[company] reported"),
     ("Talos LP. Then", "[company]. Then"),
+    # the source sometimes drops the final dot of L.L.C (AL-C60DFEB8F2)
+    ("Talos Energy Offshore, L.L.C rig", "[company] rig"),
+    ("Talos Energy Offshore L.L.C rig", "[company] rig"),
+    ("Talos Energy Offshore, L.L.C. rig", "[company] rig"),
+    ("Talos Energy Offshore, L.L.Crig", "[company], L.L.Crig"),
 ])
 def test_corporate_tail_stops_at_a_word_boundary(p, s, want):
     assert mask_operators(s, p) == want

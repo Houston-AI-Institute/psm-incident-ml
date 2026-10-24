@@ -42,7 +42,7 @@ _JUNK_CHARS = "\xad\x01"
 # swallowed. Every alternative ends at a word boundary: "McMoRan Incident" keeps
 # "Incident", "Talos LPG" keeps "LPG".
 _GROUP_WORDS = ("Group", "Partners", "Holdings", "Operations", "Energy Partners")
-_LEGAL_TAIL = ("LLC", "L.L.C.", "Inc", "Inc.", "Corp", "Corp.", "Corporation",
+_LEGAL_TAIL = ("LLC", "L.L.C.", "L.L.C", "Inc", "Inc.", "Corp", "Corp.", "Corporation",
                "Company", "Co.", "Incorporated", "USA", "U.S.A.", "LP",
                "L.P.")
 _LOWER_TAIL = ("inc", "inc.", "llc")

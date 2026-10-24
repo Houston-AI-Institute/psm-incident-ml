@@ -3773,3 +3773,12 @@ verbatim real text, so a determined reader can search distinctive phrases or
 platform names and recover the operator. Some masks are probably false positives
 (for example a capitalized "Hess" that is part of a software name).
 `core/` and `advanced/` bundles are unchanged and keep operator names.
+
+**Fix round 4.** The corporate tail now also consumes `L.L.C` without its
+final dot. One Alder cell (AL-C60DFEB8F2) had shipped the fragment
+`[company], L.L.C`; it now reads `[company]`. Masked mentions (1133), `mod`
+cells and the per-company distinct counts are unchanged. The combined distinct
+count is now 173 with case kept (167 folded), up from 172 (166): the undotted
+"Cox Operating, L.L.C" is now its own masked string. Beta, Merit, Guardian and
+Hunt were checked hit by hit; every masked use is an operator reference, so
+none was added to `first_token_exclude`.
