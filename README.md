@@ -5,8 +5,13 @@ incident reports (BSEE MMS Form 2010), projected onto the Energy Institute PSM
 Framework **Element 19** (Incident Reporting & Investigation) template.
 
 Every cell records its own origin. Nothing is filled unless the source supplies
-it, a versioned rule derives it, or a generator can fabricate it without
-asserting something false about a real incident.
+it, a versioned rule derives it, or a generator fabricates it. Fabricated values
+are marked per cell (`syn`). Real text is not rewritten or paraphrased. It is
+changed only where a cell is marked `mod` (masking, date shifts, bundle redaction), where the BSEE
+sidecar's contact blocks are removed, and by extraction clean-up (page furniture
+and field-label text stripped; cause text can drop words, see Known defects in
+`docs/release/PARTICIPANT_GUIDE.md`). In the release bundle, redactions in tables
+with no provenance file are listed in `core/redactions.csv`.
 
 ## Read this before modelling
 
@@ -14,17 +19,30 @@ Three properties will change what you build. Each is measured, not asserted;
 `docs/findings.md` has the method for all of them.
 
 1. **7 of the 20 PSM elements are reachable.** BSEE's six cause categories map to
-   elements 3, 6, 8, 9, 15, 17, plus 11 via secondaries. The other 13 cannot
-   appear at any coverage. A model scored on "PSM element" is running a 7-class
-   problem under a 20-class label.
-2. **Expect ~0.55 accuracy on cause-category prediction, and report macro-F1.**
-   Logistic regression on TF-IDF, n=503, 5-fold CV: 0.551 accuracy against a
-   0.392 majority baseline, macro-F1 0.418. Two categories carry the signal
-   (Equipment Failure F1 0.692, Human Performance Error 0.639); three sit near
-   F1 0.25 at n≈30. Accuracy alone rewards ignoring four of six classes.
-3. **The label vocabulary is non-stationary in four regimes.** Use the shipped
-   split in `data/processed/e19/real_only/splits.json`. A random split leaks the
-   reporting era and part of any score will be "can you tell the decade".
+   elements 3, 6, 8, 9, 15, 17, plus 11 via secondaries. In `real_only/` and
+   `enriched/` the other 13 cannot appear at any coverage. `filled/` carries 18
+   elements, because its ` Failed PSM Framework Element` is also filled from
+   `llm` and `syn` labels; those 18 are not evidence that more elements are
+   reachable. A model scored on "PSM element" is running a 7-class problem under
+   a 20-class label.
+2. **Expect modest scores on cause-category recovery, and report macro-F1 with
+   n and an interval.** A text-only baseline (TF-IDF word 1-2 grams into a
+   class-balanced logistic regression, pooled out-of-fold over `syn_fold`,
+   regime `modern_six`) scores accuracy 0.471 and macro-F1 0.349 (95% CI 0.293
+   to 0.399, bootstrap over incidents) on n = 374 rows and 6 classes. The
+   majority baseline scores accuracy 0.334 and macro-F1 0.084. Two elements score
+   highest (15: F1 0.610; 3: F1 0.531); 6, 9 and 17 sit near F1 0.17
+   to 0.18 at n 26 to 28. The target is the BSEE investigator's own cause-category
+   head, removed from the text, shown as the repo's crosswalk element (a 1:1
+   relabel; the crosswalk is the repo's opinion). Scores measure recovery of the
+   investigator's category, not PSM-element correctness. No independent (gold)
+   labels exist. Reproduce with `uv run python -m psm.baseline`; method, caveats
+   and the per-element table are in [`docs/baseline.md`](docs/baseline.md).
+3. **The label vocabulary is non-stationary in four regimes.**
+   `data/processed/e19/real_only/splits.json` is a reporting-era partition; for
+   classification use `cause_task.csv` `syn_fold` (grouped by incident). Pooling
+   regimes lets part of a score come from telling the decade, so score within one
+   regime, as the baseline does.
 
 | regime | years | incidents | cause vocabulary |
 |---|---|---|---|
@@ -33,13 +51,17 @@ Three properties will change what you build. Each is measured, not asserted;
 | `ad_hoc` | 2010-2018 | 438 | 68 investigator-invented heads |
 | `modern_six` | 2019+ | 321 | the modern six; adoption jumps 5→17 between 2018 and 2019 |
 
-87.1% of labelled cause statements are `modern_six`.
+`splits.json` also lists 36 undated incidents as excluded. Of the 406 rows of
+`data/processed/e19/cause_task.csv`, 374 (92.1%) are `modern_six`, 19 `ad_hoc`
+and 13 `human_error`; it holds no `free_prose` rows.
 
 ## Tables
 
-`data/processed/e19/enriched/`, byte-exact E19 column labels including the
-template's own typos (`Incident Classificatioin`, a leading space on
-` Failed PSM Framework Element`).
+Byte-exact E19 column labels, including the template's own typos
+(`Incident Classificatioin`, a leading space on ` Failed PSM Framework Element`).
+`incidents.csv` and `causes.csv` are in `data/processed/e19/enriched/` (and
+`filled/`); `recommendations.csv` and `closeout.csv` are in
+`data/processed/e19/real_only/` and, verbatim, at `data/processed/e19/`.
 
 | table | rows | grain |
 |---|---|---|
@@ -50,13 +72,14 @@ template's own typos (`Incident Classificatioin`, a leading space on
 
 Sidecars, all keyed on `Incident Number` (+ `Cause number` where applicable):
 
-| file | contents |
-|---|---|
-| `provenance.csv`, `causes_provenance.csv` | per-cell `src` / `xw` / `syn` / empty, same shape as the table |
-| `causes_confidence.csv` | per-cell confidence where a mapping is graded |
-| `causes_secondary_element.csv` | `also_touches` element from `crosswalk.yaml` |
-| `bsee_unmapped.csv` | BSEE fields with no E19 counterpart, `bsee_` prefixed |
-| `causes_source_field.csv` | whether a statement came from form field 18 or 19 |
+| file | where | contents |
+|---|---|---|
+| `provenance.csv`, `causes_provenance.csv` | `enriched/` | per-cell `src` / `xw` / `syn` / empty, same shape as the table |
+| `causes_confidence.csv` | `enriched/` | per-cell confidence where a mapping is graded |
+| `causes_secondary_element.csv` | `enriched/` | `also_touches` element from `crosswalk.yaml` |
+| `bsee_unmapped.csv` | `data/processed/e19/` | BSEE fields with no E19 counterpart, `bsee_` prefixed |
+| `causes_source_field.csv` | `data/processed/e19/` | whether a statement came from form field 18 or 19 |
+| `cause_task.csv` | `data/processed/e19/` | cause rows with the category head removed, `syn_regime` and `syn_fold` |
 
 `Incident Number` is constructed (`{AREA}-{BLOCK}-{YYYYMMDD}-{HHMM}`) because
 BSEE publishes no incident identifier. It is **variable arity**: components are
@@ -74,6 +97,7 @@ no time. All 1,214 are unique.
 | `syn` | fabricated -- in `enriched/`, by `src/psm/synth.py` under `schema/synth_rules.yaml`; in `filled/`, also by `src/psm/fill.py` under the same rules file |
 | `key` | constructed join identifier (e.g. `Incident Number`); BSEE publishes no incident id, the whole column is built by this repo |
 | `pseud` | salted pseudonym of a real value (`Investigation leader`/`Approver` name columns); a stable privacy transform of a real person's name -- de-amplification, not fabrication |
+| `mod` | real source text that this project altered: dates shifted, or a company name, person name or contact detail masked; otherwise verbatim. May only replace `src` |
 | empty | not filled; see `gap_policy` in `schema/e19_disposition.yaml` |
 
 `key` and `pseud` are classified by column purpose (`src/psm/provenance.py`),
@@ -103,7 +127,9 @@ part of the `filled/` layer -- see [`psm.fill`](src/psm/fill.py)'s docstring
 per-cell tokens over both provenance files (52,202 + 25,004 = 77,206 cells),
 **33.5% real** (`src`+`xw`), 31.7% fabricated (`llm`+`syn`), 9.1%
 `key`+`pseud` (constructed identifiers / pseudonyms, neither real nor
-fabricated), 25.7% blank by policy.
+fabricated), 25.7% blank by policy. These are counts of the tokens in
+`filled/provenance.csv` and `filled/causes_provenance.csv`; the generated
+`docs/e19_field_ledger.md` reports the same kind of composition for `enriched/`.
 
 Incidents table alone (`filled/provenance.csv`, 1,214 rows × 43 columns =
 52,202 cells): 19.0% `src`, 15.1% `xw`, 2.3% `key`, 4.3% `pseud`, 34.2%
@@ -178,11 +204,29 @@ Python 3.11+, `uv`. Entry points are modules:
 uv run python -m psm.harvest     # index -> data/manifest.csv (1,302 rows, SHA256 per file)
 uv run python -m psm.fetch       # manifest -> data/raw/
 uv run python -m psm.extract     # PDFs -> data/interim/*.json
-uv run python -m psm.project     # interim -> data/processed/e19/  (verbatim only)
-uv run python -m psm.crosswalk   # + xw and syn -> enriched/
-uv run python -m psm.ledger --real-only
-uv run python -m psm.cluster     # the six-category partition check
 ```
+
+To regenerate every committed table from `data/interim/`, in order:
+
+```bash
+uv run python -m psm.project && uv run python -m psm.crosswalk && uv run python -m psm.ledger --real-only && uv run python -m psm.fill && for c in alder hazel hornbeam; do uv run python -m psm.scenario $c; done && uv run python -m psm.cause_task
+```
+
+`psm.project` writes the verbatim tables, `psm.crosswalk` adds `xw` and `syn`
+(`enriched/`), `psm.ledger --real-only` writes `real_only/`, `splits.json` and the
+ledger, `psm.fill` writes `filled/`, `psm.scenario` writes one company register,
+and `psm.cause_task` writes `cause_task.csv` (the leak-free cause task). Then:
+
+```bash
+uv run python -m psm.baseline    # docs/baseline.md
+uv run python -m psm.cluster     # the six-category partition check
+uv run python -m psm.bundle [--no-companies] [--text-light]   # the participant bundle
+uv run python -m psm.review_pack <bundle_dir>                 # personal-info review sample
+```
+
+`psm.bundle` writes under `deliverables/release/` (gitignored). It refuses to run on
+a dirty or uncommitted input tree, so commit first. `psm.review_pack` reads a built
+bundle and writes `deliverables/release/review_sample.csv` by default (`--out` to change).
 
 `data/raw/` and `data/interim/` are gitignored. `data/manifest.csv` is committed
 with a SHA256 per file, so a fresh clone rebuilds byte-identical inputs.
@@ -192,6 +236,24 @@ is not visual order on this form; naive `extract_text()` produces confidently
 wrong field assignments. Anchors resolve by **label**, not by printed number:
 revision B renumbers the form face, and two-column linearisation drops digits
 (`13. SEA STATE` arrives as `3. SEA STATE`).
+
+## Company registers
+
+`data/companies/{alder,hazel,hornbeam}/` hold three fictional companies' E19 registers
+(four tables each, with per-table provenance files). Their incidents are real BSEE
+reports from other operators, donated by a deterministic partition; their process
+records (dates, owners, actions) are generated. Provenance tokens in these files are
+`src`, `xw`, `syn`, `key` and `mod`. Each scenario YAML keeps its pre-rename name as
+`seed_key` (`northstar`, `meridian`, `coastal`), so no draw changed when the companies
+were renamed. Each `manifest.json` records how the register was generated, with SHA256
+hashes of its inputs.
+
+Operator names in a company's free text are masked as `[company]`. The masking is
+pattern-based, so a few may remain. Contractor and rig names are **not** masked, and
+`data/processed/e19/` keeps real operator names throughout, as do the `core/` and
+`advanced/` folders of the release bundle. Masking here is about attribution, not
+secrecy: the narratives are verbatim real text, and a determined reader can recover
+the operator.
 
 ## Rules are data
 
@@ -225,27 +287,32 @@ test coverage.
 
 ## Sources and licensing
 
-Source documents are US federal government works (BSEE), public domain. The
-derived tables, schema files and code in this repo are released under the
-repository licence. The Energy Institute PSM Framework element *names* are
-referenced with attribution; the E19 workbook itself is not included and no
-derivative of it is committed.
+Source documents are US federal government works (BSEE), public domain. Code,
+hand-written schema files and the values this project adds to the tables (`xw_`,
+`syn_`, provenance, pseudonyms, the fictional company data) are released under the
+repository licence (MIT); the BSEE text and values inside the tables are not (see
+`DATA_SOURCES.md`). The Energy Institute PSM Framework element *names* are
+referenced with attribution. The workbook was provided by the Energy track's challenge partner, who gave permission to publish its field labels, picklist vocabularies and cell references (`schema/e19_labels.yaml`) in this public repository. The labels are not confidential. The workbook file itself is not committed.
 
 ## Repo layout
 
 ```
 data/manifest.csv           committed; SHA256 per source PDF
-data/processed/e19/         the dataset
-data/companies/             three synthetic-company E19 registers (deterministic
-                             scenario engine output), planted process pathologies
-                             + KPI answer key per data/companies/<company>/manifest.json
+data/processed/e19/         the dataset (verbatim tables, cause_task.csv, sidecars)
+  enriched/ filled/ real_only/   the three projections
+data/companies/             three synthetic-company E19 registers: alder, hazel,
+                             hornbeam (deterministic scenario engine output); each
+                             <company>/manifest.json records how it was generated
+                             (scenario, knobs, donor partition, input hashes)
 scenarios/                  process-rate knob YAMLs consumed by src/psm/scenario.py
 gold/                       sampling frame for hand labels (unlabelled)
 schema/                     every rule, as data
 src/psm/                    pipeline
-tests/                      495 tests
+tests/                      the test suite (`uv run pytest -q`)
 docs/findings.md            append-only log: what was verified, by what method
+docs/baseline.md            generated by psm.baseline
 docs/e19_field_ledger.md    generated
+docs/release/               participant guide and terms for the release bundle
 ```
 
 ## Arguing with this

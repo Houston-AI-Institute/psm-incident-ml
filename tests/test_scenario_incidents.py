@@ -6,11 +6,11 @@ from datetime import date
 from psm import scenario as sc
 
 
-CFG = sc.load_scenario("northstar")
+CFG = sc.load_scenario("alder")
 
 
 def _plan(donor_id):
-    return sc.make_plan("northstar", CFG, donor_id)
+    return sc.make_plan("alder", CFG, donor_id)
 
 
 def test_fieldnames_are_the_donor_headers_byte_exact():
@@ -22,38 +22,39 @@ def test_fieldnames_are_the_donor_headers_byte_exact():
 
 
 def test_row_covers_every_column_and_provenance_is_closed_subset():
-    donors = sc.donor_partition("northstar")[:20]
+    donors = sc.donor_partition("alder")[:20]
     cols = set(sc.incident_fieldnames())
     for d in donors:
         p = _plan(d)
         row, prov = sc.build_incident_row(p, sc.donor_incidents()[d])
         assert set(row) == cols and set(prov) == cols
-        assert set(prov.values()) <= {"", "src", "syn", "key"}
+        assert set(prov.values()) <= {"", "src", "xw", "mod", "syn", "key"}
         assert prov["Incident Number"] == "key"
         for c in cols:
             assert (prov[c] == "") == (not row[c].strip()), c
 
 
 def test_date_chain_orders_and_derives_from_the_plan():
-    d = sc.donor_partition("northstar")[0]
+    d = sc.donor_partition("alder")[0]
     p = _plan(d)
     row, _ = sc.build_incident_row(p, sc.donor_incidents()[d])
     doi = date.fromisoformat(row["Date of Incident"])
-    rep = date.fromisoformat(row["Date of Report"])
     assert sc.WINDOW_START <= doi <= sc.WINDOW_END
-    assert (rep - doi).days == p.report_lag
-    if not p.skipped:
+    if row["Date of Report"]:                       # blank when after AS_OF
+        rep = date.fromisoformat(row["Date of Report"])
+        assert (rep - doi).days == p.report_lag
+    if not p.skipped and row["Approval Date"]:
         app = date.fromisoformat(row["Approval Date"])
-        assert (app - rep).days == p.invest_days
+        assert (app - p.report_date).days == p.invest_days
 
 
 def test_skipped_incident_has_no_leader_no_approval():
-    donors = sc.donor_partition("coastal")           # skip_rate 0.20: hits exist
-    ccfg = sc.load_scenario("coastal")
+    donors = sc.donor_partition("hornbeam")           # skip_rate 0.20: hits exist
+    ccfg = sc.load_scenario("hornbeam")
     skipped = [d for d in donors
-               if sc.make_plan("coastal", ccfg, d).skipped]
-    assert skipped, "coastal partition produced zero skips -- investigate"
-    p = sc.make_plan("coastal", ccfg, skipped[0])
+               if sc.make_plan("hornbeam", ccfg, d).skipped]
+    assert skipped, "hornbeam partition produced zero skips -- investigate"
+    p = sc.make_plan("hornbeam", ccfg, skipped[0])
     row, prov = sc.build_incident_row(p, sc.donor_incidents()[skipped[0]])
     assert row["Investigation leader - Name"] == ""
     assert row["Approval Date"] == ""
@@ -71,7 +72,9 @@ def test_narratives_are_shifted_by_the_rebase_delta():
     delta = sc.donor_delta(p)
     shifted = date(2024, 5, 2) + __import__("datetime").timedelta(days=delta)
     assert f"{shifted.strftime('%B')} {shifted.day}, {shifted.year}" in row["What happened?  "]
-    assert prov["What happened?  "] == "src"          # shifted text stays src; About discloses
+    # shifted text is altered real text: mod if it changed, else the donor token (src)
+    changed = row["What happened?  "] != donor_row["What happened?  "]
+    assert changed and prov["What happened?  "] == "mod"
 
 
 def test_anchor_clamp_reserves_room_for_near_incident_prose_dates():
@@ -79,15 +82,15 @@ def test_anchor_clamp_reserves_room_for_near_incident_prose_dates():
     # placed in the window's first 60 days
     donor = "GC-478-20240502-1620"
     look, fwd = sc._narrative_span(donor)
-    sid = sc.scenario_incident_number("northstar", donor)
-    d = sc.anchored_incident_date("northstar", sid, donor)
+    sid = sc.scenario_incident_number("alder", donor)
+    d = sc.anchored_incident_date("alder", sid, donor)
     from datetime import timedelta
     assert d >= sc.WINDOW_START + timedelta(days=look)
     assert d <= sc.WINDOW_END - timedelta(days=fwd)
 
 
 def test_people_columns_are_syn_never_donor_values():
-    d = sc.donor_partition("northstar")[1]
+    d = sc.donor_partition("alder")[1]
     p = _plan(d)
     row, prov = sc.build_incident_row(p, sc.donor_incidents()[d])
     if not p.skipped:

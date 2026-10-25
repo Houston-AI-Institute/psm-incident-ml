@@ -17,7 +17,7 @@ BUCKETS = 1024
 
 # (median_days, sigma): union of every lognormal knob across the four
 # scenario YAMLs (report_lag, investigation duration, closeout, incl. the
-# test-only meridian_nt closeout of 60d).
+# test-only hazel_nt closeout of 60d).
 CONFIGS = ((2, 0.6), (7, 0.5), (10, 0.8), (21, 0.6), (30, 0.7),
            (40, 0.5), (45, 0.6), (60, 0.6), (130, 0.8))
 

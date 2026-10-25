@@ -292,3 +292,111 @@ def parse_field(text: str | None) -> dict:
         "cause_status": status,
         "statements": [asdict(parse_statement(s)) for s in statements],
     }
+
+
+# ---- leak-free text for the cause-classification task --------------------
+
+# A parsed span is treated as a subcategory (and removed) when it is short,
+# recurs, or has no description after it; a long one-off span followed by a
+# description is the investigator's own sentence and is kept.
+SUBCATEGORY_MAX_WORDS = 6
+SUBCATEGORY_MIN_COUNT = 2
+STEM_MAX_WORDS = 3
+# 1-word stems are excluded: "the", "a", "not", "did" head 34 distinct subcategories
+# and dropping them rewrote 231 of 524 labelled statements without moving the
+# sentinel (8 hits either way). Set to 1 to include them.
+STEM_MIN_WORDS = 2
+_LEAD_STRIP = " \t\r\n:–—-"
+
+_SUB_COUNTS: dict | None = None
+
+
+def subcategory_counts(causes_csv) -> dict[str, int]:
+    """Lower-cased parsed subcategory -> occurrences over every statement in
+    ``causes_csv`` (labelled or not)."""
+    import csv
+    csv.field_size_limit(10 ** 9)
+    counts: dict[str, int] = {}
+    with open(causes_csv, encoding="utf-8", newline="") as fh:
+        for row in csv.DictReader(fh):
+            sub = parse_statement(row.get("Cause Description", "") or "").subcategory
+            if sub:
+                counts[sub.lower()] = counts.get(sub.lower(), 0) + 1
+    return counts
+
+
+def _default_sub_counts() -> dict[str, int]:
+    global _SUB_COUNTS
+    if _SUB_COUNTS is None:
+        from pathlib import Path
+        _SUB_COUNTS = subcategory_counts(
+            Path(__file__).resolve().parents[2] / "data" / "processed" / "e19"
+            / "real_only" / "causes.csv")
+    return _SUB_COUNTS
+
+
+def subcategory_stems(sub_counts: dict[str, int]) -> frozenset[str]:
+    """Leading 2-3 word stems shared by two or more distinct parsed
+    subcategories, computed from the data (BSEE subcategories are a family of
+    templates: "inadequate communication between <x> and <y>")."""
+    seen: dict[str, set[str]] = {}
+    for sub in sub_counts:
+        words = sub.split()
+        for k in range(STEM_MIN_WORDS, min(STEM_MAX_WORDS, len(words)) + 1):
+            seen.setdefault(" ".join(words[:k]), set()).add(sub)
+    return frozenset(stem for stem, subs in seen.items() if len(subs) >= 2)
+
+
+def strip_category(raw: str, sub_counts: dict[str, int] | None = None) -> str:
+    """Cause text with the label-bearing opening removed.
+
+    Removes (1) the category head, (2) the parsed subcategory -- always, even
+    when ``parse_statement`` finds no description after it -- and (3) the
+    leading ``[:–—-]`` characters and whitespace.
+
+    A span counts as a subcategory if it occurs at least twice as a parsed
+    subcategory in ``sub_counts`` (default: ``real_only/causes.csv``), has
+    ``SUBCATEGORY_MAX_WORDS`` words or fewer, or has no description after it
+    (the whole statement is head plus subcategory). A long once-seen span that
+    IS followed by a description is the investigator's own sentence and is kept.
+
+    The kept text is then scrubbed of any remaining leading label vocabulary,
+    repeatedly: the row's own category head, a recurring subcategory phrase, or
+    a 2-3 word stem shared by two or more distinct subcategories. Untyped prose
+    is returned as is.
+
+    ``sub_counts`` is the output of :func:`subcategory_counts`. Without it, the
+    counts are lazily loaded from ``data/processed/e19/real_only/causes.csv`` on
+    first use and memoized for the life of the process.
+    """
+    st = parse_statement(raw or "")
+    if st.category is None:
+        return st.raw.lstrip(_LEAD_STRIP).strip()
+    counts = _default_sub_counts() if sub_counts is None else sub_counts
+    sub = st.subcategory
+    if sub and (len(sub.split()) <= SUBCATEGORY_MAX_WORDS
+                or counts.get(sub.lower(), 0) >= SUBCATEGORY_MIN_COUNT
+                or not st.description):
+        text = st.description or ""
+    else:
+        m = SEP_RE.search(st.raw)
+        text = st.raw[m.end():] if m else ""
+    text = text.lstrip(_LEAD_STRIP).strip()
+    phrases = sorted({s for s, n in counts.items() if n >= SUBCATEGORY_MIN_COUNT}
+                     | {st.category.lower()}, key=lambda s: (-len(s), s))
+    stems = subcategory_stems(counts)
+    while True:
+        low = text.lower()
+        for s in phrases:
+            if low.startswith(s) and (len(low) == len(s) or not low[len(s)].isalnum()):
+                text = text[len(s):].lstrip(_LEAD_STRIP).strip()
+                break
+        else:
+            words = low.split()
+            for k in range(min(STEM_MAX_WORDS, len(words)), STEM_MIN_WORDS - 1, -1):
+                if " ".join(words[:k]) in stems:
+                    parts = text.split(None, k)
+                    text = (parts[k] if len(parts) > k else "").lstrip(_LEAD_STRIP).strip()
+                    break
+            else:
+                return text

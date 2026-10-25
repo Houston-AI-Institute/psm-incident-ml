@@ -10,7 +10,7 @@ KPIS = {"median_report_lag", "skip_rate", "root_cause_depth",
 
 
 def test_manifest_asserts_every_kpi_somewhere():
-    for company in ("northstar", "meridian"):
+    for company in ("alder", "hazel"):
         m = sc.build_manifest(company, sc.generate(company))
         covered = ({p["kpi"] for p in m["plants"]}
                    | set(m["analytic_expectations"].get("kpi_map", {}))
@@ -19,26 +19,26 @@ def test_manifest_asserts_every_kpi_somewhere():
 
 
 def test_manifest_records_partition_window_knobs_and_sha():
-    m = sc.build_manifest("meridian", sc.generate("meridian"))
-    assert m["company"] == "meridian"
+    m = sc.build_manifest("hazel", sc.generate("hazel"))
+    assert m["company"] == "hazel"
     assert len(m["donor_partition"]) == 150
     assert m["window"] == {"start": "2021-01-01", "end": "2025-12-31"}
-    assert m["scenario_sha256"] == sc.scenario_sha256("meridian")
-    assert m["resolved_knobs"] == sc.load_scenario("meridian")
+    assert m["scenario_sha256"] == sc.scenario_sha256("hazel")
+    assert m["resolved_knobs"] == sc.load_scenario("hazel")
     ov = m["analytic_expectations"]["overdue_rate"]
     assert ov == analytic_overdue_rate(130, 0.8, 30, 90)
 
 
-def test_meridian_manifest_lists_eight_recurrence_pairs():
-    res = sc.generate("meridian")
-    m = sc.build_manifest("meridian", res)
+def test_hazel_manifest_lists_eight_recurrence_pairs():
+    res = sc.generate("hazel")
+    m = sc.build_manifest("hazel", res)
     rec = [p for p in m["plants"] if p["pathology"] == "recurrence_after_closure"]
     assert len(rec) == 1 and len(rec[0]["affected_ids"]) == 8
 
 
 def test_committed_registers_match_a_fresh_generate():
     # after the CLI has run and data is committed, regeneration is identical
-    for company in ("northstar", "meridian"):
+    for company in ("alder", "hazel"):
         out = Path(sc.OUT_ROOT) / company
         assert (out / "manifest.json").exists(), "run the CLI first"
         fresh = sc.build_manifest(company, sc.generate(company))

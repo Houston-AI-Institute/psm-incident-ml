@@ -22,6 +22,11 @@ SOFTWARE.
 
 ---
 
-NOTE ON DATA: This MIT licence covers the CODE in this repository only.
-Source data provenance, retrieval dates, and licence basis per source are
-documented in DATA_SOURCES.md.
+NOTE ON DATA: This MIT licence covers the code in this repository and the
+material this project added to the data: generated, crosswalked and pseudonym
+values, the fictional company data, provenance files and hand-written schema
+files. It does not cover BSEE source text and values (treated as public
+domain), the E19 workbook's field labels and category values (published with
+the workbook provider's permission), or the Energy Institute's PSM element
+names (used with attribution). Source data provenance, retrieval dates, and
+licence basis per source are documented in DATA_SOURCES.md.

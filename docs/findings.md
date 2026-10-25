@@ -3457,3 +3457,845 @@ for making provenance portable inside the workbook itself: embedded
 token-per-cell, per-column provenance-count comments on every header cell,
 and an About-sheet warning addressed to extraction/AI consumers —
 implemented concurrently in `src/psm/export_e19.py`.
+
+## 2026-10-19 — Contact blocks removed from the BSEE sidecar
+
+`data/processed/e19/bsee_unmapped.csv` carried each report's operator and
+contractor representative blocks (name, city, state, telephone) inside
+`bsee_operator`, and, in two reports, inside `bsee_operation`. The sidecar is
+built in `src/psm/project.py`; `scrub_contacts()` now removes those blocks at
+source, and the committed CSV was regenerated with the standard REGEN command.
+
+**Measured, before vs after (cells changed against `HEAD`, n=1,214 rows):**
+
+| column | cells changed |
+|---|---|
+| `bsee_operator` | 1,212 |
+| `bsee_operation` | 2 (MC-822-20050315-1500, VK-989-20060111-0121) |
+| every other column | 0 |
+
+The plan's earlier figure of 464 was mislabelled, not wrong: 464 is the number
+of operator cells that contained a phone pattern in the old file (operation: 2),
+not the number of cells the scrub changes. The scrub also drops labels, names and
+city/state, so 1,212 operator cells change. Four of the operator cells are OCR-garbled (`REPRESENTATIVE'`,
+`TELEPHONE'`, a comma where the colon should be); label terminators `:`, `'`,
+`’` and `,` are all accepted, and those four now reduce to the company name.
+
+**Phone-bearing cells, before → after** (pattern `\(\d{3}\)\s*\d{3}-\d{4}|\b\d{3}-\d{3}-\d{4}\b`;
+before = `git show e0e9ed1:data/processed/e19/bsee_unmapped.csv`, after = the
+committed file): `bsee_operator` 464 → 0, `bsee_operation` 2 → 0, every other
+`bsee_*` column 0 → 0. Reproduce:
+
+```bash
+uv run python - <<'PY'
+import io, subprocess, pandas as pd
+ph = r'\(\d{3}\)\s*\d{3}-\d{4}|\b\d{3}-\d{3}-\d{4}\b'
+old = pd.read_csv(io.StringIO(subprocess.check_output(
+    ['git', 'show', 'e0e9ed1:data/processed/e19/bsee_unmapped.csv']).decode()), dtype=str, keep_default_na=False)
+new = pd.read_csv('data/processed/e19/bsee_unmapped.csv', dtype=str, keep_default_na=False)
+for c in ('bsee_operator', 'bsee_operation'):
+    print(c, old[c].str.contains(ph).sum(), '->', new[c].str.contains(ph).sum())
+PY
+```
+
+**Scope.** The full scrub runs on `bsee_operator` and `bsee_operation` only. Every
+other `bsee_*` text column gets phone-number removal alone (HEAD had no
+phone-like match outside those two columns). The checkbox columns contain the
+bare form label `REPRESENTATIVE/SUPERVISOR` followed by checkbox text; a
+segment rule would delete real content there (a first attempt changed 28
+`bsee_type_checkboxes` cells that way), so those cells are left alone. A bare
+`REPRESENTATIVE/SUPERVISOR` label with no value or terminator can therefore
+remain; it carries no person data. One cell outside the R10 scope has a
+`TELEPHONE` label: `bsee_type_checkboxes` for SM-160-20240921-1630. The label is
+followed only by checkbox words, with no value, and the cell is unchanged.
+
+**Side effect.** The `bsee_operation` rule deletes from the label to the end of
+the cell, so MC-822-20050315-1500 also loses its trailing sign-off date
+(10-MAY-2005). Accepted. Both changed `bsee_operation` cells also keep the
+dangling label words "OPERATOR" and "CONTRACTOR" where the representative
+segment began.
+
+**Wording.** After this change `bsee_operator` and `bsee_operation` are
+"verbatim except contact blocks removed". Narrative prose such as "the
+operator's representative stated:" is untouched, because the labels match
+case-sensitively. "SEA STATE: n FT." is untouched.
+
+**What this does not do.**
+- The removed values remain in public git history. Decision D5 (2026-10-19):
+  history is not rewritten. The same contact blocks are public in the source
+  PDFs on bsee.gov.
+- No code reads `bsee_operator` or `bsee_operation`. Two modules do load the
+  sidecar: `src/psm/crosswalk.py:396` (reads `bsee_property_damaged` and
+  `bsee_sha256`) and `src/psm/evidence.py:301` (reads `bsee_property_damaged`),
+  and `tests/test_conventions.py:62` reads its header. None of those columns
+  changed (0 cells). Check, from the repo root:
+  `grep -rnE "bsee_operator|bsee_operation|bsee_unmapped" src tests`
+  (hits outside `project.py` and `tests/test_projection.py`: the three loaders
+  above, none naming the two columns).
+
+Pinned by `tests/test_projection.py`: unit tests on `scrub_contacts` /
+`scrub_phones`, and a test over the committed sidecar that finds no phone number
+in any `bsee_*` column and, in operator and operation, no `REPRESENTATIVE`
+followed by a value label or OCR terminator and no `TELEPHONE`.
+
+## 2026-10-19 — Leak-free cause-classification task file
+
+`data/processed/e19/cause_task.csv` (built by `src/psm/cause_task.py`, run as
+`uv run python -m psm.cause_task`, now the last step of the regeneration chain)
+is the cause-classification target with the label removed from the input.
+Columns: `Incident Number, Cause number, src_year, src_category,
+src_text_stripped, xw_element, syn_regime, syn_fold`. Score against `xw_element`
+from `src_text_stripped`; `syn_fold` is a grouped 5-fold split
+(`sha256(f"{inc}|cause-task-v1")[:8] % 5`, every cause of an incident in one
+fold). `xw_element` is read from `schema/crosswalk.yaml` (alias to
+`primary_element`); the build raises if it disagrees with the labelled
+` Failed PSM Framework Element`.
+
+**The leak this fixes.** Every labelled cause (524 of 524 in
+`real_only/causes.csv`; labelled means ` Failed PSM Framework Element` is
+non-blank, which here equals "the head is a crosswalk alias") opens with its own
+category head. 421 also carry a parsed subcategory. **111** are head plus
+subcategory and nothing else: 56 where the span is short or recurs, 55 where it
+is a long, once-seen sentence. Measured with `parse_statement` on each labelled
+`Cause Description`, counting rows where `subcategory` is set and `description`
+is not. The plan's figure was 111; the measurement is also 111.
+
+**A vs B.** `strip_category` has one judgment in it. A (literal): a long
+once-seen span is "kept as description", so the 55 keep their sentence, which is
+the subcategory. B (adopted, owner ruling R17): a span with no description after
+it is the subcategory whatever its length, so those 55 strip to empty and are
+excluded; a long once-seen span that IS followed by a description (the
+sprag-clutch pattern, 29 labelled rows) is kept. Under A: 462 rows, sentinel 25
+hits (5.4%). Under B: the 111 = 56 + 55 are removed and the file lands at 406.
+
+**Remaining label vocabulary.** After the main strip, a loop drops any leading
+text that is the row's own category head, a recurring subcategory (seen 2+
+times), or a 2-3 word stem shared by 2+ distinct parsed subcategories (stems
+computed from the data: 84 of them). It changed 69 labelled statements and can
+leave a fragment. Single-word stems were tried and dropped: "the", "a", "not"
+and "did" head 34 distinct subcategories, and removing them rewrote 231 of 524
+statements with the same sentinel result (8 hits). `STEM_MIN_WORDS = 1` restores
+them.
+
+**Rows.** N = **406** (modern_six 374, ad_hoc 19, human_error 13; free_prose
+none). Excluded from 524 labelled: **116 too_short** (fewer than 3 words after
+stripping), **2 multi_category** (a second category head after a sentence or dash
+boundary), 0 in both = 118. Elements: 3: 145, 15: 114, 8: 66, 17: 28, 6: 27,
+9: 26.
+
+**Sentinel (out-of-fold lookup).** Learn first-3-words to modal `xw_element` on
+four folds, apply to the fifth, count rows where the lookup fires and is right:
+**8 of 406 = 1.97%** (limit 2%, i.e. 8.12). Pinned by
+`test_subcategory_lookup_sentinel`; a companion test plants a subcategory head
+per class and shows the sentinel trips. The margin is one row, so any change to
+the stripping rule needs this re-measured.
+
+**Fold by class, modern_six (n = 374).** Rows are folds, columns are elements:
+
+```
+fold   3   6   8   9  15  17
+0     20   4   9   1  25   4
+1     16   5   8   6  26   6
+2     26   3  14   6  16   3
+3     39  10  19   9  24   9
+4     24   5  14   4  13   6
+```
+
+Min cell = **1** (fold 0, element 9). The assertion is `>= 1` (owner ruling R19):
+elements 6 and 9 are sparse (27 and 26 rows over five folds), so a floor of 3 per
+fold cannot hold without changing the salt, which was left alone. Fold 3 is
+larger (110 rows against about 65) because several multi-cause incidents hash
+there. Small cells make per-fold, per-class scores noisy; report n.
+
+**Decision: `src/psm/cluster.py` is unchanged.** It keeps its current behaviour
+and does not call `strip_category`; the six-category partition check there reads
+the head on purpose.
+
+Regeneration: the full chain was re-run with `psm.cause_task` appended; the only
+data change is the new `cause_task.csv`. Pinned by `tests/test_cause_task.py`
+(row count, columns, one-to-one relabel, fold hash, regime from `splits.json`,
+committed file equals a fresh build).
+
+### Correction to the entry above (2026-10-19, fix round 1)
+
+The A-vs-B comparison above was not like-for-like: the 462/25 figure for A was
+measured with the phrase loop but without stems. Restated under identical
+conditions (rows, modern_six, out-of-fold sentinel hits; `ab.py` below):
+
+| stripping loop | A (literal) | B (shipped) |
+|---|---|---|
+| none | 463 rows, 414 m6, 35 hits (7.56%) | 408, 375, 16 (3.92%) |
+| phrases only (own head, recurring subcategories) | 462, 413, 25 (5.41%) | 407, 374, 11 (2.70%) |
+| phrases and 2-3 word stems (shipped) | 461, 413, 9 (1.95%) | **406, 374, 8 (1.97%)** |
+
+**The sentinel does not separate A from B once stems are stripped** (9 vs 8
+hits, both under 2%). B is adopted on two other grounds: the spec defines the
+111-row leak as the rows whose entire remainder is the parsed subcategory (56
+short or recurring spans plus 55 long once-seen sentences with nothing after
+them), and B is the reading that lands N inside the plan's 380-413 range (A
+gives 461).
+
+**Loop counts.** Over the 524 labelled statements the whole loop (own head,
+recurring phrases, stems) changes **82** outputs; the stem step alone drives
+**69** of those.
+
+**Placement.** The first sentence of the entry says `psm.cause_task` is "now the
+last step of the regeneration chain". The chain in `README.md` lists it after
+`psm.ledger --real-only` and before `psm.cluster`; it was run last in this
+session's REGEN, which is a different thing. The README position is the
+documented one.
+
+**Data change is checkable.** `git show --stat e4a9b0a` lists seven files; the
+only one under `data/` is `data/processed/e19/cause_task.csv` (407 lines, 406
+rows plus header). Every other regenerated file was byte-identical.
+
+**Known residuals, left as is (they are source-verbatim).**
+* MC-474A-20210607 cause 1: a second category head follows a `\x81` bullet
+  (a font glyph with no mapping), which `second_head` does not match as a
+  boundary. 1 row.
+* 5 rows have C0/C1 control characters in `src_text_stripped`
+  (GB-426-20211210, GB-426A-20211123 x2, MC-474A-20210607, MC-503-20201031).
+
+Reproduce the table: build the three variants by editing `strip_category`
+(drop `or not st.description` for A; return before `phrases = sorted(` for no
+loop; set `stems = frozenset()` for phrases-only), point
+`psm.cause_task.strip_category` at each, and count
+`len(build_cause_task(REAL_ONLY))`, modern_six rows, and `_lookup_hits` from
+`tests/test_cause_task.py`.
+
+## 2026-10-24 — Fictional companies renamed (northstar, meridian, coastal)
+
+| old slug | new slug | label | ID prefix | `seed_key` / `seed_prefix` |
+|---|---|---|---|---|
+| northstar | alder | Alder | AL | northstar / NS |
+| meridian | hazel | Hazel | HZ | meridian / MR |
+| meridian_nt (test only) | hazel_nt | none | HZT | meridian_nt / MNT |
+| coastal | hornbeam | Hornbeam | HB | coastal / CP |
+
+**Why.** "NorthStar" collided with the real operator Northstar Offshore, and the
+names Meridian and Coastal match historical Gulf operators. The 2026-10-19 check
+of the BSEE company register (`data.bsee.gov/Company/Files/1070.pdf`, 4,621
+entries) found 0 entries for Alder, Hazel and Hornbeam. It found 3 Juniper
+entries, 2 of them with no termination date, so Juniper was not used. Larch was
+rejected because of Larch Oil & Gas Corp. (WV). (That register check was done on
+2026-10-19 and recorded in the task brief; it was not re-run for this entry.)
+
+**Draws are unchanged.** Every draw is keyed on the slug and on the incident
+number's prefix (`f"{company}|{sid}|..."`). A plain rename re-draws everything
+and fails the Hazel negative-control test (renamed `test_hazel_negative_controls`;
+|0.728 - 0.873| = 0.145 > 0.10, reproduced on 2026-10-19). Each
+`scenarios/*.yaml` therefore carries `seed_key` and `seed_prefix`, and
+`psm.scenario` hashes `_seed(company)` and `_seed_sid(sid)` (the visible prefix
+swapped for the seed prefix). Only the visible slug, label and ID prefix change.
+
+**Verified, by what method.**
+* `tests/test_scenario_rename.py::test_rename_preserves_draws` reads the
+  pre-rename register from the pinned commit `d41622e` (`git show`), swaps the
+  old ID prefixes for the new ones, and compares every column of the four value
+  CSVs except the free-text columns, for each company. It passed. The companion
+  test generates under the new slug without the seed and shows the register then
+  differs.
+* One-off, not a test: all 24 files (4 value CSVs and their 4 provenance CSVs,
+  for 3 companies) compared byte for byte against `d41622e` after the same
+  prefix substitution. 24 of 24 identical. `manifest.json` differs by design:
+  `company`, `scenario_sha256`, `resolved_knobs` (the two new seed keys) and the
+  `ref` strings.
+* After REGEN with the new slugs, `git diff --stat` showed changes only under
+  `data/companies/` (paths renamed), `scenarios/`, `src/`, `tests/` and the
+  participant guide. No other data file changed. `uv run pytest -q`: 734 passed,
+  2 skipped.
+
+**Where the old names remain.** The `seed_key` lines in `scenarios/*.yaml`, and
+so `resolved_knobs.seed_key` in each committed `data/companies/*/manifest.json`
+(manifests are not shipped in the release bundle). Old names also remain in git
+history and in dated entries above, which are not rewritten.
+
+## 2026-10-24 — Donor provenance carried into the company registers; real operators masked
+
+The three fictional registers (alder, hazel, hornbeam) used to emit every
+donor-derived cell with an empty or `src` token. They now keep the donor's
+token (`src`, `xw`, `llm`, and so on, read by row index from
+`enriched/provenance.csv` and `enriched/causes_provenance.csv`), and real
+operator names in free text are masked as `[company]`. A new token, `mod`,
+marks a real-source cell this project altered (dates shifted or an operator
+masked). `mod` may only replace `src`; it never replaces `xw`, `llm` or `gold`.
+
+**Masking policy.** `src/psm/masking.py` builds one pattern from two sources:
+names derived from the operator part of the `bsee_operator` column of
+`data/processed/e19/bsee_unmapped.csv` (the `CONTRACTOR:` part is never used;
+legal suffixes stripped, at least two tokens, generic-word stoplist), and the hand-kept aliases in
+`schema/operator_aliases.yaml`. Each operator part also contributes its first
+token as a short form (at least four letters, not a stoplist word, not an
+alias, not the first token of a contractor part, not on the yaml's
+`first_token_exclude` list), matched only as written, Capitalized or UPPER. The
+exclusions are words where the lowercase form outnumbers the capitalized one in
+the donor text (High, Union, Hydro, Probe, Palm), a nautical noun (Fairways), a
+contractor (Wild) and a platform (Marlin). Helix has no alias: in the sidecar it
+is only ever a contractor. "Wild Well Control" sits in the operator field of two
+sidecar rows, so `derived_exclude` in the yaml removes it. Ambiguous words (Shell, Apache, Stone, Cox and
+similar) match bare only when capitalized in exact case; any other casing needs
+a corporate suffix (Inc, LLC, Corporation, USA, LP and so on). Noble
+needs a suffix in every case, and so does Taylor (its hits are mostly a rig name,
+not an operator). Only `src` and `mod` free text is touched. Generated text is
+checked by `tests/test_masking.py::test_generated_text_has_no_operator_name`.
+
+**Counts after this round.**
+
+| | Alder | Hazel | Hornbeam |
+|---|---|---|---|
+| `xw` retokens (donor token kept) | 1093 | 1038 | 988 |
+| `mod` cells | 193 | 168 | 155 |
+| masked mentions | 412 | 338 | 383 |
+| distinct masked strings (case kept) | 84 | 84 | 98 |
+
+Across the three registers: 1133 masked mentions, 172 distinct masked strings
+with case kept (166 when case is folded, the earlier method; that figure was
+162, then 171, then 199 in the previous rounds). Round 2 added the short-form
+operators that first shipped unmasked (Cantium alone is 53 mentions) and made
+the corporate tail stop at a word boundary: it had been eating the start of a
+word that follows an operator name ("McMoRan Incident" came out as
+"[company]ident"). Round 3 dropped 35 contractor names (see below).
+
+**Left named on purpose.** Contractor, rig and vessel names (Transocean,
+Rowan, Ensco, Nabors, Seadrill, Hercules, Maersk, Noble, Helix, and
+back-references such as "(Supreme)") are not masked, full names included, because
+the incident-health dashboards participants build score the fictional operator,
+not the contractor. Derived names use the operator part of `bsee_operator` only;
+a contractor's first token is also never derived as an operator short form.
+Three full names appear as both an operator and a contractor part in the sidecar
+(Badger Oil, Murphy Exploration, Noble Energy); they are still masked as
+operators. The place name "Intracoastal City" is unmasked too. The participant
+guide and the xlsx About sheet say so.
+
+**Limits.** Masking is pattern-based, so a few operator names may remain; the
+guide and the About sheet say that too. It is a speed bump, not anonymisation. The narratives are
+verbatim real text, so a determined reader can search distinctive phrases or
+platform names and recover the operator. Some masks are probably false positives
+(for example a capitalized "Hess" that is part of a software name).
+`core/` and `advanced/` bundles are unchanged and keep operator names.
+
+**Fix round 4.** The corporate tail now also consumes `L.L.C` without its
+final dot. One Alder cell (AL-C60DFEB8F2) had shipped the fragment
+`[company], L.L.C`; it now reads `[company]`. Masked mentions (1133), `mod`
+cells and the per-company distinct counts are unchanged. The combined distinct
+count is now 173 with case kept (167 folded), up from 172 (166): the undotted
+"Cox Operating, L.L.C" is now its own masked string. Beta, Merit, Guardian and
+Hunt were checked hit by hit; every masked use is an operator reference, so
+none was added to `first_token_exclude`.
+
+## 2026-10-24 — README and licence claims corrected; workbook-schema permission recorded
+
+Each row is a claim that was changed, where, and why. Method per figure:
+
+- Re-counted 2026-10-24 by command (Python over the committed CSV and JSON files,
+  and `uv run pytest --collect-only -q`): the 406 rows of `cause_task.csv` and their
+  split (374 `modern_six`, 19 `ad_hoc`, 13 `human_error`), the 36 undated incidents
+  in `splits.json`, the 18 elements in `filled/causes.csv`, the `filled/` token
+  composition (77,206 cells: 33.5% `src`+`xw`, 31.7% `llm`+`syn`, 9.1% `key`+`pseud`,
+  25.7% blank), the 861 tests collected, and the full run (`uv run pytest -q`: 859
+  pass, 2 skip). 92.1% is 374 / 406 from those counts.
+- Read from generated files, not re-run: accuracy, macro-F1, CI, majority baseline,
+  n and per-element F1 (`docs/baseline.md`, written by `psm.baseline`); the 94.3%
+  validity figure (`docs/e19_field_ledger.md`).
+- Text-integrity sentence: stated from `schema/bsee_form2010.yaml`, the Known defects
+  section of `docs/release/PARTICIPANT_GUIDE.md` and `src/psm/bundle.py`. That
+  extraction can drop words in cause text is documented there; its rate was not
+  measured here.
+
+| claim (before) | now | why |
+|---|---|---|
+| README: a generator fabricates "without asserting something false about a real incident" | fabricated values are marked per cell (`syn`); real text is not rewritten or paraphrased, and is changed only where a cell is marked `mod` (masking, date shifts, bundle redaction), where the BSEE sidecar's contact blocks are removed, and by extraction clean-up (page furniture and field-label text stripped; cause text can drop words, see Known defects); in the release bundle, redactions in tables with no provenance file are listed in `core/redactions.csv` | The old line was unfalsifiable and ignored `mod` cells and the removed contact blocks. A first rewrite ("never altered except...") was itself too absolute: extraction strips page furniture and label text, and the repo's own Known defects say cause text can drop words. |
+| README: "the other 13 cannot appear at any coverage" | true of `real_only/` and `enriched/` only; `filled/` carries 18 elements, from `llm` and `syn` labels | `filled/` fills ` Failed PSM Framework Element`, so the unscoped claim was false there. |
+| README: "~0.55 accuracy, n=503, 5-fold CV, majority 0.392, macro-F1 0.418, F1 0.692 / 0.639" | accuracy 0.471, macro-F1 0.349 (95% CI 0.293 to 0.399), n 374, majority 0.334 / 0.084, `uv run python -m psm.baseline`; target-meaning sentence from `docs/baseline.md` | The old figures (n=503, 5-fold CV) do not match the current task (n 374, `syn_fold`), and the README named no command that reproduces them. The new ones are the output of `psm.baseline` (`docs/baseline.md`); I did not trace where the old ones came from. |
+| README: "use the shipped split in `real_only/splits.json`" | `splits.json` is a reporting-era partition; for classification use `cause_task.csv` `syn_fold` (grouped by incident) | The era split is not grouped by incident for the classification task. |
+| README: "87.1% of labelled cause statements are `modern_six`" | 374 of 406 `cause_task.csv` rows (92.1%) `modern_six`, 19 `ad_hoc`, 13 `human_error`; 36 undated incidents excluded from `splits.json` | The old share did not name the row set it counted; the new line names it and the command-measured counts. |
+| README Tables section: paths for `recommendations.csv`, `closeout.csv`, `bsee_unmapped.csv`, `causes_source_field.csv` (said to be under `enriched/`) | a "where" column; recommendations and closeout are in `real_only/` and verbatim at `data/processed/e19/`; the two sidecars and `cause_task.csv` are at `data/processed/e19/` | Those four paths did not exist. `enriched/` holds incidents and causes (plus sidecars) only. This is my reading of "the 4 wrong paths"; the Repo layout block's own paths all existed and were left, apart from new lines. |
+| README: "495 tests" | 861 tests (`uv run pytest --collect-only -q`; 859 pass, 2 skip) | Measured. The 2 skips are the `enriched/recommendations.csv` and `closeout.csv` cases in `tests/test_projection.py`, which do not exist by design. |
+| README: layout line for `data/companies/` ("planted process pathologies + KPI answer key per manifest") | alder, hazel, hornbeam; each manifest records how the register was generated (scenario, knobs, donor partition, input hashes) | Pointer to an answer key removed (the brief's instruction); manifests describe how each register was generated, with input hashes. Slugs were renamed on 2026-10-24 (seed keys kept). |
+| README: no description of company registers | new "Company registers" section: tokens `src`, `xw`, `syn`, `key`, `mod`; operator names masked as `[company]`; contractor and rig names not masked; `core/` and `advanced/` keep real operator names | States no more masking than exists. |
+| README: pipeline block listed 4 commands | the full regeneration chain, then `psm.baseline`, `psm.bundle [--no-companies] [--text-light]`, `psm.review_pack <bundle_dir>` | The old block omitted `psm.fill`, `psm.scenario` and the bundle step. |
+| README: `filled/` composition ("33.5% real", "94.3% of checked cells pass") | unchanged, with a sentence naming their source (token counts of `filled/provenance.csv` and `filled/causes_provenance.csv`; the ledger covers `enriched/`) | Re-counted 2026-10-24 (token counts over both provenance files); the figures did not change. 94.3% is read from `docs/e19_field_ledger.md`. The paragraph did not say what they counted. |
+| README, DATA_SOURCES.md, docs/_licence.md, CLAUDE.md: "no derivative of [the workbook] is committed", "not located, not opened", "`schema/e19_target.yaml` ... hand-written" | `schema/e19_labels.yaml` was extracted mechanically from the workbook on 2026-08-29 (commit bc84583); the permission wording below | The "no derivative" claim was false from 2026-08-29. `docs/_licence.md` keeps its text and gains a bracketed correction dated 2026-10-19. |
+| `schema/crosswalk.yaml` comment and `target_element_reference` | "(not shipped in the participant bundle)"; stale `tests/test_crosswalk.py` pointer fixed to `tests/test_crosswalk_schema.py` | The labels file is not in the bundle. |
+| `.gitignore` comment | the workbook and exported spreadsheets are never committed; `schema/e19_labels.yaml` is the one committed derivative | Patterns unchanged. |
+| CLAUDE.md "Do not commit" | the workbook file is never committed; permitted derivative `schema/e19_labels.yaml` only; D2 exception (2026-10-19) for `cause_task.csv` baselines added | Records the 2026-10-19 decision D2. |
+| Text-light bundle: `[AI tool]` and content-note lines, double space in README_FIRST.md | those lines are fenced so they appear only when the text they point at is shipped; the double space is gone | They pointed at nothing in a build without narrative text. |
+| Text-light data dictionary rows for withheld columns described them as shipped | those rows read "WITHHELD from this release (not in the file)", with no description or notes | A participant could read a column as present. |
+| Bundle notes: "61 sampled, median recall 0.98" | numbers dropped, warning kept ("cause text can drop words") | The source of the 61 / 0.98 figure was not found: no command, doc, findings entry or commit from edb3dba on describes how it was measured. A figure with no reproducing command should not ship. |
+
+**Permission wording (R63, pending the owner's D3).** The E19 workbook's field
+labels, picklist vocabularies and cell references (`schema/e19_labels.yaml`) are
+published with the permission of Houston AI Institute, which owns the workbook
+schema (confirmed 2026-10-18). The workbook file itself is not committed. The
+written record of that permission is not in this repo.
+
+**Guards added.** `tests/test_public_content.py` now also scans the lines added in
+`git diff main...HEAD` (tracked files outside `data/`, which is source-derived
+BSEE text; the scanner's own file is excluded because it holds the patterns) and skips
+with a reason if `main` is missing. A fixture line carrying one of the banned words is caught (the test suite holds the fixture).
+The allowlist stays empty. The bundle builder refuses to build if an HTML comment
+survives in the stamped README_FIRST.md.
+
+**Not verified here.** That the permission was given as worded (it rests on the
+owner's confirmation of 2026-10-18), and the scope of operator-name masking beyond
+the pattern-based checks in the tests.
+
+## 2026-10-24 — Review pack: newline-split names and four more role words
+
+The final whole-branch review (I1) found that the Nov 2 review pack
+(`psm.review_pack`) could not show the reviewer some untitled names that survive
+into the bundle: `_PAIR_RE` joined the two capitalised words with a literal space, so
+a name split across a newline never formed a pair, and the role words lacked
+inspector, investigator, team and email. Four cells holding names had no pack row.
+
+**Changed** (`src/psm/review_pack.py`, `tests/test_review_pack.py`): any whitespace run
+may join the two words; the pair key is normalised to one space, so "A\nB" and "A B"
+are one distinct pair (the row's `text` is still the cell's own +-60 character window);
+`inspector`, `investigator`, `team` and `email` are role triggers (case-insensitive,
+word-bounded). `GAP` (40) and `WINDOW` (60) are unchanged. The README states no pack
+row counts or trigger list, so nothing there changed.
+
+**Counts** (one bundle built from this change's code (directory name suffix 072ed1c, the commit
+that was amended only to add this entry), full mode, `allow_placeholder_terms=True`,
+`n_random=150`; the "before" pack is the 994d329 `review_pack.py` run on that same
+bundle, since `content.py` and `bundle.py` are unchanged):
+
+| reason | before | after |
+|---|---|---|
+| random | 150 | 150 |
+| name_redacted | 100 | 100 |
+| near_fatal | 50 | 50 |
+| death_mention | 1 | 1 |
+| contact_redacted | 0 | 0 |
+| capitalised_pair | 290 | 354 |
+| capitalised_pair_common | 650 | 815 |
+| **total** | **1,241** | **1,470** |
+
+Distinct near-role pairs rose from 940 to 1,169; every pair found before is still found
+(set containment checked). Most of the 229 new rows come from the four added role words,
+not from the newline fix, so the Nov 2 load is about 18% larger than the review
+estimated. Each of the four cells named in I1 now has all its pairs represented in the
+pack. A pair appears once, at its first cell in sort order, with `n_cells` for the rest,
+so a cell can be covered by a row that sits in a duplicate cell (the agency-team list in
+`core/` is covered by rows from the same text in the hornbeam register). The pack still
+does not list every cell a pair occurs in. The cells themselves are not redacted; that
+is an owner decision.
+
+**Not verified here.** That the reviewer reads every row; names the regex cannot form
+(all-caps, McX, hyphenated, initials, single words) remain covered only by the random sample.
+
+## 2026-10-24 — Untitled staff names redacted; answer-key exposure accepted
+
+The final review (I1) found real person names in the bundle that carry no honorific,
+so `HONORIFIC_RE` never saw them: an agency investigation-team list, an agency
+inspector's name and a name after "per email from". The owner decided on 2026-10-24
+to redact them, every copy. The redaction is a bundle-stage transform; no committed
+data changed.
+
+**Rules** (`src/psm/content.py`, `untitled_name_spans`; wired into `redact`,
+`titled_name_words`, `flags` and the builder's `redactions.csv` kind through `has_name`):
+
+- **role:** a Capitalised `Inspector` or `Investigator` (also all-caps, optional
+  plural) used as a title, followed by 1-3 Capitalised words, either directly or as a
+  bracketed `(Name Name)` right after it.
+- **email:** `email from` or `e-mail from` (any case) followed by exactly First [I.]
+  Last, and not by a third Capitalised word.
+- **team:** an investigation-team or panel header (`investigation`, `investigative`,
+  `accident` or `review` + `team`/`panel`, or `panel` alone; any case) followed by a
+  bracketed list of First [I.] Last members separated by commas, semicolons or "and".
+
+The name part is strict, a capital then lowercase only, so acronyms, all-caps words
+and possessive or hyphenated lower-case words are not names. A span is dropped if
+any word is in `UNTITLED_NOT_NAME` (role, office, crew and company words plus
+`NAME_STOPWORDS`); the role rule's direct form keeps only its leading run of good
+words. Only the name becomes `[name]`; the role word, header and brackets stay.
+New spans feed the same recurrence and incident-scoped name set as titled names.
+Cells are touched only under `src` or `mod`; `src` becomes `mod`; other tokens pass
+through byte-identical (tested). The hornbeam copy is `mod` in the committed register
+and goes through the same company-scope redaction, so the builder needed no
+path change.
+
+**Shapes ruled out, each a negative test:** the text often puts a role alias, not a
+person, in brackets after a role word ("Crane Operator (Injured Person)", "Driller
+(Hoist Operator)"); companies after "email from"; team acronyms such as (ERT) and (IMT);
+"Inspector General"; and vessel names led by a rank ("M/V Captain ..."). So the role
+list is only Inspector and Investigator, and lower-case role words do not count.
+
+**Measured** (full-mode bundles built at 4bbd0f9 and at this commit,
+`allow_placeholder_terms=True`, no `allow_dirty`; every CSV diffed cell by cell; each
+new `[name]` attributed to the rule whose span covers it; every span's ±60-character
+context read by hand):
+
+| rule | new name spans | person names | false positives |
+|---|---|---|---|
+| role | 5 | 5 | 0 |
+| email | 1 | 1 | 0 |
+| team | 12 | 12 | 0 |
+| recurrence (bare word elsewhere) | 0 | - | - |
+
+The 18 spans are 5 distinct people, each in every copy of its text: core real_only,
+core enriched, `cells_long.csv`, and the hazel or hornbeam register. The tables have
+8 more redacted cells (3 more `redactions.csv` rows, 2 enriched cells `src`→`mod`,
+3 company cells already `mod`) and 8 more `name_redacted` flags. No other cell changed
+apart from 2 `cells_long` provenance entries and 2 rounded `pct_src`/`pct_mod` values
+in the data dictionary. In the new bundle and its zip, none of the 5 name pairs
+appears in any file (whitespace-insensitive; the same scan finds 17 file-and-pair hits
+in the parent bundle). One surname word survives, in an unrelated incident, as part of a
+vessel's name. Fatal trace 0 and contacts 0 in both bundles.
+
+**Review pack** (`psm.review_pack`, `n_random=150`, before = the 4bbd0f9 bundle):
+`name_redacted` 100 → 108, `capitalised_pair` 354 → 349 (the five pairs are gone),
+`capitalised_pair_common` 815 → 815, `random` 150, `near_fatal` 50, `death_mention` 1,
+`contact_redacted` 0; total 1,470 → 1,473.
+
+**Not covered.** Colon-form team lists ("Team: A B, C D"), lower-case role words, ranks
+such as Captain (one cause row has a rank before a surname, left to the review pack),
+names after "email to", and all-caps names.
+
+**Owner decision, 2026-10-24: the answer key stays public.** The company manifests and
+`scenarios/*.yaml`, already public on main, list the planted pathologies and the
+expected results. They stay public because judging is method-based, not scored on
+finding the planted problems. The participant bundle ships neither those files nor a
+link to the repo.
+
+## 2026-10-24 — Correction: rank + surname redacted by rule and flagged in the review pack
+
+[Correction to the entry above, "Untitled staff names redacted". Its "Not covered"
+paragraph said the one cause row with a rank before a surname was "left to the review
+pack". That was not true: the pack had 6 rows for that incident and none of their text
+windows contained the rank, so a reviewer would not have seen it. Owner decision
+2026-10-24, "Redact + flag": the case is now redacted by a rule and also flagged by a
+pack trigger.]
+
+**Rule** (`psm.content.RANK_RE`): `Captain` or `Capt.`/`Capt`, Capitalised only, followed
+by one or two strict name words (same name-word shape and `UNTITLED_NOT_NAME` filter as
+the other untitled rules); only the name part becomes `[name]`, the rank word stays. The
+words join the incident-scoped recurrence set like the other paths. A match is dropped as
+a vessel or role noun when the text before it is `M/V`, `MV`, `M/T`, `M\V`, `M.V.`,
+`vessel`, `boat`, `tug`, `barge`, `ship` or `the`, or an opening quote sits directly
+before it, or a Roman numeral, a digit or a closing double quote follows the name.
+Lower-case "captain" is never a trigger. **Review pack:** `captain` and `capt` are added
+to `_TRIGGER_RE`, so a Capitalised pair within 40 characters of either word gets a row.
+
+**Census** (method: `psm.bundle` loaded, fatal drop applied, then the rule run over every
+real `src`/`mod` text cell that `redact` can touch, plus a scan of every occurrence of
+"Captain"/"Capt" in those cells; spans written to a scratch file, read by hand, counts
+only recorded here):
+
+| | count |
+|---|---|
+| text cells scanned (all tables, all scopes) | 15,951 |
+| occurrences of "Captain"/"Capt" | 131 |
+| new spans | 2 (1 distinct person: the real_only and enriched cause cells) |
+| of those, person / vessel / other | 2 / 0 / 0 |
+| occurrences left unredacted, read by hand | 129: role nouns ("the Captain", "Boat Captain", "Captain of the ship"), quoted or M/V-prefixed vessels, and helicopter pilots whose names were already removed upstream; 0 persons |
+
+The first draft redacted one vessel written with a backslash ("M\V Captain ..."; 3
+instances in the census). The prefix check now ignores slash, backslash and period, and
+the census was re-run: 0 vessel false positives.
+
+**Bundle** (full mode and text-light built at this commit, `allow_placeholder_terms=True`,
+no `allow_dirty`, against the previous bundle at 3f4df51): `[name]` tokens +3, equal to the
+3 rank spans found by the rule in the previous bundle's own cells (the 2 cells above plus
+their `cells_long.csv` copy), so no recurrence spill-over. `redactions.csv` 47 → 48 rows
+(the real_only cause; the enriched copy is `src`→`mod` and has no row), `name_redacted`
+flags 108 → 110. The rank-plus-surname pair: 3 file hits in the previous bundle, 0 in the
+new directory (53 files) and 0 in its zip (53 members); the bare surname also has 0 hits.
+
+**Review pack** (`n_random=150`), before 3f4df51 bundle → after: `name_redacted` 108 → 110,
+`capitalised_pair` 349 → 357, `capitalised_pair_common` 815 → 826, `random` 150,
+`near_fatal` 50, `death_mention` 1, `contact_redacted` 0; total 1,473 → 1,494 (the extra
+19 pair rows come from the new trigger words).
+
+**Still not covered:** a rank before an all-caps name, "the Captain Xxx" (excluded as a
+role noun), ranks other than Captain, colon-form team lists, and the
+all-or-nothing team-list rule. Test changes in the same commit: the colon-header negative
+now uses the real header and has a companion that can fail, a possessive case, a
+surname-recurrence guard, and bundle-level tests for recurrence and for a cell holding
+both an untitled name and a contact.
+
+## 2026-10-24 — Terms of use and tool guidance replaced; LICENSE ships in the bundle
+
+**Replaced.** `docs/release/TERMS.md` (was a one-line placeholder) now holds the
+final terms of use (copy supplied by the owner), with the MIT licence statement for the tables, the
+fictional company data and the code. The guide's `<!-- organiser text: under-18 tool
+guidance -->` comment is replaced by the line "Follow each tool's own terms, including its
+age limits ...". The line "Under-18 participants do not use Google AI Studio or the Gemini
+API themselves." stays. New guide section `## Getting help` (after Choosing tools). The
+guide's pointer to `TERMS.md` now says it holds the terms of use and the licence, and to
+keep `LICENSE` with any copy.
+
+**`LICENSE` now ships.** The repo-root file is copied byte for byte to the bundle root in
+every mode (directory and zip, text-light included), is in `source_paths` (so the
+clean-inputs check covers it) and in `SHA256SUMS`. Tests: present and byte-equal in the
+full, no-companies and text-light bundles and in each zip; in the allowlist; in
+`source_paths`.
+
+**Guards kept.** `check_terms`, `check_guide`, `PLACEHOLDER_FIRST_LINE`, `GUIDE_PLACEHOLDER`
+and the PREVIEW line stay as regression guards. Tests that asserted the committed files hold
+a placeholder now assert they do not; each refusal test injects the placeholder into a copy
+or a monkeypatch. Checked that they can fail: with both guards disabled in `bundle.py`, 8
+tests failed (placeholder terms, `check_terms`, the Choosing-tools refusal, `check_guide`,
+four comment spellings); the file was restored afterwards.
+
+**Content note.** The sentence about names after a title now also lists a rank (Captain), a
+role (inspector, investigator), "email from" and investigation-team lists, matching the
+redaction rules added earlier today. Awaiting the owner's approval of this wording; the
+tests pin it, so a reword changes `CONTENT_NOTE` in `tests/test_participant_guide.py`.
+
+**Word counts** (prose words outside code fences; caps: template < 1,350, stamped
+README <= 1,600). Before the edits, template 1,343; stamped core 1,342, text-light 1,097,
+companies 1,570, text-light+companies 1,280. The new copy added 83 words (template 1,426 before trimming); after
+trimming, template 1,329; stamped core 1,341, text-light 1,113, companies 1,563,
+text-light+companies 1,290. `MAX_WORDS` unchanged. Longest mode (companies) has 37 words of
+headroom; the template has 20.
+
+**Cut to fit** (no fact pinned by a test or `data_dictionary_notes.yaml` was dropped):
+the Glossary table-name item (one row per incident, cause, recommendation, close-out); the
+Glossary `real_only` vs `enriched` item, its content moved into the `core/` bullet in
+Folders (the test that pinned it now reads Folders); "The crosswalk is an opinion." in
+Folders (the Provenance tokens paragraph says it); "It shows agreement with your own labels,
+not truth." (Track 5); "`content_flags.csv` marks sensitive rows." in Folders (the Content
+note says it); "The tables follow its layout." (E19 glossary item); "not a real approval
+date" (Approval Date defect); "They describe no real company's conduct." (About the
+companies); "None in this bundle." on the `gold` token line (the next paragraph says it);
+"in different fields" (pseudonym defect); and short rewordings in Folders, Track 4,
+the `syn_regime` defect and the leak defect. A first attempt also cut the `mod` token line
+and the "Company tables" fence, which tests pin; both were put back.
+
+**Open.** Whether teams may redistribute the Element 19 column labels is Houston AI
+Institute's decision; TERMS.md states the labels are published with its permission
+(recorded 2026-10-18). Redistribution of the labels by teams, in public repositories, is
+pending the institute's answer.
+
+[Correction to the word counts above: those were measured on preview builds (flagged,
+with the 9-word PREVIEW line). The final builds at 8e7720a, with no flag and a clean tree,
+stamp at 1,554 words (companies), 1,281 (text-light+companies), 1,332 (core) and 1,104
+(text-light). Longest mode: 46 words under the 1,600 cap.]
+
+## 2026-10-24 — Guide and terms fixes after review (9452b58)
+
+**What changed.** The tool line said every `[code]` track works without an AI model, but
+Track 5 is tagged `[code]` and `[AI tool]`. It now reads "Every track not marked `[AI tool]`
+works without an AI model or an online account"; in the text-light bundles, which have no
+`[AI tool]` track, the clause is fenced out and the line reads "Every track works without
+an AI model or an online account." `TERMS.md` now says real operator names are replaced
+with `[company]` "where a pattern finds them", matching the guide. Track 6 defines a
+close-out inline (the definition was lost with the cut Glossary item). The Folders `core/`
+bullet is split in two, with no change in wording.
+
+**Verified.** `tests/test_participant_guide.py::test_no_ai_tool_line_is_true_in_every_mode`
+checks both readings in built bundles; on the guide at 3d21c9b it would fail, since the
+text-light readme then carried the `[code]` wording. Full suite: 940 passed, 2 skipped.
+Clean builds at 9452b58, no flag: 1,559 words (companies), 1,332 (core), 1,282 (text-light
++companies), 1,100 (text-light). Template: 1,338 against the strict `< 1,350` cap. The
+word counter counts HTML fence markers as words, so inline fences cost headroom.
+
+**Open.** Licence wording: `DATA_SOURCES.md` says the BSEE source data is not relicensed
+and has no row for the bundle tables, while `TERMS.md` puts the tables under MIT. Not
+reconciled here; the owner decides the wording.
+
+## 2026-10-25 — Licence wording, and the workbook owner corrected
+
+**Correction.** Entries from 2026-10-19 and 2026-10-24 say Houston AI Institute owns the E19
+workbook schema. That is wrong. The workbook was provided by the Energy track's challenge
+partner, who gave permission to publish its field labels, picklist vocabularies and cell
+references in this public repository. The labels are not confidential. The dated text above
+stays as written; `docs/_licence.md` gains a bracketed correction.
+
+**What changed.**
+
+| File | Change |
+|---|---|
+| `docs/release/TERMS.md` | Licence block split by source: BSEE text and values (`src`, `mod`, `src_`, `bsee_`) treated as public domain, with a credit line; what this project added under MIT; labels used with the provider's permission; EI element names credited. *Your project* adds: link to the bundle instead of uploading its data files (real names may remain), and put the BSEE credit in the README. |
+| `LICENSE` | The data note no longer says "CODE in this repository only"; it names what MIT covers and what it does not. The bundle ships this file byte-equal. |
+| `DATA_SOURCES.md` | The "What this repo does about it" table gains rows for our table additions, the E19 labels and the EI names; *The workbook* names the provider. |
+| `README.md`, `CLAUDE.md` | Same owner correction; README no longer says the derived tables are MIT as a whole. |
+
+**Verified.** `tests/test_bundle.py::test_licence_wording_names_what_mit_does_not_cover` pins
+the BSEE credit line, the LICENSE note and that no tracked file outside `docs/findings.md`
+and `docs/_licence.md` repeats the owner claim; the TERMS and LICENSE assertions fail on
+529919a. Full suite: 941 passed, 2 skipped.
+
+**Not verified here.** The permission itself rests on the owner's statement of 2026-10-25;
+its written record is not in this repo. The crosswalk's element-name comments still conflict
+with the "numbers only" rule for schema files in `DATA_SOURCES.md` §6; TERMS now credits them.
+
+## 2026-10-25 — Content note names every content flag
+
+**Why.** A Colab test of the starter notebook printed the flag counts of the ba36a8a full bundle:
+`serious_injury` 1050, `name_redacted` 110, `near_fatal` 50, `death_mention` 1. The content note
+named only serious injury and losing consciousness, so a reader saw an unexplained
+`death_mention` next to "Incidents in which someone died were removed".
+
+**The one `death_mention` row.** GB-260-20071104-1615, `core/real_only/recommendations.csv`,
+`Recommendation Description`. Checked by printing only the regex match and a short window around
+it: the recommendation cites earlier accidents elsewhere in the OCS with the same kind of
+equipment that caused "fatal injuries", and asks for a ban to prevent another "fatality". No
+death is reported for this incident. The flag is correct; it is a mention, not a dropped-row leak.
+
+**Changed.** `docs/release/PARTICIPANT_GUIDE.md` content note now lists all five flags emitted by
+`content.flags()` (`serious_injury`, `near_fatal`, `death_mention`, `name_redacted`,
+`contact_redacted`) with a short gloss, and keeps "pattern-based" twice. Template prose words
+1338 → 1348 (cap < 1350). `tests/test_participant_guide.py`: `CONTENT_NOTE` updated; the five
+flag values added to `TOKEN_ALLOWLIST` as cell values; new
+`test_content_note_names_exactly_the_flags_the_code_emits`, which failed when a sixth flag was
+planted in `content.py` (reverted). Full suite: 941 passed, 2 skipped, before the new test.
+
+## 2026-10-25 — Company registers as of 2025-12-31
+
+**Why.** Review item 2.10 (2026-10-18): the three fictional company registers had no extraction
+date. Every one of 490 actions was finished, and completion dates ran to 2027, so a
+process-health view had no open backlog to show.
+
+**Changed.** `src/psm/scenario.py` adds `AS_OF = WINDOW_END` (2025-12-31), the date the registers
+are "extracted". No draw changed: the same hash keys, salt and knobs, applied in the same order. Only which drawn
+dates are written changed:
+
+| Cell | Written when | Otherwise |
+|---|---|---|
+| `Date of Report` | drawn date ≤ AS_OF | blank |
+| `Approval Date` | drawn date ≤ AS_OF | blank, with the approver's name and position |
+| `Close out Date` | every action done by AS_OF | blank, with the close-out approver's name and position |
+| `Date Completed` | drawn date ≤ AS_OF | blank |
+| `Schedule Status` | `Completed` if done; else `Behind Original Agreed Schedule` if due before AS_OF; else `On Schedule` | — |
+| `Agreed Completion Date` | always (a due date may be in the future) | — |
+
+The Schedule Status values are the workbook's own (`schema/e19_labels.yaml`, Schedule Status
+picklist; `Deleted` is never generated). They replace the earlier `On Schedule` / `Behind`. Each
+company's `manifest.json` records `"as_of"`. `src/psm/kpi.py`: `overdue_rate` now also counts an
+open action whose due date is before `as_of`.
+
+**Totals, all three committed companies together** (`data/companies`, before the bundle's
+fatality-row drop): 35 of 490 actions are open, and 19 of those are past their due date. Of 450
+incidents, 2 report dates, 8 approval dates and 33 close-out dates were blanked.
+
+**Known limit.** `median_closeout_days` leaves open actions out (they are right-censored), so it
+understates a slow closer.
+
+**Verified, and how.**
+- Full suite: 955 passed, 2 skipped, at 738fc18.
+- Every planted-pattern and negative-control assertion in `tests/test_scenarios.py` passes
+  unchanged.
+- No draw changed:
+  - A column-by-column diff of every company CSV against 10ee5dc (`csv.DictReader` on
+    `git show 10ee5dc:<path>`) shows changes only in `Date of Report`, `Approval Date`,
+    `Close out Date`, `Date Completed`, `Schedule Status`, the approver and close-out approver
+    name and position cells, and their provenance cells.
+  - Row counts are unchanged.
+  - `tests/test_scenario_rename.py` now maps each pre-rename row through the same as-of rule,
+    then requires every other cell to match exactly. Its deliberate-redraw check still fails as
+    it should.
+- New tests: `test_no_generated_date_after_as_of`, `test_schedule_status_follows_as_of`,
+  `test_open_action_means_no_close_out`, `test_unknown_approval_means_no_approver`,
+  `test_planted_pairs_first_member_is_closed_by_as_of`, and `test_kpis_with_open_actions`.
+- Guide Track 6 now reads "such as open or late actions (registers end 2025-12-31)". Template
+  prose went from 1348 to 1347 words. `test_track_6_gaps_exist_in_every_company` requires at
+  least one open action and one late action in every company in the built bundle.
+
+**Deferred: item 2.9 (company recommendations ignore the narrative).** Reusing each donor
+incident's real BSEE recommendation was measured and dropped:
+- 949 of the 1,230 real recommendations are in the regulator's voice (District, BSEE, MMS),
+  so few incidents have an operator-voice recommendation to reuse.
+- The action-type measure needs the template text.
+
+Real recommendations linked to their own incident are in `core/real_only/recommendations.csv`.
+
+## 2026-10-25 — Correction to "Company registers as of 2025-12-31"
+
+Found by a whole-branch review of 10ee5dc..9ad8266. The entry above is left as written.
+
+- **"949 of the 1,230 real recommendations are in the regulator's voice" does not reproduce.**
+  The words that entry names (District, BSEE, MMS), matched as whole words with case kept,
+  give **904**. Adding `Office` gives **946**. The rule behind 949 was not recorded. Command:
+  `re.search(r"\b(District|BSEE|MMS|Office)\b", text)` over `Recommendation Description` in
+  `data/processed/e19/real_only/recommendations.csv`. This is a word match, not a reading of
+  each row. Either count leaves the deferral reason unchanged: most real recommendations are
+  addressed by or to the regulator.
+- **Censoring affects more than `median_closeout_days`.**
+  - `overdue_rate` cannot yet see 9 open actions (all companies together) that are due on or
+    after 2025-12-31 and whose drawn completion is later than their due date. The manifest's
+    `analytic_expectations.overdue_rate` is computed without the as-of date, so it describes
+    the uncensored rate. The planted tests still pass within their tolerance.
+  - `median_report_lag` leaves out the 2 incidents whose report date is after the as-of date.
+- **Those 2 incidents are artefacts of the generator.** They already have an investigation
+  leader, causes and not-yet-due actions, but no report date. A real register extracted that
+  day would not list them.
+- **The test count was imprecise.** At 738fc18 the suite was 955 passed, 2 skipped and
+  **1 xfailed**: the Track 6 test, marked xfail until 9ad8266 rewrote it. At 9ad8266 it is
+  956 passed, 2 skipped.
+- **The redraw check named above does not test the as-of mapping.**
+  `test_rename_check_catches_a_redraw` compares `Date of Incident` only, so it does not
+  exercise `_as_of_view`. In a one-off mutation run on scratch copies (not committed),
+  `test_rename_preserves_draws` failed on six kinds of planted change:
+  - a shifted `Date Completed`;
+  - a blanked `Date Completed`;
+  - an open `Date Completed` filled in;
+  - an approver filled in;
+  - a `Close out Date` filled in;
+  - a shifted `Agreed Completion Date`.
+
+  It does not catch an open action's status flipped between the two open values. That case is
+  covered by `test_schedule_status_follows_as_of`, and by the byte-identical regeneration test.
+
+## 2026-10-25 — PR #4 review fixes
+
+An adversarial review of PR #4 (feat/hackathon-release-v1 → main) reported these findings.
+This entry records what was fixed, how it was verified, and what was left.
+
+**Fixed.**
+- **Operator names survived masking (9 cells).** Royal Production, Energy Partners,
+  Energy Resource Technology and White Fleet were in shipped company text. These names are
+  made only of stoplist words, or are short forms of "... Operating" names, so
+  `operator_pattern()` dropped them. `src/psm/masking.py` now masks them as written
+  (case-sensitive, so prose such as "energy partners in the region" stays) and keeps the
+  contractor names White Fleet Abandonment and White Fleet Drilling. Verified by an
+  independent scan, `test_company_text_has_no_operator_full_name_as_written`, which does not
+  use the masking helpers: 11 tests failed before the fix. After the registers were
+  regenerated, the word diff of `data/companies/*/incidents.csv` showed exactly 9 names
+  replaced by `[company]` and no other change.
+- **`docs/baseline.md` could drift unnoticed.** Changing its accuracy to 0.999 passed
+  every test. `test_committed_baseline_md_matches_a_fresh_render` re-renders it from the
+  committed inputs, reusing the file's own stamp. It failed on the edited copy and passes on
+  the committed file.
+- **TERMS.md said EI element names appear only in comments** of `crosswalk.yaml`. One
+  `note:` value quotes an element name. The wording now says "comments and `note` text".
+- **The README tree said "861 tests".** It now names the command instead of a count.
+- **Two plan files held private content**: the owner's global agent constraints, and an
+  absolute local path. Both are now replaced by one line each. Earlier commits on this branch
+  still contain the old text.
+
+**Closed: label redistribution.** The "Open" item in "Content note names every content flag"
+(redistribution of the Element 19 labels by teams) is closed. The owner confirmed on
+2026-10-25 that the workbook provider gave permission to publish the labels, and that the
+labels are not confidential. TERMS.md already says teams may use them, including in a
+public repository.
+
+**Accepted as is.**
+- **2 Hazel incidents** have no report date as of 2025-12-31 but already have causes and
+  actions. This was logged above as a generator artefact. The data is not changed one week
+  before release, because removing those rows would shift the planted patterns. The
+  incidents also fit the brief's stretch goal of flagging incomplete records.
+
+**Deferred (minor).**
+- The narrative of AL-984CECC249 cites a date after the as-of date.
+- 18 Alder and 8 Hazel incidents close out before approval (this predates the PR).
+- Every bundle mode gets the same file name, `psm-hackathon-v1-<sha>`.
+- Test gaps:
+  - the public-content branch-diff scan skips after the merge and on a fresh clone;
+  - no test covers the contact-block scrub;
+  - fatality detection keys only on the label;
+  - `test_projection.py:186` always skips;
+  - `test_kpi.py:45` recomputes the rule with the production formula.
+
+## 2026-10-25 — Owner decisions on the PR #4 review
+
+- **Merge type.** PR #4 is merged with a merge commit, not squashed. The commits cited by hash
+  (the baseline stamp 715c3f0, e19_disposition.yaml, and entries in this log) stay reachable
+  from main.
+- **Workbook classification bands.** `schema/xw_consequence_tiers.yaml` keeps the
+  workbook's three bands (21+, 11-20, 1-10), and the bundle ships it. This is recorded as
+  an exception in CLAUDE.md.
+- **Answer key on main.** The 2026-10-24 acceptance stands. The bundle has no repository
+  URL, but its BASELINE.md mentions a repository, so teams can find the repo by name.
+  Judging scores the method, not whether teams recover the planted answers.

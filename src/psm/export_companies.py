@@ -19,8 +19,7 @@ from psm.scenario import COMPANY_ORDER, OUT_ROOT
 REPO = Path(__file__).resolve().parents[2]
 OUT_DIR = REPO / "deliverables" / "companies"
 
-COMPANY_LABELS = {"northstar": "NorthStar", "meridian": "Meridian",
-                  "coastal": "Coastal"}
+COMPANY_LABELS = {"alder": "Alder", "hazel": "Hazel", "hornbeam": "Hornbeam"}
 
 _SHEETS = (("Incidents", "incidents", "provenance.csv"),
            ("Causes", "causes", "causes_provenance.csv"),
@@ -41,9 +40,26 @@ ABOUT_TEMPLATE = [
     "",
     "Cell colours state provenance (same scheme as the source project):",
     "  no colour  - verbatim text from a public BSEE incident report",
+    "  blue       - crosswalk: a deterministic mapping of a BSEE category",
+    "               (schema/crosswalk.yaml), copied from the source register",
+    "  peach      - modified real text: dates shifted, or a real company name",
+    "               masked as [company]; otherwise verbatim",
     "  grey       - synthetic: deterministic generated value (dates, names,",
     "               picklists, recommendation text). Corresponds to nothing real.",
     "  green      - constructed identifier (this register's own keys)",
+    "",
+    "What is real, and what is generated:",
+    "- REAL: the incident narratives and cause statements. They are copied from",
+    "  public BSEE incident reports, with dates shifted. Real operator names are",
+    "  masked as [company] by pattern matching, so a few may remain. Contractor",
+    "  and rig names are left as written.",
+    "- GENERATED: incident dates, report and close dates, owners and approvers,",
+    "  schedule statuses, cause types and element overrides, and the",
+    "  recommendations.",
+    "- The recommendations are written from a fixed set of 50 template actions,",
+    "  picked at random within a control type (elimination, engineering, admin,",
+    "  ppe). They are not linked to the incident they sit under.",
+    "- The performance patterns in these registers describe no real company.",
     "",
     "Disclosures:",
     "- Dates inside narratives were uniformly shifted with each incident's",
@@ -52,9 +68,10 @@ ABOUT_TEMPLATE = [
     "- Recommendation text comes from a fixed template registry adapted from",
     "  real operator-voice recommendations; repetition across incidents is",
     "  intentional corporate boilerplate.",
-    "- Structured name fields are SYN- tokens; narrative text is verbatim public",
-    "  BSEE report text and names the real operators, vessels, facilities and --",
-    "  occasionally -- individuals involved.",
+    "- Structured name fields are SYN- tokens; narrative text is public BSEE",
+    "  report text. Real operator names are masked as [company] by pattern, so a",
+    "  few may remain; the text still names real contractors, rigs, vessels,",
+    "  facilities and -- occasionally -- individuals involved.",
 ]
 
 _COMPARISON_ABOUT = [
@@ -70,8 +87,8 @@ _COMPARISON_ABOUT = [
     "Withholding this workbook alone does not blind an evaluator who has repo",
     "access -- blinding requires distribution control of the repo context itself.",
     "",
-    "Attribution honesty: Coastal's pathologies co-move by construction, so",
-    "results for Coastal are claimed at bundle-level detection only --",
+    "Attribution honesty: Hornbeam's pathologies co-move by construction, so",
+    "results for Hornbeam are claimed at bundle-level detection only --",
     "per-pathology attribution is out of scope (parked in the spec).",
 ]
 

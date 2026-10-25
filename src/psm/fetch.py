@@ -24,7 +24,7 @@ RAW = REPO / "data" / "raw"
 
 USER_AGENT = (
     "psm-incident-ml/0.1 (public research dataset; "
-    "https://github.com/ectologx88/psm-incident-ml)"
+    "https://github.com/Houston-AI-Institute/psm-incident-ml)"
 )
 DELAY_SECONDS = 0.7  # be a good citizen on bsee.gov
 

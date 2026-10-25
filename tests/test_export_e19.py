@@ -5,6 +5,7 @@ import csv
 
 from openpyxl import load_workbook
 
+from psm import export_e19 as ex
 from psm.export_e19 import ABOUT_LINES, PROVENANCE_FILLS, _xlsx_safe, export
 
 
@@ -236,3 +237,32 @@ def test_about_discloses_what_the_adversarial_review_found_undisclosed():
     assert "three" in text
     # control characters occur on both sheets, not only cause descriptions
     assert "both sheets" in text
+
+
+MOD_MEANING = (
+    "real source text that this project altered: dates shifted, or a company "
+    "name, person name or contact detail masked; otherwise verbatim."
+)
+
+
+def test_mod_token_is_registered_in_the_export_legends_and_order():
+    # About legend: the peach swatch row exists and carries the meaning
+    # verbatim (the legend wraps lines, so compare whitespace-collapsed).
+    assert ex._LEGEND_SWATCHES["  peach"] == "mod"
+    about = " ".join(" ".join(ABOUT_LINES).split())
+    assert MOD_MEANING in about
+    assert any(line.startswith("  peach ") for line in ABOUT_LINES)
+    # the provenance-sheet token list in the About text names mod
+    assert "src/xw/llm/syn/key/pseud/mod" in about.replace("/ ", "/")
+    # header-comment tables
+    assert ex._TOKEN_ORDER.index("mod") == ex._TOKEN_ORDER.index("xw") + 1
+    groups = {tokens: meaning for tokens, meaning in ex._TOKEN_MEANING_GROUPS}
+    assert ("mod",) in groups
+    assert MOD_MEANING in groups[("mod",)]
+
+
+def test_mod_header_comment_counts_and_explains_mod():
+    prov = [{"Incident Number": "key", "What happened?  ": "mod"}]
+    text = ex._header_comment_text("What happened?  ", prov)
+    assert "mod 1" in text
+    assert "mod = " in text and MOD_MEANING in text

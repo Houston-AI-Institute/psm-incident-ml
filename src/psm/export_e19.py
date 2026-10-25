@@ -2,9 +2,9 @@
 
 Five sheets: About (what this is and is not), Incidents, Causes, Incidents
 Provenance, Causes Provenance. Every cell whose provenance token is
-xw/llm/syn/key/pseud carries a fill colour on the data sheets so a reviewer
+xw/llm/syn/key/pseud/mod carries a fill colour on the data sheets so a reviewer
 can see at a glance which values are real, mapped, model-assigned, synthetic,
-a constructed identifier, or a pseudonym (legend on the About sheet). Colour
+a constructed identifier, a pseudonym, or altered real text (legend on the About sheet). Colour
 does not survive copy/paste, CSV export, or an AI analyst reading the file,
 so the two Provenance sheets mirror the data sheets cell-for-cell with the
 plain-text token instead of a fill -- provenance that travels with the data
@@ -62,6 +62,9 @@ ABOUT_LINES = [
     "  lilac      - salted pseudonym of a real name (INV-/SUP- tokens).",
     "               Same person, same token, corpus-wide. De-amplification",
     "               of public documents, not fabrication.",
+    "  peach      - real source text that this project altered: dates shifted,",
+    "               or a company name, person name or contact detail masked;",
+    "               otherwise verbatim.",
     "",
     "Model-assigned labels are unvalidated. On the 524 statements where the",
     "crosswalk also holds an opinion, the model agreed on 25.4% (133) and",
@@ -100,7 +103,7 @@ ABOUT_LINES = [
     "- 'Incidents Provenance' and 'Causes Provenance' mirror the Incidents",
     "  and Causes sheets cell-for-cell: identical headers, identical row",
     "  order, and each cell holds the provenance token (src/xw/llm/syn/key/",
-    "  pseud) for the matching data cell -- blank where the data cell is",
+    "  pseud/mod) for the matching data cell -- blank where the data cell is",
     "  blank or unprovenanced.",
     "- If you extract values out of this workbook into another tool --",
     "  copy-paste, a CSV export, or an AI/LLM analyst reading the data --",
@@ -119,6 +122,7 @@ _LEGEND_SWATCHES = {
     "  grey": "syn",
     "  green": "key",
     "  lilac": "pseud",
+    "  peach": "mod",
 }
 
 
@@ -269,8 +273,14 @@ _TOKEN_MEANING_GROUPS = [
     (("llm",), "model-assigned label, unvalidated"),
     (("key",), "constructed key"),
     (("pseud",), "pseudonym"),
+    (
+        ("mod",),
+        "modified real text -- real source text that this project altered: "
+        "dates shifted, or a company name, person name or contact detail "
+        "masked; otherwise verbatim.",
+    ),
 ]
-_TOKEN_ORDER = ["src", "xw", "llm", "syn", "key", "pseud"]
+_TOKEN_ORDER = ["src", "xw", "mod", "llm", "syn", "key", "pseud"]
 
 _COMMENT_FOOTER = (
     "Colour coding does not survive copy or export — see the About sheet "

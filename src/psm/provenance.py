@@ -16,10 +16,13 @@ Token semantics (About-sheet legend must match):
   pseud  salted pseudonym of a real value (INV-/SUP- name tokens: stable
          privacy transforms of real people's names -- de-amplification,
          not fabrication; epistemically distinct from both src and key).
+  mod    real source text that this project altered: dates shifted, or a
+         company name, person name or contact detail masked; otherwise
+         verbatim. May only replace src.
 """
 from __future__ import annotations
 
-TOKENS = frozenset({"", "src", "xw", "llm", "gold", "syn", "key", "pseud"})
+TOKENS = frozenset({"", "src", "xw", "llm", "gold", "syn", "key", "pseud", "mod"})
 
 # aRGB without the alpha byte; openpyxl reports "00"+this on round-trip.
 FILL_COLORS = {
@@ -28,6 +31,7 @@ FILL_COLORS = {
     "syn": "EDEDED",    # grey
     "key": "E2EFDA",    # green
     "pseud": "E4DFEC",  # lilac
+    "mod": "FCE4D6",    # peach
 }
 
 UNSHADED = frozenset({"", "src"})

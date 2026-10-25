@@ -16,10 +16,12 @@ from pathlib import Path
 
 import yaml
 
+from psm.masking import mask_operators, operator_pattern
 from psm.quantiles import analytic_overdue_rate, draw_days
 
 REPO = Path(__file__).resolve().parents[2]
 REAL = REPO / "data" / "processed" / "e19" / "real_only"
+ENRICHED = REAL.parent / "enriched"
 SCENARIO_DIR = REPO / "scenarios"
 OUT_ROOT = REPO / "data" / "companies"
 
@@ -29,10 +31,10 @@ PARTITION_SALT = "e19-scenario-partition-v1"
 WINDOW_START = date(2021, 1, 1)
 WINDOW_END = date(2025, 12, 31)
 WINDOW_DAYS = (WINDOW_END - WINDOW_START).days + 1  # 1826 (2024 is a leap year)
+AS_OF = WINDOW_END  # registers are "extracted" on this date; later generated dates are unknown
 
-COMPANY_ORDER = ["northstar", "meridian", "coastal"]
-PREFIX = {"northstar": "NS", "meridian": "MR", "coastal": "CP",
-          "meridian_nt": "MNT"}
+COMPANY_ORDER = ["alder", "hazel", "hornbeam"]
+PREFIX = {"alder": "AL", "hazel": "HZ", "hornbeam": "HB", "hazel_nt": "HZT"}
 
 # ONE shared distribution for all companies (company-specific weights were
 # unfalsifiable -- spec decision). Integer weights sum to 100.
@@ -50,11 +52,34 @@ def _hash(key: str) -> int:
     return int(hashlib.sha256(key.encode("utf-8")).hexdigest(), 16)
 
 
+def _seed(company: str) -> str:
+    """The name every draw is keyed on. Companies were renamed on 2026-10-18; each
+    scenario yaml keeps its pre-rename name as `seed_key` so no draw changes."""
+    return load_scenario(company)["seed_key"]
+
+
+@lru_cache(maxsize=None)
+def _seed_prefixes() -> dict[str, str]:
+    """Visible ID prefix -> the pre-rename prefix the draws were keyed on."""
+    return {PREFIX[c]: load_scenario(c)["seed_prefix"] for c in PREFIX}
+
+
+def _seed_sid(sid: str) -> str:
+    """A scenario incident number with its visible prefix swapped for the seed prefix."""
+    prefix, rest = sid.split("-", 1)
+    return f"{_seed_prefixes()[prefix]}-{rest}"
+
+
+def _key(company: str, sid: str) -> str:
+    """The `company|sid` stem of every per-incident draw key."""
+    return f"{_seed(company)}|{_seed_sid(sid)}"
+
+
 @lru_cache(maxsize=None)
 def load_scenario(name: str) -> dict:
     cfg = yaml.safe_load((SCENARIO_DIR / f"{name}.yaml").read_text(encoding="utf-8"))
-    required = {"report_lag", "investigation", "closeout", "agreed_offset",
-                "recurrence", "controls_mix", "data_discipline"}
+    required = {"seed_key", "seed_prefix", "report_lag", "investigation", "closeout",
+                "agreed_offset", "recurrence", "controls_mix", "data_discipline"}
     missing = required - set(cfg)
     assert not missing, f"{name}: missing knob groups {missing}"
     return cfg
@@ -73,8 +98,8 @@ def donor_ids() -> tuple[str, ...]:
 
 def donor_partition(company: str) -> list[str]:
     """Hash-ranked disjoint 150-slices in fixed COMPANY_ORDER. The test-only
-    meridian_nt variant reuses northstar's slice."""
-    base = "northstar" if company == "meridian_nt" else company
+    hazel_nt variant reuses alder's slice."""
+    base = "alder" if company == "hazel_nt" else company
     ranked = sorted(sorted(donor_ids()),
                     key=lambda i: _hash(f"{i}|{PARTITION_SALT}"))
     k = COMPANY_ORDER.index(base)
@@ -86,14 +111,14 @@ def scenario_incident_number(company: str, donor_id: str,
     """Fresh mint per row -- donor ids embed real dates and must not leak.
     Provenance token: key."""
     h = hashlib.sha256(
-        f"{company}|{donor_id}|{clone_index}|{SALT}".encode("utf-8")
+        f"{_seed(company)}|{donor_id}|{clone_index}|{SALT}".encode("utf-8")
     ).hexdigest()[:10].upper()
     return f"{PREFIX[company]}-{h}"
 
 
 def base_incident_date(company: str, sid: str) -> date:
     return WINDOW_START + timedelta(
-        days=_hash(f"{company}|{sid}|incident_date|{SALT}") % WINDOW_DAYS)
+        days=_hash(f"{_key(company, sid)}|incident_date|{SALT}") % WINDOW_DAYS)
 
 
 def pick_weighted(key: str, pairs: list[tuple[str, int]]) -> str:
@@ -231,8 +256,9 @@ class IncidentPlan:
 
     @property
     def close_out_date(self) -> date | None:
+        """Known only once every action is done by AS_OF."""
         done = self.completed_dates()
-        return max(done) if done else None
+        return max(done) if done and max(done) <= AS_OF else None
 
     @property
     def completion_span(self) -> int:
@@ -244,38 +270,38 @@ class IncidentPlan:
 def make_plan(company: str, cfg: dict, donor_id: str) -> IncidentPlan:
     sid = scenario_incident_number(company, donor_id)
     inv, clo, dd = cfg["investigation"], cfg["closeout"], cfg["data_discipline"]
-    skipped = rate_hit(f"{company}|{sid}|skip|{SALT}", inv["skip_rate"])
+    skipped = rate_hit(f"{_key(company, sid)}|skip|{SALT}", inv["skip_rate"])
     reaches_root = (not skipped) and rate_hit(
-        f"{company}|{sid}|root|{SALT}", inv["root_cause_prob"])
+        f"{_key(company, sid)}|root|{SALT}", inv["root_cause_prob"])
     chain_len = 0 if skipped else (
-        3 if reaches_root else 1 + _hash(f"{company}|{sid}|chain|{SALT}") % 2)
+        3 if reaches_root else 1 + _hash(f"{_key(company, sid)}|chain|{SALT}") % 2)
     n_recs = 0 if skipped else (
-        1 + (1 if _hash(f"{company}|{sid}|nrec|{SALT}") % 10 < 2 else 0))  # mean 1.2
+        1 + (1 if _hash(f"{_key(company, sid)}|nrec|{SALT}") % 10 < 2 else 0))  # mean 1.2
     mix = [(tag, round(cfg["controls_mix"][tag] * 100))
            for tag in ("elimination", "engineering", "admin", "ppe")]
     amin, amax = cfg["agreed_offset"]["min_days"], cfg["agreed_offset"]["max_days"]
     return IncidentPlan(
         company=company, sid=sid, donor_id=donor_id, skipped=skipped,
-        work_group=pick_weighted(f"{company}|{sid}|work_group|{SALT}",
+        work_group=pick_weighted(f"{_key(company, sid)}|work_group|{SALT}",
                                  WORK_GROUP_WEIGHTS),
         doi=anchored_incident_date(company, sid, donor_id),
-        report_lag=draw_days(f"{company}|{sid}|report_lag|{SALT}",
+        report_lag=draw_days(f"{_key(company, sid)}|report_lag|{SALT}",
                              cfg["report_lag"]["median_days"],
                              cfg["report_lag"]["sigma"]),
-        invest_days=draw_days(f"{company}|{sid}|invest_duration|{SALT}",
+        invest_days=draw_days(f"{_key(company, sid)}|invest_duration|{SALT}",
                               inv["duration_median_days"], inv["duration_sigma"]),
         reaches_root=reaches_root, chain_len=chain_len, n_recs=n_recs,
-        rec_tags=[pick_weighted(f"{company}|{sid}|tag|{i}|{SALT}", mix)
+        rec_tags=[pick_weighted(f"{_key(company, sid)}|tag|{i}|{SALT}", mix)
                   for i in range(n_recs)],
-        agreed_offsets=[amin + _hash(f"{company}|{sid}|agreed|{i}|{SALT}")
+        agreed_offsets=[amin + _hash(f"{_key(company, sid)}|agreed|{i}|{SALT}")
                         % (amax - amin + 1) for i in range(n_recs)],
-        completion_offsets=[draw_days(f"{company}|{sid}|closeout|{i}|{SALT}",
+        completion_offsets=[draw_days(f"{_key(company, sid)}|closeout|{i}|{SALT}",
                                       clo["median_days"], clo["sigma"])
                             for i in range(n_recs)],
-        owner_assigned=[rate_hit(f"{company}|{sid}|owner|{i}|{SALT}",
+        owner_assigned=[rate_hit(f"{_key(company, sid)}|owner|{i}|{SALT}",
                                  dd["owner_assigned_rate"])
                         for i in range(n_recs)],
-        hs_blanked=rate_hit(f"{company}|{sid}|hsblank|{SALT}",
+        hs_blanked=rate_hit(f"{_key(company, sid)}|hsblank|{SALT}",
                             dd["extra_hs_blank_rate"]),
     )
 
@@ -304,6 +330,56 @@ def donor_delta(plan: IncidentPlan) -> int:
         return (plan.doi - date.fromisoformat(raw)).days
     except ValueError:
         return 0
+
+
+def _read_rows(path: Path) -> list[dict]:
+    with path.open(encoding="utf-8", newline="") as fh:
+        return list(csv.DictReader(fh))
+
+
+@lru_cache(maxsize=None)
+def donor_incident_tokens() -> dict[str, dict]:
+    """Incident Number -> the donor's per-cell provenance row. enriched/provenance.csv
+    is row-aligned with real_only/incidents.csv (both are projections of the same
+    rows); the alignment is checked here against enriched/incidents.csv."""
+    _, real = _real_table("incidents.csv")
+    prov = _read_rows(ENRICHED / "provenance.csv")
+    enr = _read_rows(ENRICHED / "incidents.csv")
+    assert len(real) == len(prov) == len(enr), "donor provenance is not row-aligned"
+    out = {}
+    for r, e, pv in zip(real, enr, prov):
+        assert r["Incident Number"] == e["Incident Number"], "donor rows misaligned"
+        out[r["Incident Number"]] = pv
+    return out
+
+
+@lru_cache(maxsize=None)
+def donor_cause_tokens() -> dict[tuple[str, str], dict]:
+    """(Incident Number, Cause number) -> the donor cause's per-cell provenance row,
+    by the same row-index alignment against real_only/causes.csv."""
+    _, real = _real_table("causes.csv")
+    prov = _read_rows(ENRICHED / "causes_provenance.csv")
+    enr = _read_rows(ENRICHED / "causes.csv")
+    assert len(real) == len(prov) == len(enr), "donor cause provenance is not row-aligned"
+    out = {}
+    for r, e, pv in zip(real, enr, prov):
+        assert r["Incident Number"] == e["Incident Number"], "donor cause rows misaligned"
+        out[(r["Incident Number"], r["Cause number"])] = pv
+    return out
+
+
+def _carry(value: str, token: str, delta: int, *, free_text: bool) -> tuple[str, str]:
+    """A donor-copied cell keeps the donor's token. Real free text (token src, or
+    mod) also has its prose dates shifted and real operator names masked; it
+    becomes mod when that changed it. Every other cell passes through unchanged."""
+    if not value.strip():
+        return value, ""
+    if not token:
+        raise ValueError("donor cell has a value but no provenance token")
+    if free_text and token in ("src", "mod"):
+        new = mask_operators(shift_prose_dates(value, delta), operator_pattern())
+        return new, ("mod" if new != value else token)
+    return value, token
 
 
 # columns copied from the donor with prose-date shifting applied
@@ -336,7 +412,7 @@ _PEOPLE = (
      "classifier", "always"),
     ("Investigation Acceptor/Approver (Owner) - Name",
      "Investigation Acceptor/Approver (Owner)- Position",   # sic: no space
-     "approver", "investigated"),
+     "approver", "approved"),
     ("Close out Approval - Name", "Close out Approval - Position",
      "closer", "closed"),
 )
@@ -374,8 +450,13 @@ def anchored_incident_date(company: str, sid: str, donor_id: str) -> date:
     inside the window after the uniform shift (Task 12 enforces this)."""
     look, fwd = _narrative_span(donor_id)
     span = WINDOW_DAYS - look - fwd
-    off = _hash(f"{company}|{sid}|incident_date|{SALT}") % span
+    off = _hash(f"{_key(company, sid)}|incident_date|{SALT}") % span
     return WINDOW_START + timedelta(days=look + off)
+
+
+def known(d: date | None) -> date | None:
+    """A generated date as the register shows it on AS_OF: later dates are unknown."""
+    return d if d is not None and d <= AS_OF else None
 
 
 def build_incident_row(plan: IncidentPlan, donor_row: dict) -> tuple[dict, dict]:
@@ -389,32 +470,34 @@ def build_incident_row(plan: IncidentPlan, donor_row: dict) -> tuple[dict, dict]
 
     put("Incident Number", plan.sid, "key")
     put("Date of Incident", plan.doi.isoformat(), "syn")
-    put("Date of Report", plan.report_date.isoformat(), "syn")
+    if known(plan.report_date):
+        put("Date of Report", plan.report_date.isoformat(), "syn")
     put("Work Group", plan.work_group, "syn")
+    dtok = donor_incident_tokens()[plan.donor_id]
     donor_time = (donor_row.get("Time of Incident") or "").strip()
     if donor_time:
-        put("Time of Incident", donor_time, "src")
+        put("Time of Incident", donor_time, dtok["Time of Incident"])
     else:
-        h = _hash(f"{plan.company}|{plan.sid}|time|{SALT}")
+        h = _hash(f"{_key(plan.company, plan.sid)}|time|{SALT}")
         put("Time of Incident", f"{h % 24:02d}:{(h // 24) % 12 * 5:02d}", "syn")
     for c in _FREE_TEXT:
-        text = (donor_row.get(c) or "")
-        put(c, shift_prose_dates(text, delta) if text.strip() else "", "src")
+        put(c, *_carry(donor_row.get(c) or "", dtok[c], delta, free_text=True))
     for c in _VERBATIM:
-        put(c, (donor_row.get(c) or ""), "src")
+        put(c, *_carry(donor_row.get(c) or "", dtok[c], delta, free_text=False))
     if plan.hs_blanked:
         for c in _HS_TRIO:
             put(c, "", "")
-    if plan.approval_date:
+    if known(plan.approval_date):
         put("Approval Date", plan.approval_date.isoformat(), "syn")
     if plan.close_out_date:
         put("Close out Date", plan.close_out_date.isoformat(), "syn")
     for name_col, pos_col, role, gate in _PEOPLE:
         populate = (gate == "always"
                     or (gate == "investigated" and not plan.skipped)
+                    or (gate == "approved" and known(plan.approval_date) is not None)
                     or (gate == "closed" and plan.close_out_date is not None))
         if populate:
-            name, pos = syn_person(f"{plan.company}|{plan.sid}|{role}")
+            name, pos = syn_person(f"{_key(plan.company, plan.sid)}|{role}")
             put(name_col, name, "syn")
             put(pos_col, pos, "syn")
     return row, prov
@@ -457,15 +540,20 @@ def build_cause_rows(plan: IncidentPlan,
         put("Cause type", _CHAIN[i], "syn")
         if donors:
             src = donors[i % len(donors)]
+            ctok = donor_cause_tokens()[(plan.donor_id, src["Cause number"])]
             put("Cause Description",
-                shift_prose_dates(src.get("Cause Description") or "", delta), "src")
-            put("Risk Management Cause", src.get("Risk Management Cause") or "", "src")
-            put("Human Factors  Cause", src.get("Human Factors  Cause") or "", "src")
+                *_carry(src.get("Cause Description") or "", ctok["Cause Description"],
+                        delta, free_text=True))
+            for col in ("Risk Management Cause", "Human Factors  Cause"):
+                put(col, *_carry(src.get(col) or "", ctok[col], delta, free_text=False))
             put(" Failed PSM Framework Element",
-                (src.get(" Failed PSM Framework Element") or "").strip(), "src")
+                *_carry((src.get(" Failed PSM Framework Element") or "").strip(),
+                        ctok[" Failed PSM Framework Element"], delta, free_text=False))
         else:  # 4 donors have zero cause rows: fall back to the incident text
             put("Cause Description",
-                shift_prose_dates(donor_row.get("Description") or "", delta), "src")
+                *_carry(donor_row.get("Description") or "",
+                        donor_incident_tokens()[plan.donor_id]["Description"],
+                        delta, free_text=True))
         if plan.element_override and i == 0:
             put(" Failed PSM Framework Element", plan.element_override, "syn")
         rows.append(row)
@@ -503,11 +591,11 @@ def build_rec_rows(plan: IncidentPlan) -> tuple[list[dict], list[dict]]:
         put("Incident Number", plan.sid, "key")
         put("Recommendation Number", str(i + 1), "syn")
         pool = by_tag[plan.rec_tags[i]]
-        tpl = pool[_hash(f"{plan.company}|{plan.sid}|tpl|{i}|{SALT}") % len(pool)]
+        tpl = pool[_hash(f"{_key(plan.company, plan.sid)}|tpl|{i}|{SALT}") % len(pool)]
         put("Recommendation Description", tpl["text"], "syn")
         put("Agreed Completion Date", agreed[i].isoformat(), "syn")
         if plan.owner_assigned[i]:
-            name, pos = syn_person(f"{plan.company}|{plan.sid}|recowner|{i}")
+            name, pos = syn_person(f"{_key(plan.company, plan.sid)}|recowner|{i}")
             put("Responsible Owner - Name", name, "syn")
             put("Responsible Owner - Position", pos, "syn")
         rows.append(row)
@@ -528,9 +616,16 @@ def build_closeout_rows(plan: IncidentPlan) -> tuple[list[dict], list[dict]]:
 
         put("Incident Number", plan.sid, "key")
         put("Recommendation Number", str(i + 1), "syn")
-        put("Schedule Status",
-            "Behind" if done[i] > agreed[i] else "On Schedule", "syn")
-        put("Date Completed", done[i].isoformat(), "syn")
+        # Schedule Status values verbatim from schema/e19_labels.yaml
+        if known(done[i]):
+            status = "Completed"
+        elif agreed[i] < AS_OF:
+            status = "Behind Original Agreed Schedule"
+        else:
+            status = "On Schedule"
+        put("Schedule Status", status, "syn")
+        if known(done[i]):
+            put("Date Completed", done[i].isoformat(), "syn")
         rows.append(row)
         provs.append(prov)
     return rows, provs
@@ -561,7 +656,7 @@ def plant_recurrence(company: str, cfg: dict,
         if b is None:
             break
         span = a.completion_span
-        gap = span + 1 + _hash(f"{company}|pairgap|{len(pairs)}|{SALT}") % (window - span - 1)
+        gap = span + 1 + _hash(f"{_seed(company)}|pairgap|{len(pairs)}|{SALT}") % (window - span - 1)
         # planting overrides the anchored placement, so re-check both
         # members' narrative allowances (Task 12's window test enforces them)
         look_a, _ = _narrative_span(a.donor_id)
@@ -574,8 +669,8 @@ def plant_recurrence(company: str, cfg: dict,
             continue
         b.doi = a.doi + timedelta(days=gap)
         element = _PLANT_ELEMENTS[
-            _hash(f"{company}|pairel|{len(pairs)}|{SALT}") % len(_PLANT_ELEMENTS)]
-        wg = wg_forced or pick_weighted(f"{company}|pairwg|{len(pairs)}|{SALT}",
+            _hash(f"{_seed(company)}|pairel|{len(pairs)}|{SALT}") % len(_PLANT_ELEMENTS)]
+        wg = wg_forced or pick_weighted(f"{_seed(company)}|pairwg|{len(pairs)}|{SALT}",
                                         WORK_GROUP_WEIGHTS)
         for p in (a, b):
             p.work_group = wg
@@ -663,6 +758,24 @@ import json
 import sys
 
 
+_INPUT_FILES = (
+    "schema/operator_aliases.yaml",
+    "data/processed/e19/enriched/provenance.csv",
+    "data/processed/e19/enriched/causes_provenance.csv",
+    "data/processed/e19/bsee_unmapped.csv",
+    "data/processed/e19/real_only/incidents.csv",
+    "data/processed/e19/real_only/causes.csv",
+    "data/processed/e19/real_only/recommendations.csv",
+    "data/processed/e19/real_only/closeout.csv",
+)
+
+
+def input_sha256() -> dict[str, str]:
+    """Hashes of the files the donor text, donor tokens and the operator mask come from."""
+    return {rel: hashlib.sha256((REPO / rel).read_bytes()).hexdigest()
+            for rel in sorted(_INPUT_FILES)}
+
+
 def build_manifest(company: str, result: dict) -> dict:
     cfg = result["cfg"]
     tables = result["tables"]
@@ -689,46 +802,46 @@ def build_manifest(company: str, result: dict) -> dict:
                     "hs_completeness": "hs_blank_baseline",
                     "recurrence_rate": "recurrence_coincidence"},
     }
-    if company == "meridian":
+    if company == "hazel":
         plants = [
             {"pathology": "report_lag", "kpi": "median_report_lag",
-             "expected": {"op": ">", "ref": "northstar", "factor": 3.0},
+             "expected": {"op": ">", "ref": "alder", "factor": 3.0},
              "affected_ids": None},
             {"pathology": "closeout_decay", "kpi": "median_closeout_days",
-             "expected": {"op": ">", "ref": "northstar", "factor": 2.0},
+             "expected": {"op": ">", "ref": "alder", "factor": 2.0},
              "affected_ids": None},
             {"pathology": "recurrence_after_closure", "kpi": "recurrence_rate",
              "expected": {"op": ">=", "count": 8},
              "affected_ids": [list(p) for p in result["planted_pairs"]]},
         ]
         negative = ["skip_rate(near-baseline)", "root_cause_depth(near-baseline)",
-                    "admin_ppe_share(=northstar)", "owner_completeness(near-baseline)",
+                    "admin_ppe_share(=alder)", "owner_completeness(near-baseline)",
                     "hs_completeness(=baseline)"]
-    elif company == "coastal":
+    elif company == "hornbeam":
         plants = [
             {"pathology": "investigation_skip", "kpi": "skip_rate",
-             "expected": {"op": ">", "ref": "northstar", "factor": 5.0},
+             "expected": {"op": ">", "ref": "alder", "factor": 5.0},
              "affected_ids": None},
             {"pathology": "shallow_investigation", "kpi": "root_cause_depth",
-             "expected": {"op": "<", "ref": "northstar", "factor": 0.5},
+             "expected": {"op": "<", "ref": "alder", "factor": 0.5},
              "affected_ids": None},
             {"pathology": "weak_controls", "kpi": "admin_ppe_share",
-             "expected": {"op": ">", "ref": "northstar", "delta_pts": 25},
+             "expected": {"op": ">", "ref": "alder", "delta_pts": 25},
              "affected_ids": None},
             {"pathology": "missing_owners", "kpi": "owner_completeness",
-             "expected": {"op": "<", "ref": "northstar", "delta_pts": -25},
+             "expected": {"op": "<", "ref": "alder", "delta_pts": -25},
              "affected_ids": None},
             {"pathology": "hs_data_decay", "kpi": "hs_completeness",
-             # -5 not -15: max expected decay = base_comp*0.25 ~= 12.7pt; see test_coastal_hs_decay...
+             # -5 not -15: max expected decay = base_comp*0.25 ~= 12.7pt; see test_hornbeam_hs_decay...
              "expected": {"op": "<", "ref": "baseline", "delta_pts": -5},
              "affected_ids": None},
             {"pathology": "recurrence_after_closure", "kpi": "recurrence_rate",
              "expected": {"op": ">=", "count": 6},
              "affected_ids": [list(p) for p in result["planted_pairs"]]},
         ]
-        negative = ["median_report_lag(=northstar)",
+        negative = ["median_report_lag(=alder)",
                     "median_closeout_days(fast-on-paper)"]
-    else:  # northstar and meridian_nt: the all-negative-control baseline
+    else:  # alder and hazel_nt: the all-negative-control baseline
         negative = ["median_report_lag(baseline)", "skip_rate(baseline)",
                     "root_cause_depth(baseline)", "median_closeout_days(baseline)",
                     "admin_ppe_share(baseline)", "owner_completeness(baseline)",
@@ -736,9 +849,11 @@ def build_manifest(company: str, result: dict) -> dict:
     return {
         "company": company,
         "scenario_sha256": scenario_sha256(company),
+        "input_sha256": input_sha256(),
         "donor_partition": donor_partition(company),
         "window": {"start": WINDOW_START.isoformat(),
                    "end": WINDOW_END.isoformat()},
+        "as_of": AS_OF.isoformat(),
         "resolved_knobs": cfg,
         "plants": plants,
         "analytic_expectations": analytic,
@@ -748,8 +863,8 @@ def build_manifest(company: str, result: dict) -> dict:
 
 def main(argv: list[str]) -> int:
     company = argv[0]
-    if company == "meridian_nt":
-        print("meridian_nt is TEST-ONLY and is never written under data/companies/")
+    if company == "hazel_nt":
+        print("hazel_nt is TEST-ONLY and is never written under data/companies/")
         return 2
     assert company in COMPANY_ORDER, f"unknown company {company!r}"
     result = generate(company)
