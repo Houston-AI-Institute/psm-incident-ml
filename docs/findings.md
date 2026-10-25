@@ -4066,4 +4066,4 @@ and the "Company tables" fence, which tests pin; both were put back.
 **Open.** Whether teams may redistribute the Element 19 column labels is Houston AI
 Institute's decision; TERMS.md states the labels are published with its permission
 (recorded 2026-10-18). Redistribution of the labels by teams, in public repositories, is
-pending HAI's answer.
+pending the institute's answer.
