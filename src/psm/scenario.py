@@ -31,6 +31,7 @@ PARTITION_SALT = "e19-scenario-partition-v1"
 WINDOW_START = date(2021, 1, 1)
 WINDOW_END = date(2025, 12, 31)
 WINDOW_DAYS = (WINDOW_END - WINDOW_START).days + 1  # 1826 (2024 is a leap year)
+AS_OF = WINDOW_END  # registers are "extracted" on this date; later generated dates are unknown
 
 COMPANY_ORDER = ["alder", "hazel", "hornbeam"]
 PREFIX = {"alder": "AL", "hazel": "HZ", "hornbeam": "HB", "hazel_nt": "HZT"}

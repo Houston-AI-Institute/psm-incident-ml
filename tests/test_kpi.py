@@ -98,3 +98,30 @@ def test_skip_rate_and_semantics_survive_marker_decorrelation():
     tables = {"incidents": incidents, "causes": causes,
               "recommendations": [], "closeout": []}
     assert compute_kpis(tables)["skip_rate"] == 1 / 4
+
+
+T0 = __import__("psm.templates", fromlist=["load_templates"]).load_templates()[0]["text"]
+
+
+def test_kpis_with_open_actions():
+    """Open actions are left out of close-out time and count as overdue only
+    once past their due date (review item 3.6: missing dates read as 0.0)."""
+    from datetime import date
+    inc = {"Incident Number": "X-1", "Date of Incident": "2025-10-01",
+           "Date of Report": "2025-10-02", "Investigation leader - Name": "SYN-a",
+           "Health & Safety - Risk Score": "", "Close out Date": "",
+           "Work Group": "Maintenance"}
+    recs = [{"Incident Number": "X-1", "Recommendation Number": str(i),
+             "Recommendation Description": T0, "Agreed Completion Date": a,
+             "Responsible Owner - Name": "SYN-b"}
+            for i, a in enumerate(["2025-11-01", "2025-11-01", "2026-02-01"], start=1)]
+    close = [{"Incident Number": "X-1", "Recommendation Number": "1",
+              "Schedule Status": "Completed", "Date Completed": "2025-11-11"},
+             {"Incident Number": "X-1", "Recommendation Number": "2",
+              "Schedule Status": "Behind Original Agreed Schedule", "Date Completed": ""},
+             {"Incident Number": "X-1", "Recommendation Number": "3",
+              "Schedule Status": "On Schedule", "Date Completed": ""}]
+    k = compute_kpis({"incidents": [inc], "causes": [], "recommendations": recs,
+                      "closeout": close}, as_of=date(2025, 12, 31))
+    assert k["median_closeout_days"] == 40.0          # only the completed action
+    assert k["overdue_rate"] == 2 / 3                  # late-done + open-past-due

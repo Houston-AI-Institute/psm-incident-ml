@@ -9,7 +9,7 @@ from datetime import date
 from pathlib import Path
 from statistics import median
 
-from psm.scenario import detect_recurrence_pairs
+from psm.scenario import AS_OF, detect_recurrence_pairs
 from psm.templates import classify_action
 
 _TABLES = ("incidents", "causes", "recommendations", "closeout")
@@ -29,7 +29,8 @@ def _d(value: str) -> date | None:
 
 
 def compute_kpis(tables: dict[str, list[dict]],
-                 window_days: int = 365) -> dict[str, float | int]:
+                 window_days: int = 365,
+                 as_of: date = AS_OF) -> dict[str, float | int]:
     incs, causes = tables["incidents"], tables["causes"]
     recs, close = tables["recommendations"], tables["closeout"]
 
@@ -59,7 +60,8 @@ def compute_kpis(tables: dict[str, list[dict]],
         if done and rep:
             closeout_days.append((done - rep).days)
         agreed = agreed_by.get((c["Incident Number"], c["Recommendation Number"]))
-        if done and agreed and done > agreed:
+        # late if finished after the due date, or still open past it
+        if agreed and ((done and done > agreed) or (not done and agreed < as_of)):
             overdue += 1
 
     tags = [classify_action(r["Recommendation Description"]) for r in recs]
