@@ -438,3 +438,83 @@ def test_generated_text_has_no_capitalized_operator_first_token(company):
              for row in rows for col, v in row.items()]
     hits = _capitalized_first_token_hits(cells)
     assert not hits, hits[:10]
+
+
+# -- PR #4 review, finding 1: operator names made only of generic words, and the
+# short form of an "... Operating" name, survived masking.
+
+@pytest.mark.parametrize("s,want", [
+    ("at Royal Production Company's lease", "at [company]'s lease"),
+    ("Royal Production Company Inc.'s Lease", "[company]'s Lease"),
+    ("Energy Partners Limited reported", "[company] reported"),
+    ("Energy Partners, Ltd. reported", "[company] reported"),
+    ("Energy Resource Technology's crew", "[company]'s crew"),
+    ("Energy Resource Technology in Green Canyon", "[company] in Green Canyon"),
+    ("Dynamic Offshore reported", "[company] reported"),
+    ("White Fleet developed a lesson", "[company] developed a lesson"),
+    ("White Fleet’s EI", "[company]’s EI"),
+    ("contacted White Fleet.", "contacted [company]."),
+])
+def test_mask_generic_word_operators_and_operating_short_forms(p, s, want):
+    assert mask_operators(s, p) == want
+
+
+@pytest.mark.parametrize("s", [
+    "White Fleet Abandonment crew lowered",     # contractor: stays named
+    "White Fleet abandonment personnel",
+    "White Fleet Drilling rig",
+    "energy partners in the region",            # generic words, not capitalized as a name
+    "the gulf offshore area",
+    "an energy resource",
+])
+def test_generic_word_and_operating_rules_leave_contractors_and_prose(p, s):
+    assert mask_operators(s, p) == s
+
+
+_GENERIC_TAIL = {"llc", "l.l.c.", "l.l.c", "inc", "inc.", "company", "corporation", "corp",
+                 "corp.", "co.", "ltd", "ltd.", "limited", "lp", "l.p.", "usa", "operating",
+                 "&", "and", "of", "-"}
+
+
+def _operator_and_contractor_names():
+    # independent of psm.masking: its own simple rule on the scrubbed bsee_operator column
+    ops, contractors = set(), set()
+    with (E19 / "bsee_unmapped.csv").open(encoding="utf-8", newline="") as fh:
+        for row in csv.DictReader(fh):
+            for i, part in enumerate((row["bsee_operator"] or "").split("CONTRACTOR:")):
+                toks = part.replace("\xad", "").replace("\x01", "").replace(",", " ").split()
+                while toks and toks[-1].lower() in _GENERIC_TAIL:
+                    toks.pop()
+                if len(toks) >= 2:
+                    (contractors if i else ops).add(" ".join(toks))
+    skip = {"not listed", "company not listed", "production services", "wild well control"}
+    return sorted(n for n in ops if n.lower() not in skip), sorted(contractors)
+
+
+def _operator_full_name_hits(cells):
+    ops, contractors = _operator_and_contractor_names()
+    hits = set()
+    for name in ops:
+        rx = re.compile(rf"(?<!\w){re.escape(name)}(?!\w)")
+        cont = [c for c in contractors if c.lower().startswith(name.lower() + " ")]
+        for where, v in cells:
+            for m in rx.finditer(v):
+                rest = v[m.start():].lower()
+                if not any(rest.startswith(c.lower()) for c in cont):
+                    hits.add((where, name))
+    return sorted(hits)
+
+
+def test_operator_full_name_scan_is_not_vacuous():
+    ops, contractors = _operator_and_contractor_names()
+    assert len(ops) > 100
+    for must in ("Royal Production", "Energy Partners", "Energy Resource Technology",
+                 "White Fleet"):
+        assert must in ops
+    assert "White Fleet Abandonment" in contractors
+
+
+def test_company_text_has_no_operator_full_name_as_written():
+    cells = [((c, t, i, col.strip()), v) for c, t, i, col, v in _company_text_cells()]
+    hits = _operator_full_name_hits(cells)
+    assert not hits, hits[:10]

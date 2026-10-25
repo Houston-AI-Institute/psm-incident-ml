@@ -44,7 +44,7 @@ _JUNK_CHARS = "\xad\x01"
 _GROUP_WORDS = ("Group", "Partners", "Holdings", "Operations", "Energy Partners")
 _LEGAL_TAIL = ("LLC", "L.L.C.", "L.L.C", "Inc", "Inc.", "Corp", "Corp.", "Corporation",
                "Company", "Co.", "Incorporated", "USA", "U.S.A.", "LP",
-               "L.P.")
+               "L.P.", "Limited", "Ltd", "Ltd.")
 _LOWER_TAIL = ("inc", "inc.", "llc")
 
 
@@ -167,6 +167,60 @@ def first_token_forms() -> dict[str, list[str]]:
     return dict(sorted(out.items()))
 
 
+def _operator_parts():
+    """(operator part, [contractor parts]) of each bsee_operator row, names stripped."""
+    with BSEE_UNMAPPED.open(encoding="utf-8", newline="") as fh:
+        for row in csv.DictReader(fh):
+            parts = [_strip_name(x) for x in re.split(r"CONTRACTOR:", row["bsee_operator"] or "")]
+            yield parts[0], parts[1:]
+
+
+def _contractor_names() -> list[str]:
+    return sorted({c for _op, cs in _operator_parts() for c in cs if c})
+
+
+def generic_word_names() -> list[str]:
+    """Derived operator names made only of stoplist words ("Royal Production",
+    "Energy Partners"). They are masked only as written or in capitals, never in
+    other casings, so ordinary prose ("energy partners in the region") is left alone."""
+    stop = set(_alias_config()["stoplist"])
+    never = {n.lower() for n in _alias_config().get("derived_exclude", [])}
+    out = set()
+    for name, _cs in _operator_parts():
+        toks = _tokens(name)
+        if len(toks) < 2 or name.lower() in _PLACEHOLDERS or name.lower() in never:
+            continue
+        if all(t.strip(".,()") in stop for t in toks):
+            out.add(name)
+    return sorted(out, key=lambda s: (-len(s), s))
+
+
+def operating_short_forms() -> list[str]:
+    """Short forms of operator names that end in "Operating" ("White Fleet Operating"
+    -> "White Fleet"). Masked only as written or in capitals, and never where the
+    text continues into a contractor's name ("White Fleet Abandonment" stays named)."""
+    out = set()
+    for name, _cs in _operator_parts():
+        toks = name.split()
+        if len(toks) >= 3 and toks[-1].lower() == "operating":
+            out.add(" ".join(toks[:-1]))
+    return sorted(out, key=lambda s: (-len(s), s))
+
+
+def _as_written(name: str) -> str:
+    forms = sorted({name, name.upper()}, key=lambda f: (-len(f), f))
+    return "(?-i:" + "|".join(_name_regex(f) for f in forms) + ")"
+
+
+def _not_contractor(name: str) -> str:
+    """Negative lookahead for the words that turn `name` into a contractor's name."""
+    nexts = sorted({c[len(name):].split()[0] for c in _contractor_names()
+                    if c.lower().startswith(name.lower() + " ")})
+    if not nexts:
+        return ""
+    return r"(?!\s+(?i:" + "|".join(re.escape(w) for w in nexts) + r")(?!\w))"
+
+
 @lru_cache(maxsize=1)
 def operator_pattern() -> re.Pattern:
     cfg = _alias_config()
@@ -189,6 +243,11 @@ def operator_pattern() -> re.Pattern:
         if re.sub(r"\s*&\s*", "&", name.lower()) in alias_keys:
             continue                       # the alias entry carries the flags
         alts[name] = rf"(?i:{_name_regex(name)})"
+    for name in generic_word_names() + operating_short_forms():
+        key = re.sub(r"\s*&\s*", "&", name.lower())
+        if key in alias_keys or name in alts:
+            continue
+        alts[name] = _as_written(name) + _not_contractor(name)
     for low, forms in first_token_forms().items():
         body = "|".join(re.escape(f) for f in sorted(forms, key=lambda f: (-len(f), f)))
         alts[low] = rf"(?-i:{body})"
