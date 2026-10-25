@@ -4287,3 +4287,15 @@ public repository.
   - fatality detection keys only on the label;
   - `test_projection.py:186` always skips;
   - `test_kpi.py:45` recomputes the rule with the production formula.
+
+## 2026-10-25 — Owner decisions on the PR #4 review
+
+- **Merge type.** PR #4 is merged with a merge commit, not squashed. The commits cited by hash
+  (the baseline stamp 715c3f0, e19_disposition.yaml, and entries in this log) stay reachable
+  from main.
+- **Workbook classification bands.** `schema/xw_consequence_tiers.yaml` keeps the
+  workbook's three bands (21+, 11-20, 1-10), and the bundle ships it. This is recorded as
+  an exception in CLAUDE.md.
+- **Answer key on main.** The 2026-10-24 acceptance stands. The bundle has no repository
+  URL, but its BASELINE.md mentions a repository, so teams can find the repo by name.
+  Judging scores the method, not whether teams recover the planted answers.

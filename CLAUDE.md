@@ -133,6 +133,7 @@ Gitignored: `data/raw/`, `data/interim/`.
   (`src/psm/e19_schema.py`, commit bc84583); `schema/e19_target.yaml` is
   hand-written. Permitted derivative: `schema/e19_labels.yaml` only. Nothing else
   derived from the workbook (formulas, scoring, rollups, the file itself) is committed.
+- Exception (2026-10-25): `schema/xw_consequence_tiers.yaml` keeps the workbook's three classification bands (21+, 11-20, 1-10), and the team bundle ships it. Owner decision; no other workbook scoring is committed.
 - Exception (2026-10-19): `cause_task.csv` baselines may report agreement with `src_category`/`xw_element`, worded as recovery of the investigator's category, not PSM-element correctness, always with n. No other non-gold scoring.
 - EI PSM Framework element *names* may be referenced with attribution (they are
   published by the Energy Institute); the workbook, its formulas, and its
