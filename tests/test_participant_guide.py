@@ -668,7 +668,7 @@ def test_track_6_gaps_exist_in_every_company(b):
             return list(csv.DictReader(fh))
     tracks = section(template(), "Tracks")
     assert "open or late actions" in tracks
-    assert f"registers end {AS_OF.isoformat()}" in tracks
+    assert f"(blank `Date Completed` on {AS_OF.isoformat()})" in tracks   # what "open" means
     assert '"Behind"' not in tracks
     for co in sorted(p.name for p in (b / "companies").iterdir()):
         inc = {r["Incident Number"] for r in rd(f"companies/{co}/incidents.csv")}
