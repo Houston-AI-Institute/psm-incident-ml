@@ -57,6 +57,105 @@ NAME_STOPWORDS = frozenset({
 })
 _STOP_LOWER = frozenset(w.lower() for w in NAME_STOPWORDS)
 
+# ---- untitled staff names (2026-10-24) --------------------------------------------------
+# Three shapes, each confirmed in the BSEE text, that name a person with no honorific:
+#   role      an agency role word used as a title: "Inspector"/"Investigator" followed by
+#             1-3 Capitalised words, either directly or as "(Name Name)" right after it;
+#   email     "email from" / "e-mail from" followed by exactly First [I.] Last;
+#   team      an investigation-team or panel header followed by a bracketed list of
+#             First [I.] Last members separated by commas, semicolons or "and".
+# The name part is strict: a capital then lowercase only (optional Mc/Mac/O' prefix, one
+# capitalised hyphen part), so acronyms (ERT, IMT), all-caps words and "Third-party" or
+# "Fieldwood's" are not names. Only Capitalised role words count: lower-case "crane
+# inspector (X Y)" is how the text names contractors and companies. A match is dropped if
+# any of its words is in UNTITLED_NOT_NAME (the role direct form keeps its leading run of
+# good words instead). Only the name part becomes [name]; the role word, header and
+# brackets stay.
+_NAME = r"(?:(?:Mc|Mac|O['’])?[A-Z][a-z]+(?:-[A-Z][a-z]+)?(?![A-Za-z]))"
+_INIT = r"(?:[A-Z]\.)"
+_NAMES13 = rf"{_NAME}(?:\s+(?:{_INIT}|{_NAME})){{0,2}}"
+_FIRST_LAST = rf"{_NAME}(?:\s+{_INIT})?\s+{_NAME}"
+ROLE_TITLE_RE = re.compile(
+    rf"\b(?:Inspector|Investigator|INSPECTOR|INVESTIGATOR)s?"
+    rf"(?:\s*\(\s*(?P<paren>{_NAMES13})\s*\)|\s+(?P<direct>{_NAMES13}))")
+EMAIL_SENDER_RE = re.compile(rf"(?i:\be-?mail(?:ed)?\s+from)\s+(?P<name>{_FIRST_LAST})(?!\s+[A-Z][a-z])")
+_MEMBER = rf"(?:\[name\]|{_FIRST_LAST}(?:\s+{_NAME})?)"
+_SEP = r"\s*(?:,\s*and\b|,|;|\band\b)\s*"
+TEAM_LIST_RE = re.compile(
+    r"(?i:\b(?:(?:investigat(?:ion|ive)|accident|review)\s+(?:team|panel)|panel))"
+    rf"\s*\(\s*(?P<list>{_MEMBER}(?:{_SEP}{_MEMBER})*)\s*\)")
+_MEMBER_RE = re.compile(_MEMBER)
+# Words that, inside a candidate span, mean it names an office, role, company or crew and
+# not a person. Matched case-insensitively. Membership only (never joined into a regex).
+UNTITLED_NOT_NAME = NAME_STOPWORDS | frozenset({
+    "General", "Inspector", "Inspectors", "Investigator", "Investigators", "Lead", "Senior",
+    "Chief", "Accident", "Incident", "Safety", "District", "Region", "Regional", "Office",
+    "Field", "Team", "Panel", "Training", "Report", "Program", "Supervisor", "Manager",
+    "Engineer", "Operator", "Representative", "Captain", "Company", "Corporation", "Inc",
+    "Energy", "Offshore", "Oil", "Gas", "Petroleum", "Exploration", "Production", "Drilling",
+    "Marine", "Services", "Engineering", "Operating", "Resources", "Pumps", "Group",
+    "International", "Holdings",
+})
+_NOT_NAME_LOWER = frozenset(w.lower() for w in UNTITLED_NOT_NAME)
+
+
+def _bad(word: str) -> bool:
+    return word.rstrip(".").lower() in _NOT_NAME_LOWER
+
+
+def untitled_name_spans(text: str) -> list[tuple[int, int]]:
+    """(start, end) of each untitled-name span in ``text`` (role, email and team rules),
+    sorted and non-overlapping. Each team member is its own span; ``[name]`` is skipped."""
+    spans: list[tuple[int, int]] = []
+    for m in ROLE_TITLE_RE.finditer(text):
+        g = "paren" if m.group("paren") else "direct"
+        s = m.start(g)
+        toks = list(re.finditer(r"\S+", m.group(g)))
+        if g == "paren":
+            if not any(_bad(t.group(0)) for t in toks):
+                spans.append((s, m.end(g)))
+            continue
+        good = []
+        for t in toks:
+            if _bad(t.group(0)):
+                break
+            good.append(t)
+        while good and re.fullmatch(_INIT, good[-1].group(0)):
+            good.pop()                                     # never end on a bare initial
+        if good:
+            spans.append((s, s + good[-1].end()))
+    for m in EMAIL_SENDER_RE.finditer(text):
+        if not any(_bad(w) for w in m.group("name").split()):
+            spans.append(m.span("name"))
+    for m in TEAM_LIST_RE.finditer(text):
+        base = m.start("list")
+        members = [(base + mm.start(), base + mm.end(), mm.group(0))
+                   for mm in _MEMBER_RE.finditer(m.group("list"))]
+        if any(_bad(w) for _s, _e, txt in members for w in txt.split()):
+            continue                                       # a role/crew list, not people
+        spans += [(s, e) for s, e, txt in members if txt != "[name]"]
+    out: list[tuple[int, int]] = []
+    for s, e in sorted(set(spans)):
+        if out and s < out[-1][1]:
+            out[-1] = (out[-1][0], max(e, out[-1][1]))
+        else:
+            out.append((s, e))
+    return out
+
+
+def has_untitled_name(text: str) -> bool:
+    return bool(untitled_name_spans(HONORIFIC_RE.sub("[name]", text)))
+
+
+def has_name(text: str) -> bool:
+    """True when `redact` would mask a name in ``text`` (titled or untitled)."""
+    return bool(HONORIFIC_RE.search(text)) or has_untitled_name(text)
+
+
+def _untitled_words(text: str, spans: list[tuple[int, int]]) -> set[str]:
+    return {w for s, e in spans for w in text[s:e].split()
+            if not w.endswith(".") and w.lower() not in _STOP_LOWER}
+
 
 def _span_words(span: str) -> set[str]:
     """The name words of one matched title span (initials carry no identity)."""
@@ -64,16 +163,19 @@ def _span_words(span: str) -> set[str]:
 
 
 def titled_name_words(text: str) -> set[str]:
-    """Words that follow a title in ``text`` (same spans `redact` finds), minus NAME_STOPWORDS."""
+    """Words that follow a title in ``text`` (same spans `redact` finds), minus NAME_STOPWORDS,
+    plus the words of the untitled-name spans `redact` finds (role, email, team rules)."""
     out: set[str] = set()
     for m in HONORIFIC_RE.finditer(text):
         out |= {w for w in _span_words(m.group(0)) if w.lower() not in _STOP_LOWER}
-    return out
+    masked = HONORIFIC_RE.sub("[name]", text)
+    return out | _untitled_words(masked, untitled_name_spans(masked))
 
 
 def redact(text: str, names: set[str] | None = None) -> str:
-    """Replace titled names with [name] (full span, then each collected word
-    wherever it recurs alone), then contact details with [contact].
+    """Replace titled names with [name] (full span), then untitled-name spans (role, email,
+    team rules; see `untitled_name_spans`), then each collected word wherever it recurs
+    alone, then contact details with [contact].
 
     ``names=None``: only words collected from this text recur-mask (the original rule).
     With ``names`` (the incident's name words from `titled_name_words` over all of its
@@ -88,6 +190,11 @@ def redact(text: str, names: set[str] | None = None) -> str:
         return "[name]"
 
     text = HONORIFIC_RE.sub(_span, text)
+    spans = untitled_name_spans(text)
+    if spans:
+        words |= _untitled_words(text, spans)
+        for s, e in reversed(spans):
+            text = text[:s] + "[name]" + text[e:]
     if names:
         words |= names
     if words:
@@ -116,7 +223,7 @@ def flags(table: str, rows: list[dict], text_cols: list[str],
                 ("death_mention", _has_death_mention(text)),
                 ("near_fatal", bool(NEAR_FATAL_RE.search(text))),
                 ("serious_injury", bool(SERIOUS_INJURY_RE.search(text))),
-                ("name_redacted", bool(HONORIFIC_RE.search(text))),
+                ("name_redacted", has_name(text)),
                 ("contact_redacted", bool(CONTACT_RE.search(text))),
             )
             for flag, hit in hits:

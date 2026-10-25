@@ -1088,3 +1088,27 @@ def test_scratch_folder_check_can_fail():
                               "data/processed/e19/_smoketest/x.csv", "data/processed/e19/enriched/incidents.csv"]) == [
         "data/processed/e19/_pilot_haiku/incidents.csv", "data/processed/e19/_smoketest/x.csv"]
 
+
+
+def test_untitled_name_redaction_marks_src_mod_and_passes_other_tokens_through():
+    """2026-10-24 rules ride the same path as titled names: src and mod cells change and
+    become mod; the same text under any other token is byte-identical."""
+    cols = ["Incident Number", "Cause number", "Cause Description"]
+    text = "the MMS Inspector (Zork Quux) and Investigation Team (Blen Varo, Pim Tasker); per email from Zork Quux"
+    want = "the MMS Inspector ([name]) and Investigation Team ([name], [name]); per email from [name]"
+    toks = ("src", "mod", "syn", "xw", "llm", "gold", "pseud")
+    rs = [dict(zip(cols, ["I1", "1", text])) for _ in toks]
+    prov = [dict(zip(cols, ["key", "key", tok])) for tok in toks]
+    t = _tbl("causes", cols, rs, prov)
+    assert bundle._redact_table(t, ["Cause Description"]) == []
+    assert [r["Cause Description"] for r in rs] == [want, want] + [text] * 5
+    assert [p["Cause Description"] for p in prov] == ["mod", "mod", "syn", "xw", "llm", "gold", "pseud"]
+
+
+def test_untitled_name_redaction_without_provenance_lists_a_name_row():
+    cols = ["Incident Number", "Recommendation Number", "Recommendation Description"]
+    rs = [dict(zip(cols, ["I1", "1", "cost (per email from Zork Quux) $5"]))]
+    t = _tbl("recommendations", cols, rs)
+    got = bundle._redact_table(t, ["Recommendation Description"])
+    assert [(g["row_key"], g["kind"]) for g in got] == [("I1|1", "name")]
+    assert rs[0]["Recommendation Description"] == "cost (per email from [name]) $5"

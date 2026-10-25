@@ -9,7 +9,8 @@ nothing else under ``data/`` can reach the bundle. Transforms, in this order:
                  ``splits.json`` follow the same mask;
 2. flags         ``content_flags.csv``, over all bundled text, after the drop and before
                  redaction (only columns that ship are scanned);
-3. redact        titled names and contact details in free-text cells whose provenance
+3. redact        titled names, untitled staff names (role titles, email senders, team
+                 lists; see ``psm.content``) and contact details in free-text cells whose provenance
                  token is ``src`` or ``mod`` (a table with no provenance file counts as
                  ``src``); a changed cell becomes ``mod`` or, with no provenance file,
                  a row in ``redactions.csv``;
@@ -47,7 +48,7 @@ import yaml
 
 from psm import scenario
 from psm.baseline import regime_summary, render, run_baseline
-from psm.content import (CONTACT_RE, HONORIFIC_RE, fatal_incidents, flags, redact,
+from psm.content import (CONTACT_RE, fatal_incidents, flags, has_name, redact,
                          titled_name_words)
 from psm.provenance import TOKENS
 
@@ -407,7 +408,8 @@ def _redact_table(t: Tbl, cols: list[str], names: dict[str, set[str]] | None = N
             if t.prov is not None:
                 t.prov[i][c] = "mod"
                 continue
-            kinds = [k for k, rx in (("name", HONORIFIC_RE), ("contact", CONTACT_RE)) if rx.search(old)]
+            kinds = [k for k, hit in (("name", has_name(old)), ("contact", bool(CONTACT_RE.search(old))))
+                     if hit]
             for k in kinds or ["name"]:
                 out.append({"table": t.rel, "Incident Number": row["Incident Number"],
                             "row_key": _row_key(t, row), "column": c, "kind": k})

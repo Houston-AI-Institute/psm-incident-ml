@@ -192,3 +192,67 @@ def test_death_mention_flags_and_never_emits_text():
         assert set(r) == {"Incident Number", "table", "row_key", "column", "flag"}
         assert r["row_key"] == "X|a" and r["table"] == "incidents" and r["column"] == "t"
         assert "Jones" not in "".join(r.values()) and "555" not in "".join(r.values())
+
+
+# ---- untitled staff names (2026-10-24): role titles, email senders, team lists ----------
+# Invented names only. Each positive shape was confirmed against the data first; the
+# negatives are the look-alike shapes the same text uses for things that are not people.
+
+def test_role_title_with_parenthesised_name_is_redacted():
+    out = redact("The MMS Inspector (Zork Quux) got a drawing. Quux later left.")
+    assert out == "The MMS Inspector ([name]) got a drawing. [name] later left."
+
+
+def test_role_title_followed_directly_by_a_name_is_redacted():
+    assert redact("Investigator Zork Quux arrived") == "Investigator [name] arrived"
+    assert redact("BSEE Inspector Zork\nQuux arrived") == "BSEE Inspector [name] arrived"
+
+
+def test_email_sender_name_is_redacted():
+    assert redact("costs (per email from Zork Quux 1/16/24) $5") == "costs (per email from [name] 1/16/24) $5"
+    assert redact("an e-mail from Blen T. Varo said") == "an e-mail from [name] said"
+
+
+def test_investigation_team_member_list_is_redacted():
+    text = "MMS Accident Investigation Team (Zork Quux, Blen\nVaro, Pim Tasker) met with Acme."
+    assert redact(text) == "MMS Accident Investigation Team ([name], [name], [name]) met with Acme."
+    assert redact("the review panel (Zork Quux and Blen Varo) met") == "the review panel ([name] and [name]) met"
+    # a member already masked by an honorific does not break the list
+    assert redact("Investigation Team (Mr. Zork Quux, Blen Varo)") == "Investigation Team ([name], [name])"
+
+
+def test_untitled_name_words_join_the_incident_name_set_and_flag():
+    from psm.content import titled_name_words
+    assert titled_name_words("Inspector (Zork Quux) and email from Blen Varo") == {"Zork", "Quux", "Blen", "Varo"}
+    assert titled_name_words("Investigation Team (Pim Tasker, Zork Quux)") == {"Pim", "Tasker", "Zork", "Quux"}
+    f = flags("incidents", [{"Incident Number": "X", "t": "per email from Zork Quux"}], ["t"], ["Incident Number"])
+    assert [r["flag"] for r in f] == ["name_redacted"]
+    assert "Quux" not in "".join(v for r in f for v in r.values())
+
+
+@pytest.mark.parametrize("text", [
+    "the Inspector General reviewed it",                         # an office, not a name
+    "the Lead Investigator (Accident Investigator) said",        # a role alias in brackets
+    "an Investigator (AI) arrived",                              # an acronym
+    "BSEE Inspector Training was held",
+    "an email from Stress Engineering said",                     # companies after "email from"
+    "an email from Shell on 11 May 2022",
+    "an email from Third-party Pumps was sent",
+    "an email from Fieldwood's Health, Safety team",
+    "an email from Black Elk Energy said",
+    "an email to BSEE on 25 August",
+    "a fully staffed Incident Management Team (IMT) was activated",   # team acronyms
+    "a Fire Team (FT) consisting of three personnel",
+    "the Emergency Response Team (ERT) arrived",
+    "the Driller's Control Panel (DCP) was used",
+    "Investigation Team (Fire Chief, Safety Lead)",              # roles, not people
+    "the RAT Supervisor (Southey Supervisor) was told",          # role words outside the rule
+    "a BW Crane Operator (Injured Person, IP) was fueling",
+    "the Rowan Floorhand (Injured Party) was tasked",
+    "offload the M/V Captain Quux at the dock",                  # vessel names
+    "the Transocean Clear Leader (Clear Leader) was released",
+    "Ivestigation Team: Conduct appropriate action",
+])
+def test_untitled_name_rules_leave_lookalike_shapes_alone(text):
+    assert redact(text) == text
+    assert flags("incidents", [{"Incident Number": "X", "t": text}], ["t"], ["Incident Number"]) == []

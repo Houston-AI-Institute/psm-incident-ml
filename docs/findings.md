@@ -3883,3 +3883,77 @@ is an owner decision.
 
 **Not verified here.** That the reviewer reads every row; names the regex cannot form
 (all-caps, McX, hyphenated, initials, single words) remain covered only by the random sample.
+
+## 2026-10-24 — Untitled staff names redacted; answer-key exposure accepted
+
+The final review (I1) found real person names in the bundle that carry no honorific,
+so `HONORIFIC_RE` never saw them: an agency investigation-team list, an agency
+inspector's name and a name after "per email from". The owner decided on 2026-10-24
+to redact them, every copy. The redaction is a bundle-stage transform; no committed
+data changed.
+
+**Rules** (`src/psm/content.py`, `untitled_name_spans`; wired into `redact`,
+`titled_name_words`, `flags` and the builder's `redactions.csv` kind through `has_name`):
+
+- **role:** a Capitalised `Inspector` or `Investigator` (also all-caps, optional
+  plural) used as a title, followed by 1-3 Capitalised words, either directly or as a
+  bracketed `(Name Name)` right after it.
+- **email:** `email from` or `e-mail from` (any case) followed by exactly First [I.]
+  Last, and not by a third Capitalised word.
+- **team:** an investigation-team or panel header (`investigation`, `investigative`,
+  `accident` or `review` + `team`/`panel`, or `panel` alone; any case) followed by a
+  bracketed list of First [I.] Last members separated by commas, semicolons or "and".
+
+The name part is strict, a capital then lowercase only, so acronyms, all-caps words
+and possessive or hyphenated lower-case words are not names. A span is dropped if
+any word is in `UNTITLED_NOT_NAME` (role, office, crew and company words plus
+`NAME_STOPWORDS`); the role rule's direct form keeps only its leading run of good
+words. Only the name becomes `[name]`; the role word, header and brackets stay.
+New spans feed the same recurrence and incident-scoped name set as titled names.
+Cells are touched only under `src` or `mod`; `src` becomes `mod`; other tokens pass
+through byte-identical (tested). The hornbeam copy is `mod` in the committed register
+and goes through the same company-scope redaction, so the builder needed no
+path change.
+
+**Shapes ruled out, each a negative test:** the text often puts a role alias, not a
+person, in brackets after a role word ("Crane Operator (Injured Person)", "Driller
+(Hoist Operator)"); companies after "email from"; team acronyms such as (ERT) and (IMT);
+"Inspector General"; and vessel names led by a rank ("M/V Captain ..."). So the role
+list is only Inspector and Investigator, and lower-case role words do not count.
+
+**Measured** (full-mode bundles built at 4bbd0f9 and at this commit,
+`allow_placeholder_terms=True`, no `allow_dirty`; every CSV diffed cell by cell; each
+new `[name]` attributed to the rule whose span covers it; every span's ±60-character
+context read by hand):
+
+| rule | new name spans | person names | false positives |
+|---|---|---|---|
+| role | 5 | 5 | 0 |
+| email | 1 | 1 | 0 |
+| team | 12 | 12 | 0 |
+| recurrence (bare word elsewhere) | 0 | - | - |
+
+The 18 spans are 5 distinct people, each in every copy of its text: core real_only,
+core enriched, `cells_long.csv`, and the hazel or hornbeam register. The tables have
+8 more redacted cells (3 more `redactions.csv` rows, 2 enriched cells `src`→`mod`,
+3 company cells already `mod`) and 8 more `name_redacted` flags. No other cell changed
+apart from 2 `cells_long` provenance entries and 2 rounded `pct_src`/`pct_mod` values
+in the data dictionary. In the new bundle and its zip, none of the 5 name pairs
+appears in any file (whitespace-insensitive; the same scan finds 17 file-and-pair hits
+in the parent bundle). One surname word survives, in an unrelated incident, as part of a
+vessel's name. Fatal trace 0 and contacts 0 in both bundles.
+
+**Review pack** (`psm.review_pack`, `n_random=150`, before = the 4bbd0f9 bundle):
+`name_redacted` 100 → 108, `capitalised_pair` 354 → 349 (the five pairs are gone),
+`capitalised_pair_common` 815 → 815, `random` 150, `near_fatal` 50, `death_mention` 1,
+`contact_redacted` 0; total 1,470 → 1,473.
+
+**Not covered.** Colon-form team lists ("Team: A B, C D"), lower-case role words, ranks
+such as Captain (one cause row has a rank before a surname, left to the review pack),
+names after "email to", and all-caps names.
+
+**Owner decision, 2026-10-24: the answer key stays public.** The company manifests and
+`scenarios/*.yaml`, already public on main, list the planted pathologies and the
+expected results. They stay public because judging is method-based, not scored on
+finding the planted problems. The participant bundle ships neither those files nor a
+link to the repo.
