@@ -9,6 +9,7 @@ import csv
 import io
 import re
 import subprocess
+from datetime import date
 from pathlib import Path
 
 import pytest
@@ -48,6 +49,31 @@ def _old_rows(old: str, name: str) -> list[dict]:
     return list(csv.DictReader(io.StringIO(blob, newline="")))
 
 
+def _as_of_view(name: str, row: dict) -> dict:
+    """A pre-rename row as the register shows it on scenario.AS_OF (added 2026-10-25). The draws
+    are unchanged; a generated date after AS_OF is unknown, so it and the people it gates are
+    blank, and a known completion is "Completed". The Schedule Status of an open action depends
+    on its due date, so it is checked by test_schedule_status_follows_as_of, not here."""
+    row = dict(row)
+    late = lambda col: bool(row[col]) and date.fromisoformat(row[col]) > scenario.AS_OF
+    if name == "incidents.csv":
+        if late("Approval Date"):
+            row["Approval Date"] = ""
+            row["Investigation Acceptor/Approver (Owner) - Name"] = ""
+            row["Investigation Acceptor/Approver (Owner)- Position"] = ""   # sic: no space
+        if late("Close out Date"):
+            row["Close out Date"] = ""
+            row["Close out Approval - Name"] = row["Close out Approval - Position"] = ""
+        if late("Date of Report"):
+            row["Date of Report"] = ""
+    elif name == "closeout.csv":
+        if late("Date Completed"):
+            row["Date Completed"] = row["Schedule Status"] = ""
+        else:
+            row["Schedule Status"] = "Completed"
+    return row
+
+
 def _new_rows(new: str, name: str) -> list[dict]:
     with (scenario.OUT_ROOT / new / name).open(encoding="utf-8", newline="") as fh:
         return list(csv.DictReader(fh))
@@ -64,9 +90,12 @@ def test_rename_preserves_draws(old):
         assert list(before[0]) == list(after[0]), (new, name)
         compared = 0
         for b, a in zip(before, after):
+            b = _as_of_view(name, b)
             for col in b:
                 if col in IGNORED:
                     continue
+                if name == "closeout.csv" and col == "Schedule Status" and not b[col]:
+                    continue                      # open action: see _as_of_view
                 want = ID_RE.sub(lambda m: swap[m.group(1)] + "-", b[col])
                 assert a[col] == want, (new, name, col)
                 compared += 1

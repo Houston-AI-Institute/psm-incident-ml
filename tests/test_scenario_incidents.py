@@ -39,12 +39,13 @@ def test_date_chain_orders_and_derives_from_the_plan():
     p = _plan(d)
     row, _ = sc.build_incident_row(p, sc.donor_incidents()[d])
     doi = date.fromisoformat(row["Date of Incident"])
-    rep = date.fromisoformat(row["Date of Report"])
     assert sc.WINDOW_START <= doi <= sc.WINDOW_END
-    assert (rep - doi).days == p.report_lag
-    if not p.skipped:
+    if row["Date of Report"]:                       # blank when after AS_OF
+        rep = date.fromisoformat(row["Date of Report"])
+        assert (rep - doi).days == p.report_lag
+    if not p.skipped and row["Approval Date"]:
         app = date.fromisoformat(row["Approval Date"])
-        assert (app - rep).days == p.invest_days
+        assert (app - p.report_date).days == p.invest_days
 
 
 def test_skipped_incident_has_no_leader_no_approval():

@@ -3,6 +3,8 @@ import json
 from datetime import date
 from pathlib import Path
 
+import pytest
+
 from psm import scenario as sc
 from psm.kpi import load_company
 from psm.templates import classify_action
@@ -34,21 +36,72 @@ def test_every_rec_has_a_closeout_row_and_registry_text():
     for r in recs:
         classify_action(r["Recommendation Description"])   # KeyError = failure
     for c in close:
-        assert c["Schedule Status"] in ("On Schedule", "Behind")
-        date.fromisoformat(c["Date Completed"])
+        assert c["Schedule Status"] in STATUSES
+        if c["Date Completed"]:
+            date.fromisoformat(c["Date Completed"])
 
 
-def test_schedule_status_matches_the_date_comparison():
-    res = sc.generate("alder")
-    _, recs, _ = res["tables"]["recommendations"]
-    _, close, _ = res["tables"]["closeout"]
+# Schedule Status values verbatim from schema/e19_labels.yaml ("Deleted" is never generated)
+STATUSES = ("Completed", "On Schedule", "Behind Original Agreed Schedule")
+
+
+def _all_tables(company):
+    return {n: rows for n, (_, rows, _) in sc.generate(company)["tables"].items()}
+
+
+@pytest.mark.parametrize("company", sc.COMPANY_ORDER)
+def test_no_generated_date_after_as_of(company):
+    """The registers are extracted on AS_OF: only a due date may lie after it."""
+    t = _all_tables(company)
+    date_cols = {"incidents": ("Date of Incident", "Date of Report", "Approval Date",
+                               "Close out Date"),
+                 "closeout": ("Date Completed",)}
+    for table, cols in date_cols.items():
+        for r in t[table]:
+            for c in cols:
+                if r[c]:
+                    assert date.fromisoformat(r[c]) <= sc.AS_OF, (table, c, r[c])
+
+
+@pytest.mark.parametrize("company", sc.COMPANY_ORDER)
+def test_schedule_status_follows_as_of(company):
+    t = _all_tables(company)
     agreed = {(r["Incident Number"], r["Recommendation Number"]):
-              date.fromisoformat(r["Agreed Completion Date"]) for r in recs}
-    for c in close:
-        done = date.fromisoformat(c["Date Completed"])
-        expect = "Behind" if done > agreed[
-            (c["Incident Number"], c["Recommendation Number"])] else "On Schedule"
-        assert c["Schedule Status"] == expect
+              date.fromisoformat(r["Agreed Completion Date"]) for r in t["recommendations"]}
+    for c in t["closeout"]:
+        a = agreed[(c["Incident Number"], c["Recommendation Number"])]
+        if c["Date Completed"]:
+            assert c["Schedule Status"] == "Completed"
+        else:
+            assert c["Schedule Status"] == ("Behind Original Agreed Schedule"
+                                            if a < sc.AS_OF else "On Schedule")
+
+
+@pytest.mark.parametrize("company", sc.COMPANY_ORDER)
+def test_open_action_means_no_close_out(company):
+    t = _all_tables(company)
+    open_ids = {c["Incident Number"] for c in t["closeout"] if not c["Date Completed"]}
+    for r in t["incidents"]:
+        if r["Incident Number"] in open_ids:
+            assert r["Close out Date"] == ""
+            assert r["Close out Approval - Name"] == ""
+            assert r["Close out Approval - Position"] == ""
+
+
+@pytest.mark.parametrize("company", sc.COMPANY_ORDER)
+def test_unknown_approval_means_no_approver(company):
+    for r in _all_tables(company)["incidents"]:
+        if not r["Approval Date"]:
+            assert r["Investigation Acceptor/Approver (Owner) - Name"] == ""
+            assert r["Investigation Acceptor/Approver (Owner)- Position"] == ""   # sic: no space
+
+
+@pytest.mark.parametrize("company", ("hazel", "hornbeam"))
+def test_planted_pairs_first_member_is_closed_by_as_of(company):
+    res = sc.generate(company)
+    by_id = {r["Incident Number"]: r for r in res["tables"]["incidents"][1]}
+    for a, _ in res["planted_pairs"]:
+        assert by_id[a]["Close out Date"], a
 
 
 def test_hazel_plants_eight_maintenance_pairs_and_detector_finds_them():

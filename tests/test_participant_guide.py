@@ -657,6 +657,7 @@ def test_the_small_regime_numbers_in_track_4_are_the_bundles(b_nocomp):
     assert "(19 and 13)" in section(template(), "Tracks")
 
 
+@pytest.mark.xfail(reason="Task 3 rewrites Track 6", strict=True)
 def test_track_6_gaps_exist_in_every_company(b):
     """The guide names one gap, close-outs marked Behind. The second gap (incidents with no
     recommendation) is no longer named in the guide (word cap), but must still exist in all

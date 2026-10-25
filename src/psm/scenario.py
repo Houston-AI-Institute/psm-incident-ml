@@ -256,8 +256,9 @@ class IncidentPlan:
 
     @property
     def close_out_date(self) -> date | None:
+        """Known only once every action is done by AS_OF."""
         done = self.completed_dates()
-        return max(done) if done else None
+        return max(done) if done and max(done) <= AS_OF else None
 
     @property
     def completion_span(self) -> int:
@@ -411,7 +412,7 @@ _PEOPLE = (
      "classifier", "always"),
     ("Investigation Acceptor/Approver (Owner) - Name",
      "Investigation Acceptor/Approver (Owner)- Position",   # sic: no space
-     "approver", "investigated"),
+     "approver", "approved"),
     ("Close out Approval - Name", "Close out Approval - Position",
      "closer", "closed"),
 )
@@ -453,6 +454,11 @@ def anchored_incident_date(company: str, sid: str, donor_id: str) -> date:
     return WINDOW_START + timedelta(days=look + off)
 
 
+def known(d: date | None) -> date | None:
+    """A generated date as the register shows it on AS_OF: later dates are unknown."""
+    return d if d is not None and d <= AS_OF else None
+
+
 def build_incident_row(plan: IncidentPlan, donor_row: dict) -> tuple[dict, dict]:
     delta = donor_delta(plan)
     row: dict[str, str] = {c: "" for c in incident_fieldnames()}
@@ -464,7 +470,8 @@ def build_incident_row(plan: IncidentPlan, donor_row: dict) -> tuple[dict, dict]
 
     put("Incident Number", plan.sid, "key")
     put("Date of Incident", plan.doi.isoformat(), "syn")
-    put("Date of Report", plan.report_date.isoformat(), "syn")
+    if known(plan.report_date):
+        put("Date of Report", plan.report_date.isoformat(), "syn")
     put("Work Group", plan.work_group, "syn")
     dtok = donor_incident_tokens()[plan.donor_id]
     donor_time = (donor_row.get("Time of Incident") or "").strip()
@@ -480,13 +487,14 @@ def build_incident_row(plan: IncidentPlan, donor_row: dict) -> tuple[dict, dict]
     if plan.hs_blanked:
         for c in _HS_TRIO:
             put(c, "", "")
-    if plan.approval_date:
+    if known(plan.approval_date):
         put("Approval Date", plan.approval_date.isoformat(), "syn")
     if plan.close_out_date:
         put("Close out Date", plan.close_out_date.isoformat(), "syn")
     for name_col, pos_col, role, gate in _PEOPLE:
         populate = (gate == "always"
                     or (gate == "investigated" and not plan.skipped)
+                    or (gate == "approved" and known(plan.approval_date) is not None)
                     or (gate == "closed" and plan.close_out_date is not None))
         if populate:
             name, pos = syn_person(f"{_key(plan.company, plan.sid)}|{role}")
@@ -608,9 +616,16 @@ def build_closeout_rows(plan: IncidentPlan) -> tuple[list[dict], list[dict]]:
 
         put("Incident Number", plan.sid, "key")
         put("Recommendation Number", str(i + 1), "syn")
-        put("Schedule Status",
-            "Behind" if done[i] > agreed[i] else "On Schedule", "syn")
-        put("Date Completed", done[i].isoformat(), "syn")
+        # Schedule Status values verbatim from schema/e19_labels.yaml
+        if known(done[i]):
+            status = "Completed"
+        elif agreed[i] < AS_OF:
+            status = "Behind Original Agreed Schedule"
+        else:
+            status = "On Schedule"
+        put("Schedule Status", status, "syn")
+        if known(done[i]):
+            put("Date Completed", done[i].isoformat(), "syn")
         rows.append(row)
         provs.append(prov)
     return rows, provs
@@ -838,6 +853,7 @@ def build_manifest(company: str, result: dict) -> dict:
         "donor_partition": donor_partition(company),
         "window": {"start": WINDOW_START.isoformat(),
                    "end": WINDOW_END.isoformat()},
+        "as_of": AS_OF.isoformat(),
         "resolved_knobs": cfg,
         "plants": plants,
         "analytic_expectations": analytic,
