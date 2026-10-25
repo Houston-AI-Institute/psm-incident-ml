@@ -35,7 +35,7 @@ You can stop reading at any time.
 
 Under-18 participants do not use Google AI Studio or the Gemini API themselves.
 
-Follow each tool's own terms, including its age limits. Every track marked `[no-code ok]` or `[code]` works without an AI model or an online account.
+Follow each tool's own terms, including its age limits. Every track<!-- text --> not marked `[AI tool]`<!-- /text --> works without an AI model or an online account.
 
 <!-- text -->
 Tracks marked `[AI tool]` use an AI model. Follow the tool rules above, and ask a mentor if unsure.
@@ -47,7 +47,8 @@ Your team email names your mentors. Write to them with your whole team and the o
 
 ## Folders
 
-- `core/` is the main data. `real_only/` has the four tables with real, `xw`, `pseud` and `key` values and generated cells left blank. `enriched/` fills them in. In `core/`, only `enriched` has provenance files, which tag every cell. <!-- text -->`cause_task.csv` is for Tracks 3 and 4. <!-- /text --><!-- no-text -->`cause_task.csv` has the labels and folds but no text. <!-- /no-text -->`cells_long.csv` is one row per cell. `redactions.csv` lists redacted cells in tables with no provenance file. In the others, they are marked `mod` in the provenance file. `data_dictionary.csv` describes every column.
+- `core/` is the main data. `real_only/` has the four tables with real, `xw`, `pseud` and `key` values and generated cells left blank. `enriched/` fills them in. In `core/`, only `enriched` has provenance files, which tag every cell.
+- <!-- text -->`cause_task.csv` is for Tracks 3 and 4. <!-- /text --><!-- no-text -->`cause_task.csv` has the labels and folds but no text. <!-- /no-text -->`cells_long.csv` is one row per cell. `redactions.csv` lists redacted cells in tables with no provenance file. In the others, they are marked `mod` in the provenance file. `data_dictionary.csv` describes every column.
 - `advanced/` has extra cause files, `bsee_unmapped.csv` and `schema/`, the crosswalk files.
 <!-- companies -->
 - `companies/`: one folder per fictional company.
@@ -132,7 +133,7 @@ Tags: `[no-code ok]` works in a spreadsheet. `[code]` needs programming.<!-- tex
 5. **LLM structured extraction** `[code]` `[AI tool]`. Choose the field and the rows (at least 30, by a stated rule) before you run anything. Two teammates label the rows independently, then compare and resolve. Only then run the model. Report "agreement with our n hand labels: k/n" with an interval. Never call it accuracy.
 <!-- /text -->
 <!-- companies -->
-6. **Company register audit** `[no-code ok]`. Look for gaps or oddities in a fictional company's generated tables, such as close-outs marked "Behind".
+6. **Company register audit** `[no-code ok]`. Look for gaps or oddities in a fictional company's generated tables, such as close-outs (records of closing a recommendation) marked "Behind".
 <!-- /companies -->
 
 ## Do not attempt

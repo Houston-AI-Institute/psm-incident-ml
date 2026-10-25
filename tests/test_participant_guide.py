@@ -178,8 +178,16 @@ def test_choosing_tools_names_ai_studio_and_holds_the_final_tool_guidance():
     assert re.search(r"[Uu]nder-18 participants do not use Google AI Studio or the Gemini API "
                      r"themselves", text)
     assert PLACEHOLDER not in text and not bundle.GUIDE_PLACEHOLDER_RE.search(template())
-    assert ("Follow each tool's own terms, including its age limits. Every track marked "
-            "`[no-code ok]` or `[code]` works without an AI model or an online account.") in text
+    assert ("Follow each tool's own terms, including its age limits. Every track<!-- text --> not "
+            "marked `[AI tool]`<!-- /text --> works without an AI model or an online account.") in text
+
+
+def test_no_ai_tool_line_is_true_in_every_mode(b, b_light):
+    # Track 5 is [code] and [AI tool]; the line must not promise it works without a model.
+    full, light = readme(b), readme(b_light)
+    assert "Every track not marked `[AI tool]` works without an AI model or an online account." in full
+    assert "Every track works without an AI model or an online account." in light
+    assert "`[AI tool]`" not in light
 
 
 def test_committed_guide_passes_the_placeholder_guard():

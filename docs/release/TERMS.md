@@ -6,7 +6,7 @@ This data is for learning and practice at the Houston AI Institute Hackathon 202
 
 **People in the reports.** Some reports describe real people who were hurt. Names were removed where a pattern could find them, but some may remain. Do not try to identify, look up or contact anyone in the reports. If you spot a name, tell a mentor or an organiser, and leave it out of anything you show, submit or put in a repository.
 
-**Company names.** In the fictional company tables, real operator names are replaced with `[company]`. Do not try to work out which real company is meant.
+**Company names.** In the fictional company tables, real operator names are replaced with `[company]` where a pattern finds them. Do not try to work out which real company is meant.
 
 **Licence.**
 
