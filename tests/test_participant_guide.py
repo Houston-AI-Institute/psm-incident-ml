@@ -657,21 +657,31 @@ def test_the_small_regime_numbers_in_track_4_are_the_bundles(b_nocomp):
     assert "(19 and 13)" in section(template(), "Tracks")
 
 
-@pytest.mark.xfail(reason="Task 3 rewrites Track 6", strict=True)
 def test_track_6_gaps_exist_in_every_company(b):
-    """The guide names one gap, close-outs marked Behind. The second gap (incidents with no
-    recommendation) is no longer named in the guide (word cap), but must still exist in all
-    three companies in the bundle."""
+    """The guide's Track 6 example, open or late actions as of the register date, must hold in
+    every company in the bundle. The second gap (incidents with no recommendation) is not named
+    in the guide (word cap), but must still exist in all three companies."""
+    from psm.scenario import AS_OF
+
     def rd(rel):
         with (b / rel).open(encoding="utf-8", newline="") as fh:
             return list(csv.DictReader(fh))
-    assert '"Behind"' in section(template(), "Tracks")
+    tracks = section(template(), "Tracks")
+    assert "open or late actions" in tracks
+    assert f"registers end {AS_OF.isoformat()}" in tracks
+    assert '"Behind"' not in tracks
     for co in sorted(p.name for p in (b / "companies").iterdir()):
         inc = {r["Incident Number"] for r in rd(f"companies/{co}/incidents.csv")}
-        rec = {r["Incident Number"] for r in rd(f"companies/{co}/recommendations.csv")}
-        behind = [r for r in rd(f"companies/{co}/closeout.csv") if r["Schedule Status"] == "Behind"]
-        assert behind, co
-        assert inc - rec, co
+        recs = rd(f"companies/{co}/recommendations.csv")
+        due = {(r["Incident Number"], r["Recommendation Number"]): r["Agreed Completion Date"]
+               for r in recs}
+        close = rd(f"companies/{co}/closeout.csv")
+        open_ = [c for c in close if not c["Date Completed"]]
+        late = [c for c in close if c["Date Completed"]
+                and c["Date Completed"] > due[(c["Incident Number"], c["Recommendation Number"])]]
+        assert open_, co
+        assert late, co
+        assert inc - {r["Incident Number"] for r in recs}, co
 
 
 # ---- Task 12 (R65): the stamped README is clean, and text-light says nothing false ----

@@ -133,7 +133,7 @@ Tags: `[no-code ok]` works in a spreadsheet. `[code]` needs programming.<!-- tex
 5. **LLM structured extraction** `[code]` `[AI tool]`. Choose the field and the rows (at least 30, by a stated rule) before you run anything. Two teammates label the rows independently, then compare and resolve. Only then run the model. Report "agreement with our n hand labels: k/n" with an interval. Never call it accuracy.
 <!-- /text -->
 <!-- companies -->
-6. **Company register audit** `[no-code ok]`. Look for gaps or oddities in a fictional company's generated tables, such as close-outs (records of closing a recommendation) marked "Behind".
+6. **Company register audit** `[no-code ok]`. Look for gaps or oddities in a fictional company's generated tables, such as open or late actions (registers end 2025-12-31).
 <!-- /companies -->
 
 ## Do not attempt

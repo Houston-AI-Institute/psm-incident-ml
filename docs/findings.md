@@ -4141,3 +4141,62 @@ death is reported for this incident. The flag is correct; it is a mention, not a
 flag values added to `TOKEN_ALLOWLIST` as cell values; new
 `test_content_note_names_exactly_the_flags_the_code_emits`, which failed when a sixth flag was
 planted in `content.py` (reverted). Full suite: 941 passed, 2 skipped, before the new test.
+
+## 2026-10-25 — Company registers as of 2025-12-31
+
+**Why.** Review item 2.10 (2026-10-18): the three fictional company registers had no extraction
+date. Every one of 490 actions was finished, and completion dates ran to 2027, so a
+process-health view had no open backlog to show.
+
+**Changed.** `src/psm/scenario.py` adds `AS_OF = WINDOW_END` (2025-12-31), the date the registers
+are "extracted". No draw changed: the same hash keys, salt and knobs, applied in the same order. Only which drawn
+dates are written changed:
+
+| Cell | Written when | Otherwise |
+|---|---|---|
+| `Date of Report` | drawn date ≤ AS_OF | blank |
+| `Approval Date` | drawn date ≤ AS_OF | blank, with the approver's name and position |
+| `Close out Date` | every action done by AS_OF | blank, with the close-out approver's name and position |
+| `Date Completed` | drawn date ≤ AS_OF | blank |
+| `Schedule Status` | `Completed` if done; else `Behind Original Agreed Schedule` if due before AS_OF; else `On Schedule` | — |
+| `Agreed Completion Date` | always (a due date may be in the future) | — |
+
+The Schedule Status values are the workbook's own (`schema/e19_labels.yaml`, Schedule Status
+picklist; `Deleted` is never generated). They replace the earlier `On Schedule` / `Behind`. Each
+company's `manifest.json` records `"as_of"`. `src/psm/kpi.py`: `overdue_rate` now also counts an
+open action whose due date is before `as_of`.
+
+**Totals, all three committed companies together** (`data/companies`, before the bundle's
+fatality-row drop): 35 of 490 actions are open, and 19 of those are past their due date. Of 450
+incidents, 2 report dates, 8 approval dates and 33 close-out dates were blanked.
+
+**Known limit.** `median_closeout_days` leaves open actions out (they are right-censored), so it
+understates a slow closer.
+
+**Verified, and how.**
+- Full suite: 955 passed, 2 skipped, at 738fc18.
+- Every planted-pattern and negative-control assertion in `tests/test_scenarios.py` passes
+  unchanged.
+- No draw changed:
+  - A column-by-column diff of every company CSV against 10ee5dc (`csv.DictReader` on
+    `git show 10ee5dc:<path>`) shows changes only in `Date of Report`, `Approval Date`,
+    `Close out Date`, `Date Completed`, `Schedule Status`, the approver and close-out approver
+    name and position cells, and their provenance cells.
+  - Row counts are unchanged.
+  - `tests/test_scenario_rename.py` now maps each pre-rename row through the same as-of rule,
+    then requires every other cell to match exactly. Its deliberate-redraw check still fails as
+    it should.
+- New tests: `test_no_generated_date_after_as_of`, `test_schedule_status_follows_as_of`,
+  `test_open_action_means_no_close_out`, `test_unknown_approval_means_no_approver`,
+  `test_planted_pairs_first_member_is_closed_by_as_of`, and `test_kpis_with_open_actions`.
+- Guide Track 6 now reads "such as open or late actions (registers end 2025-12-31)". Template
+  prose went from 1348 to 1347 words. `test_track_6_gaps_exist_in_every_company` requires at
+  least one open action and one late action in every company in the built bundle.
+
+**Deferred: item 2.9 (company recommendations ignore the narrative).** Reusing each donor
+incident's real BSEE recommendation was measured and dropped:
+- 949 of the 1,230 real recommendations are in the regulator's voice (District, BSEE, MMS),
+  so few incidents have an operator-voice recommendation to reuse.
+- The action-type measure needs the template text.
+
+Real recommendations linked to their own incident are in `core/real_only/recommendations.csv`.
