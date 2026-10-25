@@ -4237,3 +4237,53 @@ Found by a whole-branch review of 10ee5dc..9ad8266. The entry above is left as w
 
   It does not catch an open action's status flipped between the two open values. That case is
   covered by `test_schedule_status_follows_as_of`, and by the byte-identical regeneration test.
+
+## 2026-10-25 — PR #4 review fixes
+
+An adversarial review of PR #4 (feat/hackathon-release-v1 → main) reported these findings.
+This entry records what was fixed, how it was verified, and what was left.
+
+**Fixed.**
+- **Operator names survived masking (9 cells).** Royal Production, Energy Partners,
+  Energy Resource Technology and White Fleet were in shipped company text. These names are
+  made only of stoplist words, or are short forms of "... Operating" names, so
+  `operator_pattern()` dropped them. `src/psm/masking.py` now masks them as written
+  (case-sensitive, so prose such as "energy partners in the region" stays) and keeps the
+  contractor names White Fleet Abandonment and White Fleet Drilling. Verified by an
+  independent scan, `test_company_text_has_no_operator_full_name_as_written`, which does not
+  use the masking helpers: 11 tests failed before the fix. After the registers were
+  regenerated, the word diff of `data/companies/*/incidents.csv` showed exactly 9 names
+  replaced by `[company]` and no other change.
+- **`docs/baseline.md` could drift unnoticed.** Changing its accuracy to 0.999 passed
+  every test. `test_committed_baseline_md_matches_a_fresh_render` re-renders it from the
+  committed inputs, reusing the file's own stamp. It failed on the edited copy and passes on
+  the committed file.
+- **TERMS.md said EI element names appear only in comments** of `crosswalk.yaml`. One
+  `note:` value quotes an element name. The wording now says "comments and `note` text".
+- **The README tree said "861 tests".** It now names the command instead of a count.
+- **Two plan files held private content**: the owner's global agent constraints, and an
+  absolute local path. Both are now replaced by one line each. Earlier commits on this branch
+  still contain the old text.
+
+**Closed: label redistribution.** The "Open" item in "Content note names every content flag"
+(redistribution of the Element 19 labels by teams) is closed. The owner confirmed on
+2026-10-25 that the workbook provider gave permission to publish the labels, and that the
+labels are not confidential. TERMS.md already says teams may use them, including in a
+public repository.
+
+**Accepted as is.**
+- **2 Hazel incidents** have no report date as of 2025-12-31 but already have causes and
+  actions. This was logged above as a generator artefact. The data is not changed one week
+  before release, because removing those rows would shift the planted patterns. The
+  incidents also fit the brief's stretch goal of flagging incomplete records.
+
+**Deferred (minor).**
+- The narrative of AL-984CECC249 cites a date after the as-of date.
+- 18 Alder and 8 Hazel incidents close out before approval (this predates the PR).
+- Every bundle mode gets the same file name, `psm-hackathon-v1-<sha>`.
+- Test gaps:
+  - the public-content branch-diff scan skips after the merge and on a fresh clone;
+  - no test covers the contact-block scrub;
+  - fatality detection keys only on the label;
+  - `test_projection.py:186` always skips;
+  - `test_kpi.py:45` recomputes the rule with the production formula.

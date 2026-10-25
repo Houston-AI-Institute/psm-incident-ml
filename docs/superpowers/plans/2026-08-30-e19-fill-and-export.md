@@ -54,8 +54,7 @@ implicitly includes all of these:
 - **Never delete files** — move deletion candidates to a `_Review-for-Deletion/`
   folder instead. **Never force-push.** Commit at each task boundary with the
   exact messages given; no co-author/attribution fields.
-- Run everything via `uv run ...` from the repo root
-  `/Users/ectologx88/code/ecto/psm-incident-ml`. Do not prefix commands with
+- Run everything via `uv run ...` from the repo root. Do not prefix commands with
   `export PATH=...`.
 - `docs/findings.md` is append-only, dated entries. Record what was verified
   and by what method.

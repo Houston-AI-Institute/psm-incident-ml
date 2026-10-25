@@ -13,7 +13,7 @@ This data is for learning and practice at the Houston AI Institute Hackathon 202
 - Report text and BSEE values (cells marked `src` or `mod`, and columns starting `src_` or `bsee_`) come from reports published by BSEE, a US government agency. This project treats them as public domain. Please credit them as: "Source: Bureau of Safety and Environmental Enforcement, US Department of the Interior."
 - What this project added (the generated, crosswalked and pseudonym values, the fictional companies, the provenance files, the schema files and the code) is released under the MIT License. The full text is in `LICENSE`. You may copy, change and include it in your project, including a public repository, as long as `LICENSE` goes with the copy.
 - The column names and category values follow an Element 19 investigation workbook and are published with its provider's permission. You may use them in your project, including a public repository.
-- The PSM Framework element names (in comments in `advanced/schema/crosswalk.yaml`) belong to the Energy Institute. If you use one, credit the Energy Institute.
+- The PSM Framework element names (in comments and `note` text in `advanced/schema/crosswalk.yaml`) belong to the Energy Institute. If you use one, credit the Energy Institute.
 
 **Your project.** Who owns what you make, and how it is released, is set by the event rules, not by these terms. If you put it in a public repository, link to this bundle instead of uploading its data files, because real names may remain in the report text. Put the BSEE credit in your README.
 

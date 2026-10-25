@@ -38,13 +38,7 @@ Rulings without a spec are provisional.
   - Commits are local only: no push, PR or merge.
   - Don't delete files. Shell `ls` is `command ls`. Never prefix commands with `export PATH=`.
   - Implementers never dispatch subagents.
-- Hard constraints (verbatim from `~/.claude/CLAUDE.md`):
-  - Never modify files with `dg-publish: true` in frontmatter. These are published to the digital garden (recursiveintelligence.xyz) by the Obsidian Digital Garden plugin. Applies both to vault notes and to the generated mirrors in `~/code/ri/the-recursive-garden`. An override applies only to the literal file(s) named in that message — no other dg-publish file, even minutes later, even under the same auto-mode grant, without a fresh explicit yes naming that file. Any verification checkpoint set up mid-session (e.g. "audit diff before publish") is a standing rule for the rest of that session.
-  - Never delete. Move deletion candidates to `_Review-for-Deletion/` in that station's `04` archive — `04_CONTAINMENT/` (iCloud), `04_ARCHIVES/` (GDrive personal), `04_INACTIVE/` (GDrive RI), `04-COLD-STORAGE/` (vault) — with a note saying why.
-  - Never force-push to main/master without explicit confirmation.
-  - Opening a PR, merging a PR, and any action that auto-triggers a deploy are three separate authorizations — each needs its own fresh yes, never inherited from an earlier one, even if CI is green and the plan was stated out loud beforehand.
-  - Before any `gh pr create`, paste the actual diff or a complete file-by-file summary into chat. No exception for how much of the change is agent-authored.
-  - Run a full-history secret scan (not just the working tree — e.g. `gitleaks detect --source . --log-opts="--all"` or `trufflehog git file://. --since-commit <first-commit>`) before any repo goes public or before pushing to an existing public remote. Secret remediation is not complete until you've confirmed via the provider's API that no dangling blob containing the secret is still fetchable by hash — "removed from the current file" and "purged from history" are different claims; don't relay the first as if it were the second.
+- The owner's global hard constraints were copied verbatim into every dispatch prompt; they are not reproduced in this public file.
 
 ## Review Focus
 

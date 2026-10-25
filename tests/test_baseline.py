@@ -147,3 +147,20 @@ def test_main_writes_the_other_regimes_table(tmp_path):
     text = out.read_text(encoding="utf-8")
     for g in baseline.regime_summary(TASK_CSV):
         assert f"| {g['regime']} | {g['n']} | {g['n_classes']} |" in text
+
+
+def _committed_stamp(text: str) -> str:
+    import re
+    m = re.search(r"Inputs last changed at commit `([0-9a-f]{7,})`", text)
+    assert m, "docs/baseline.md has no input-commit stamp"
+    return m.group(1)
+
+
+def test_committed_baseline_md_matches_a_fresh_render(res):
+    # PR #4 review: editing a number in docs/baseline.md passed every test.
+    # Re-render from the committed inputs, reusing the file's own stamp so the
+    # check does not depend on that commit still being reachable (squash merge).
+    committed = baseline.DEFAULT_OUT.read_text(encoding="utf-8")
+    fresh = baseline.render(res, _committed_stamp(committed),
+                            baseline.regime_summary(TASK_CSV))
+    assert committed == fresh, "docs/baseline.md is stale: run uv run python -m psm.baseline"
