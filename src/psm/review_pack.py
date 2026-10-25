@@ -8,14 +8,17 @@ Reasons:
   name_redacted, death_mention, near_fatal, contact_redacted
                     every such row of the bundle's ``core/content_flags.csv``
   capitalised_pair  one row per DISTINCT Capitalised Capitalised pair within 40 characters of
-                    a role word, at least one of whose words never appears in lower case in
-                    the narrative pool; ``text`` is a +-60 character window around the first
+                    a role word (injured, employee, supervisor, operator, worker, inspector,
+                    investigator, team, email, or the IP), at least one of whose words never
+                    appears in lower case in the narrative pool; ``text`` is a +-60 character window around the first
                     occurrence and ``n_cells`` counts the cells where the pair occurs near a role
   capitalised_pair_common
                     the same, for pairs whose two words both appear in lower case in the pool
   Pairs overlap ("Then Mark Smith" gives "Then Mark" and "Mark Smith"); each distinct pair is
-  one row. The pair regex misses all-caps, McX, hyphenated, initial-only and single-word names;
-  only the random sample covers those.
+  one row. Any whitespace run (including a newline) may separate the two words; the pair key
+  is normalised to one space, while ``text`` keeps the cell's own characters. The pair regex
+  misses all-caps, McX, hyphenated, initial-only and single-word names; only the random
+  sample covers those.
 
 ``serious_injury`` flags are not a reason. Narrative columns and row keys come from
 ``psm.bundle`` (``FLAG_COLS``, ``KEY_COLS``); the table kind of a bundle file comes from
@@ -48,8 +51,11 @@ GAP = 40
 WINDOW = 60
 
 # Lookahead: overlapping pairs are all found ("Then Mark Smith" gives "Then Mark" and "Mark Smith").
-_PAIR_RE = re.compile(r"\b(?=([A-Z][a-z]+ [A-Z][a-z]+)\b)")
-_TRIGGER_RE = re.compile(r"\b(?:injured|employee|supervisor|operator|crane operator|worker)\b", re.I)
+# Any whitespace run joins the two words, so a name split across a newline is still a pair.
+_PAIR_RE = re.compile(r"\b(?=([A-Z][a-z]+\s+[A-Z][a-z]+)\b)")
+_TRIGGER_RE = re.compile(
+    r"\b(?:injured|employee|supervisor|operator|crane operator|worker"
+    r"|inspector|investigator|team|email)\b", re.I)
 _TRIGGER_IP_RE = re.compile(r"\bIP\b")           # case-sensitive: "ip" is not the injured person
 _LOWER_WORD_RE = re.compile(r"\b[a-z]+\b")
 
@@ -152,7 +158,7 @@ def build_review_pack(bundle_dir: Path, n_random: int = 150, seed_text: str = "r
     for k in sorted(cells):
         text = cells[k][1]
         for s, e in near_pairs(text):
-            pair = text[s:e]
+            pair = " ".join(text[s:e].split())     # "A\nB" and "A B" are one pair
             first.setdefault(pair, (k, s, e))
             where.setdefault(pair, set()).add(k)
     for pair, (k, s, e) in first.items():

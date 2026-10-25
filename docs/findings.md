@@ -3839,3 +3839,47 @@ survives in the stamped README_FIRST.md.
 **Not verified here.** That the permission was given as worded (it rests on the
 owner's confirmation of 2026-10-18), and the scope of operator-name masking beyond
 the pattern-based checks in the tests.
+
+## 2026-10-24 — Review pack: newline-split names and four more role words
+
+The final whole-branch review (I1) found that the Nov 2 review pack
+(`psm.review_pack`) could not show the reviewer some untitled names that survive
+into the bundle: `_PAIR_RE` joined the two capitalised words with a literal space, so
+a name split across a newline never formed a pair, and the role words lacked
+inspector, investigator, team and email. Four cells holding names had no pack row.
+
+**Changed** (`src/psm/review_pack.py`, `tests/test_review_pack.py`): any whitespace run
+may join the two words; the pair key is normalised to one space, so "A\nB" and "A B"
+are one distinct pair (the row's `text` is still the cell's own +-60 character window);
+`inspector`, `investigator`, `team` and `email` are role triggers (case-insensitive,
+word-bounded). `GAP` (40) and `WINDOW` (60) are unchanged. The README states no pack
+row counts or trigger list, so nothing there changed.
+
+**Counts** (one bundle built from this change's code (directory name suffix 072ed1c, the commit
+that was amended only to add this entry), full mode, `allow_placeholder_terms=True`,
+`n_random=150`; the "before" pack is the 994d329 `review_pack.py` run on that same
+bundle, since `content.py` and `bundle.py` are unchanged):
+
+| reason | before | after |
+|---|---|---|
+| random | 150 | 150 |
+| name_redacted | 100 | 100 |
+| near_fatal | 50 | 50 |
+| death_mention | 1 | 1 |
+| contact_redacted | 0 | 0 |
+| capitalised_pair | 290 | 354 |
+| capitalised_pair_common | 650 | 815 |
+| **total** | **1,241** | **1,470** |
+
+Distinct near-role pairs rose from 940 to 1,169; every pair found before is still found
+(set containment checked). Most of the 229 new rows come from the four added role words,
+not from the newline fix, so the Nov 2 load is about 18% larger than the review
+estimated. Each of the four cells named in I1 now has all its pairs represented in the
+pack. A pair appears once, at its first cell in sort order, with `n_cells` for the rest,
+so a cell can be covered by a row that sits in a duplicate cell (the agency-team list in
+`core/` is covered by rows from the same text in the hornbeam register). The pack still
+does not list every cell a pair occurs in. The cells themselves are not redacted; that
+is an owner decision.
+
+**Not verified here.** That the reviewer reads every row; names the regex cannot form
+(all-caps, McX, hyphenated, initials, single words) remain covered only by the random sample.

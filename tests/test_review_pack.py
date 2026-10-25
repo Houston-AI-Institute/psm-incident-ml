@@ -219,6 +219,33 @@ def test_overlapping_pairs_are_all_considered(tmp_path):
     assert [r for r in rows if r["n_cells"] == "2"][0]["reason"] == "capitalised_pair"
 
 
+def test_newline_split_pair_next_to_a_trigger_is_reported(tmp_path):
+    text = "Notes follow. The injured man was Zork\nQuux, who spoke to the crew."
+    b = _mini(tmp_path, {"F1": text})
+    (r,) = _pairs(b, tmp_path)
+    s = text.index("Zork")
+    e = text.index("Quux") + len("Quux")
+    assert r["reason"] == "capitalised_pair" and r["n_cells"] == "1"
+    assert r["text"] == text[max(0, s - 60): e + 60]           # raw +-60 window, newline kept
+    from psm.review_pack import capitalised_pair
+    assert capitalised_pair("Zork \n  Quux was injured.")      # any whitespace run
+
+
+def test_newline_and_space_pairs_are_one_distinct_pair(tmp_path):
+    b = _mini(tmp_path, {"G2": "Zork Quux was injured.", "G1": "Zork\nQuux was injured."})
+    (r,) = _pairs(b, tmp_path)
+    assert r["n_cells"] == "2" and r["row_key"] == "G1"        # first in sort order, raw window
+    assert r["text"] == "Zork\nQuux was injured."
+
+
+@pytest.mark.parametrize("word", ["inspector", "investigator", "team", "email", "Inspector", "TEAM"])
+def test_added_role_triggers_fire(word):
+    from psm.review_pack import capitalised_pair
+    assert capitalised_pair(f"The {word} named Zork Quux arrived.")
+    assert capitalised_pair(f"Zork Quux, per {word} notes.")
+    assert not capitalised_pair(f"Zork Quux and {word}s arrived.")      # word boundary
+
+
 def test_empty_pool_fails_loud(tmp_path):
     b = tmp_path / "empty"
     _w(b / "core/real_only/incidents.csv", ["Incident Number"], [{"Incident Number": "A1"}])  # text-light
