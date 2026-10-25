@@ -63,14 +63,17 @@ _STOP_LOWER = frozenset(w.lower() for w in NAME_STOPWORDS)
 #             1-3 Capitalised words, either directly or as "(Name Name)" right after it;
 #   email     "email from" / "e-mail from" followed by exactly First [I.] Last;
 #   team      an investigation-team or panel header followed by a bracketed list of
-#             First [I.] Last members separated by commas, semicolons or "and".
+#             First [I.] Last members separated by commas, semicolons or "and";
+#   rank      "Captain" / "Capt." followed by a Capitalised surname (optionally First Last),
+#             unless the shape is a vessel (see `_vessel_shape`).
 # The name part is strict: a capital then lowercase only (optional Mc/Mac/O' prefix, one
 # capitalised hyphen part), so acronyms (ERT, IMT), all-caps words and "Third-party" or
 # "Fieldwood's" are not names. Only Capitalised role words count: lower-case "crane
 # inspector (X Y)" is how the text names contractors and companies. A match is dropped if
 # any of its words is in UNTITLED_NOT_NAME (the role direct form keeps its leading run of
 # good words instead). Only the name part becomes [name]; the role word, header and
-# brackets stay.
+# brackets stay. The rank rule is the one with a real vessel risk ("M/V Captain X" is a
+# boat), so it also looks at the words before and after the span.
 _NAME = r"(?:(?:Mc|Mac|O['’])?[A-Z][a-z]+(?:-[A-Z][a-z]+)?(?![A-Za-z]))"
 _INIT = r"(?:[A-Z]\.)"
 _NAMES13 = rf"{_NAME}(?:\s+(?:{_INIT}|{_NAME})){{0,2}}"
@@ -85,6 +88,13 @@ TEAM_LIST_RE = re.compile(
     r"(?i:\b(?:(?:investigat(?:ion|ive)|accident|review)\s+(?:team|panel)|panel))"
     rf"\s*\(\s*(?P<list>{_MEMBER}(?:{_SEP}{_MEMBER})*)\s*\)")
 _MEMBER_RE = re.compile(_MEMBER)
+RANK_RE = re.compile(rf"(?<![\w/])(?:Captain|Capt\.?)(?![A-Za-z])\s+(?P<name>{_NAME}(?:\s+{_NAME})?)")
+# Words just before "Captain" that make it part of a vessel name or a role noun, not a rank.
+# Compared after dropping "/", "\\" and "." so "M/V", "M\\V" and "M.V." all read "mv".
+_VESSEL_BEFORE = frozenset({"mv", "mt", "ms", "sv", "vessel", "boat", "tug", "tugboat", "barge",
+                            "ship", "the"})
+_QUOTES = "\"'\u201c\u2018"
+_VESSEL_AFTER_RE = re.compile(r"\s*(?:[IVX]{1,4}(?![A-Za-z])|\d)")
 # Words that, inside a candidate span, mean it names an office, role, company or crew and
 # not a person. Matched case-insensitively. Membership only (never joined into a regex).
 UNTITLED_NOT_NAME = NAME_STOPWORDS | frozenset({
@@ -103,8 +113,20 @@ def _bad(word: str) -> bool:
     return word.rstrip(".").lower() in _NOT_NAME_LOWER
 
 
+def _vessel_shape(text: str, start: int, name_end: int) -> bool:
+    """True when a "Captain Xxx" match at ``start`` reads as a vessel or a role noun: a vessel
+    word, "the" or an opening quote before it, or a Roman numeral, number or closing double
+    quote after the name ("Captain Xxx II", "Captain Xxx 3")."""
+    if start and text[start - 1] in _QUOTES:
+        return True
+    prev = re.search(r"(\S+)\s*$", text[max(0, start - 24):start])
+    if prev and re.sub(r"[/\\.()\[\]\"'\u201c\u201d\u2018\u2019,:;]", "", prev.group(1)).lower() in _VESSEL_BEFORE:
+        return True
+    return bool(_VESSEL_AFTER_RE.match(text, name_end)) or text[name_end:name_end + 1] in ('"', "\u201d")
+
+
 def untitled_name_spans(text: str) -> list[tuple[int, int]]:
-    """(start, end) of each untitled-name span in ``text`` (role, email and team rules),
+    """(start, end) of each untitled-name span in ``text`` (role, email, team and rank rules),
     sorted and non-overlapping. Each team member is its own span; ``[name]`` is skipped."""
     spans: list[tuple[int, int]] = []
     for m in ROLE_TITLE_RE.finditer(text):
@@ -134,6 +156,14 @@ def untitled_name_spans(text: str) -> list[tuple[int, int]]:
         if any(_bad(w) for _s, _e, txt in members for w in txt.split()):
             continue                                       # a role/crew list, not people
         spans += [(s, e) for s, e, txt in members if txt != "[name]"]
+    for m in RANK_RE.finditer(text):
+        good = []
+        for t in re.finditer(r"\S+", m.group("name")):
+            if _bad(t.group(0)):
+                break
+            good.append(t)
+        if good and not _vessel_shape(text, m.start(), m.start("name") + good[-1].end()):
+            spans.append((m.start("name"), m.start("name") + good[-1].end()))
     out: list[tuple[int, int]] = []
     for s, e in sorted(set(spans)):
         if out and s < out[-1][1]:
@@ -164,7 +194,7 @@ def _span_words(span: str) -> set[str]:
 
 def titled_name_words(text: str) -> set[str]:
     """Words that follow a title in ``text`` (same spans `redact` finds), minus NAME_STOPWORDS,
-    plus the words of the untitled-name spans `redact` finds (role, email, team rules)."""
+    plus the words of the untitled-name spans `redact` finds (role, email, team, rank rules)."""
     out: set[str] = set()
     for m in HONORIFIC_RE.finditer(text):
         out |= {w for w in _span_words(m.group(0)) if w.lower() not in _STOP_LOWER}
@@ -174,7 +204,7 @@ def titled_name_words(text: str) -> set[str]:
 
 def redact(text: str, names: set[str] | None = None) -> str:
     """Replace titled names with [name] (full span), then untitled-name spans (role, email,
-    team rules; see `untitled_name_spans`), then each collected word wherever it recurs
+    team, rank rules; see `untitled_name_spans`), then each collected word wherever it recurs
     alone, then contact details with [contact].
 
     ``names=None``: only words collected from this text recur-mask (the original rule).

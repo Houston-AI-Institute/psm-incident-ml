@@ -1112,3 +1112,36 @@ def test_untitled_name_redaction_without_provenance_lists_a_name_row():
     got = bundle._redact_table(t, ["Recommendation Description"])
     assert [(g["row_key"], g["kind"]) for g in got] == [("I1|1", "name")]
     assert rs[0]["Recommendation Description"] == "cost (per email from [name]) $5"
+
+
+def test_untitled_name_plus_contact_without_provenance_lists_both_kinds():
+    """A cell holding an untitled name AND a contact block gets a `name` row and a `contact`
+    row. Before `has_name` replaced the honorific-only check in `_redact_table`, only the
+    contact row was written (the name was redacted but unrecorded)."""
+    cols = ["Incident Number", "Recommendation Number", "Recommendation Description"]
+    rs = [dict(zip(cols, ["I1", "1", "cost (per email from Zork Quux) call 713-555-0100"]))]
+    t = _tbl("recommendations", cols, rs)
+    got = bundle._redact_table(t, ["Recommendation Description"])
+    assert [(g["row_key"], g["kind"]) for g in got] == [("I1|1", "name"), ("I1|1", "contact")]
+    assert rs[0]["Recommendation Description"] == "cost (per email from [name]) call [contact]"
+
+
+def test_rank_surname_is_masked_across_cells_of_one_incident_only():
+    """The production path on a synthetic incident: "Captain Xxx" in one cell, the bare surname
+    in another table of the same scope; a second incident keeps the same word, and a vessel
+    named with the same word in the first incident's own text is not a trigger."""
+    inc_cols = ["Incident Number", "What happened?  ", "What was the outcome?"]
+    cause_cols = ["Incident Number", "Cause number", "Cause Description"]
+    inc = _tbl("incidents", inc_cols, [
+        {"Incident Number": "I1", "What happened?  ": "A crew met.", "What was the outcome?": "Quux was hurt."},
+        {"Incident Number": "I2", "What happened?  ": "The M/V Captain Varo sailed.", "What was the outcome?": "Quux won."}])
+    cause = _tbl("causes", cause_cols, [
+        {"Incident Number": "I1", "Cause number": "1",
+         "Cause Description": "Action on Captain Zork Quux was taken."}])
+    got = bundle.redact_scope([inc, cause], {inc.rel: inc.cols, cause.rel: cause.cols})
+    assert cause.rows[0]["Cause Description"] == "Action on Captain [name] was taken."
+    assert inc.rows[0]["What was the outcome?"] == "[name] was hurt."       # recurrence, same incident
+    assert inc.rows[1]["What was the outcome?"] == "Quux won."              # other incident: untouched
+    assert inc.rows[1]["What happened?  "] == "The M/V Captain Varo sailed."   # vessel: untouched
+    assert {(g["Incident Number"], g["column"]) for g in got} == {
+        ("I1", "What was the outcome?"), ("I1", "Cause Description")}

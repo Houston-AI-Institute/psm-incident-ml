@@ -251,8 +251,81 @@ def test_untitled_name_words_join_the_incident_name_set_and_flag():
     "the Rowan Floorhand (Injured Party) was tasked",
     "offload the M/V Captain Quux at the dock",                  # vessel names
     "the Transocean Clear Leader (Clear Leader) was released",
-    "Ivestigation Team: Conduct appropriate action",
+    "Investigation Team: Conduct Appropriate Disciplinary Action",   # the real colon header, no bracket
 ])
 def test_untitled_name_rules_leave_lookalike_shapes_alone(text):
     assert redact(text) == text
     assert flags("incidents", [{"Incident Number": "X", "t": text}], ["t"], ["Incident Number"]) == []
+
+
+def test_colon_header_negative_can_fail():
+    """The colon-form negative above must be capable of failing: with a bracket instead of the
+    colon the same words ARE a member list and are redacted."""
+    assert redact("Investigation Team (Conduct Appropriate)") == "Investigation Team ([name])"
+    assert redact("Investigation Team: Conduct Appropriate Disciplinary Action") == \
+        "Investigation Team: Conduct Appropriate Disciplinary Action"
+
+
+def test_possessive_after_a_role_title_keeps_the_possessive():
+    assert redact("Inspector Zork Quux's report was filed") == "Inspector [name]'s report was filed"
+    assert redact("Inspector Zork Quux\u2019s report was filed") == "Inspector [name]\u2019s report was filed"
+    assert redact("per email from Zork Quux, who left") == "per email from [name], who left"
+
+
+# ---- rank + surname (2026-10-24, round 2): "Captain Xxx" is a person unless it is a vessel ----
+
+def test_rank_with_surname_is_redacted():
+    assert redact("disciplinary action on Captain Quux to stress safety") == \
+        "disciplinary action on Captain [name] to stress safety"
+    assert redact("Capt. Quux said so") == "Capt. [name] said so"
+    assert redact("Capt Zork Quux said so") == "Capt [name] said so"
+    assert redact("action on Captain Zork\nQuux, who left") == "action on Captain [name], who left"
+    assert redact("Captain Quux's report") == "Captain [name]'s report"
+    f = flags("incidents", [{"Incident Number": "X", "t": "action on Captain Quux"}], ["t"], ["Incident Number"])
+    assert [r["flag"] for r in f] == ["name_redacted"]
+
+
+def test_rank_surname_joins_the_incident_name_set():
+    from psm.content import titled_name_words
+    assert titled_name_words("action on Captain Zork Quux") == {"Zork", "Quux"}
+    assert titled_name_words("Capt. Quux and the M/V Captain Varo") == {"Quux"}
+    assert redact("Quux ordered it", {"Quux"}) == "[name] ordered it"
+    assert redact("Quux ordered it") == "Quux ordered it"          # another incident: no names given
+
+
+@pytest.mark.parametrize("text", [
+    "offload the M/V Captain Quux at the dock",                  # vessel prefixes
+    "offload the M\\V Captain Quux at the dock",
+    "offload the MV Captain Quux at the dock",
+    "the Motor Vessel (MV) Captain Quux arrived",
+    "the M.V. Captain Quux arrived",
+    "the M/T Captain Quux arrived",
+    "the vessel Captain Quux arrived",
+    "Vessel Captain Quux arrived",
+    "the boat Captain Quux arrived",
+    "the tug Captain Quux arrived",
+    "the barge Captain Quux arrived",
+    "the Captain Quux arrived",                                  # "the" + Captain is a role noun
+    "Captain Quux II sailed",                                    # numeral and number suffixes
+    "Captain Quux 3 sailed",
+    "Captain Zork Quux IV sailed",
+    "the Motor Vessel \u201cCaptain Quux\u201d sailed",             # quoted vessel names
+    "the vessel \"Captain Quux\" sailed",
+    "Captain Quux\" sailed",
+    "The captain Quux arrived",                                  # lower-case role noun
+    "The Captain decided to approach",                           # no name at all
+    "the Boat Captain pinned the MV",
+    "the Captain of the ship said",
+    "the Captain Fell asleep",                                   # "the" before Captain
+    "Captain General reviewed it",                               # office, not a name
+])
+def test_rank_rule_leaves_vessel_and_role_noun_shapes_alone(text):
+    assert redact(text) == text
+    assert flags("incidents", [{"Incident Number": "X", "t": text}], ["t"], ["Incident Number"]) == []
+
+
+def test_rank_rule_vessel_exclusions_can_fail():
+    """Each exclusion is load-bearing: the same words without it are redacted."""
+    assert redact("offload Captain Quux at the dock") == "offload Captain [name] at the dock"
+    assert redact("Captain Quux sailed") == "Captain [name] sailed"
+    assert redact("Captain Quux sailed II") == "Captain [name] sailed II"

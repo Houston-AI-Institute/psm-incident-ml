@@ -9,7 +9,7 @@ Reasons:
                     every such row of the bundle's ``core/content_flags.csv``
   capitalised_pair  one row per DISTINCT Capitalised Capitalised pair within 40 characters of
                     a role word (injured, employee, supervisor, operator, worker, inspector,
-                    investigator, team, email, or the IP), at least one of whose words never
+                    investigator, team, email, captain, capt, or the IP), at least one of whose words never
                     appears in lower case in the narrative pool; ``text`` is a +-60 character window around the first
                     occurrence and ``n_cells`` counts the cells where the pair occurs near a role
   capitalised_pair_common
@@ -55,7 +55,7 @@ WINDOW = 60
 _PAIR_RE = re.compile(r"\b(?=([A-Z][a-z]+\s+[A-Z][a-z]+)\b)")
 _TRIGGER_RE = re.compile(
     r"\b(?:injured|employee|supervisor|operator|crane operator|worker"
-    r"|inspector|investigator|team|email)\b", re.I)
+    r"|inspector|investigator|team|email|captain|capt)\b", re.I)
 _TRIGGER_IP_RE = re.compile(r"\bIP\b")           # case-sensitive: "ip" is not the injured person
 _LOWER_WORD_RE = re.compile(r"\b[a-z]+\b")
 

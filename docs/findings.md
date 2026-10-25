@@ -3957,3 +3957,59 @@ names after "email to", and all-caps names.
 expected results. They stay public because judging is method-based, not scored on
 finding the planted problems. The participant bundle ships neither those files nor a
 link to the repo.
+
+## 2026-10-24 — Correction: rank + surname redacted by rule and flagged in the review pack
+
+[Correction to the entry above, "Untitled staff names redacted". Its "Not covered"
+paragraph said the one cause row with a rank before a surname was "left to the review
+pack". That was not true: the pack had 6 rows for that incident and none of their text
+windows contained the rank, so a reviewer would not have seen it. Owner decision
+2026-10-24, "Redact + flag": the case is now redacted by a rule and also flagged by a
+pack trigger.]
+
+**Rule** (`psm.content.RANK_RE`): `Captain` or `Capt.`/`Capt`, Capitalised only, followed
+by one or two strict name words (same name-word shape and `UNTITLED_NOT_NAME` filter as
+the other untitled rules); only the name part becomes `[name]`, the rank word stays. The
+words join the incident-scoped recurrence set like the other paths. A match is dropped as
+a vessel or role noun when the text before it is `M/V`, `MV`, `M/T`, `M\V`, `M.V.`,
+`vessel`, `boat`, `tug`, `barge`, `ship` or `the`, or an opening quote sits directly
+before it, or a Roman numeral, a digit or a closing double quote follows the name.
+Lower-case "captain" is never a trigger. **Review pack:** `captain` and `capt` are added
+to `_TRIGGER_RE`, so a Capitalised pair within 40 characters of either word gets a row.
+
+**Census** (method: `psm.bundle` loaded, fatal drop applied, then the rule run over every
+real `src`/`mod` text cell that `redact` can touch, plus a scan of every occurrence of
+"Captain"/"Capt" in those cells; spans written to a scratch file, read by hand, counts
+only recorded here):
+
+| | count |
+|---|---|
+| text cells scanned (all tables, all scopes) | 15,951 |
+| occurrences of "Captain"/"Capt" | 131 |
+| new spans | 2 (1 distinct person: the real_only and enriched cause cells) |
+| of those, person / vessel / other | 2 / 0 / 0 |
+| occurrences left unredacted, read by hand | 129: role nouns ("the Captain", "Boat Captain", "Captain of the ship"), quoted or M/V-prefixed vessels, and helicopter pilots whose names were already removed upstream; 0 persons |
+
+The first draft redacted one vessel written with a backslash ("M\V Captain ..."; 3
+instances in the census). The prefix check now ignores slash, backslash and period, and
+the census was re-run: 0 vessel false positives.
+
+**Bundle** (full mode and text-light built at this commit, `allow_placeholder_terms=True`,
+no `allow_dirty`, against the previous bundle at 3f4df51): `[name]` tokens +3, equal to the
+3 rank spans found by the rule in the previous bundle's own cells (the 2 cells above plus
+their `cells_long.csv` copy), so no recurrence spill-over. `redactions.csv` 47 → 48 rows
+(the real_only cause; the enriched copy is `src`→`mod` and has no row), `name_redacted`
+flags 108 → 110. The rank-plus-surname pair: 3 file hits in the previous bundle, 0 in the
+new directory (53 files) and 0 in its zip (53 members); the bare surname also has 0 hits.
+
+**Review pack** (`n_random=150`), before 3f4df51 bundle → after: `name_redacted` 108 → 110,
+`capitalised_pair` 349 → 357, `capitalised_pair_common` 815 → 826, `random` 150,
+`near_fatal` 50, `death_mention` 1, `contact_redacted` 0; total 1,473 → 1,494 (the extra
+19 pair rows come from the new trigger words).
+
+**Still not covered:** a rank before an all-caps name, "the Captain Xxx" (excluded as a
+role noun), ranks other than Captain, colon-form team lists, and the
+all-or-nothing team-list rule. Test changes in the same commit: the colon-header negative
+now uses the real header and has a companion that can fail, a possessive case, a
+surname-recurrence guard, and bundle-level tests for recurrence and for a cell holding
+both an untitled name and a contact.

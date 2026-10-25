@@ -238,7 +238,8 @@ def test_newline_and_space_pairs_are_one_distinct_pair(tmp_path):
     assert r["text"] == "Zork\nQuux was injured."
 
 
-@pytest.mark.parametrize("word", ["inspector", "investigator", "team", "email", "Inspector", "TEAM"])
+@pytest.mark.parametrize("word", ["inspector", "investigator", "team", "email", "Inspector", "TEAM",
+                                  "captain", "Captain", "capt", "Capt"])
 def test_added_role_triggers_fire(word):
     from psm.review_pack import capitalised_pair
     assert capitalised_pair(f"The {word} named Zork Quux arrived.")
