@@ -4072,3 +4072,25 @@ pending the institute's answer.
 with the 9-word PREVIEW line). The final builds at 8e7720a, with no flag and a clean tree,
 stamp at 1,554 words (companies), 1,281 (text-light+companies), 1,332 (core) and 1,104
 (text-light). Longest mode: 46 words under the 1,600 cap.]
+
+## 2026-10-24 — Guide and terms fixes after review (9452b58)
+
+**What changed.** The tool line said every `[code]` track works without an AI model, but
+Track 5 is tagged `[code]` and `[AI tool]`. It now reads "Every track not marked `[AI tool]`
+works without an AI model or an online account"; in the text-light bundles, which have no
+`[AI tool]` track, the clause is fenced out and the line reads "Every track works without
+an AI model or an online account." `TERMS.md` now says real operator names are replaced
+with `[company]` "where a pattern finds them", matching the guide. Track 6 defines a
+close-out inline (the definition was lost with the cut Glossary item). The Folders `core/`
+bullet is split in two, with no change in wording.
+
+**Verified.** `tests/test_participant_guide.py::test_no_ai_tool_line_is_true_in_every_mode`
+checks both readings in built bundles; on the guide at 3d21c9b it would fail, since the
+text-light readme then carried the `[code]` wording. Full suite: 940 passed, 2 skipped.
+Clean builds at 9452b58, no flag: 1,559 words (companies), 1,332 (core), 1,282 (text-light
++companies), 1,100 (text-light). Template: 1,338 against the strict `< 1,350` cap. The
+word counter counts HTML fence markers as words, so inline fences cost headroom.
+
+**Open.** Licence wording: `DATA_SOURCES.md` says the BSEE source data is not relicensed
+and has no row for the bundle tables, while `TERMS.md` puts the tables under MIT. Not
+reconciled here; the owner decides the wording.
