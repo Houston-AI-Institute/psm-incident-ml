@@ -4067,3 +4067,8 @@ and the "Company tables" fence, which tests pin; both were put back.
 Institute's decision; TERMS.md states the labels are published with its permission
 (recorded 2026-10-18). Redistribution of the labels by teams, in public repositories, is
 pending the institute's answer.
+
+[Correction to the word counts above: those were measured on preview builds (flagged,
+with the 9-word PREVIEW line). The final builds at 8e7720a, with no flag and a clean tree,
+stamp at 1,554 words (companies), 1,281 (text-light+companies), 1,332 (core) and 1,104
+(text-light). Longest mode: 46 words under the 1,600 cap.]
