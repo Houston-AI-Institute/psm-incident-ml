@@ -4120,3 +4120,24 @@ and `docs/_licence.md` repeats the owner claim; the TERMS and LICENSE assertions
 **Not verified here.** The permission itself rests on the owner's statement of 2026-10-25;
 its written record is not in this repo. The crosswalk's element-name comments still conflict
 with the "numbers only" rule for schema files in `DATA_SOURCES.md` §6; TERMS now credits them.
+
+## 2026-10-25 — Content note names every content flag
+
+**Why.** A Colab test of the starter notebook printed the flag counts of the ba36a8a full bundle:
+`serious_injury` 1050, `name_redacted` 110, `near_fatal` 50, `death_mention` 1. The content note
+named only serious injury and losing consciousness, so a reader saw an unexplained
+`death_mention` next to "Incidents in which someone died were removed".
+
+**The one `death_mention` row.** GB-260-20071104-1615, `core/real_only/recommendations.csv`,
+`Recommendation Description`. Checked by printing only the regex match and a short window around
+it: the recommendation cites earlier accidents elsewhere in the OCS with the same kind of
+equipment that caused "fatal injuries", and asks for a ban to prevent another "fatality". No
+death is reported for this incident. The flag is correct; it is a mention, not a dropped-row leak.
+
+**Changed.** `docs/release/PARTICIPANT_GUIDE.md` content note now lists all five flags emitted by
+`content.flags()` (`serious_injury`, `near_fatal`, `death_mention`, `name_redacted`,
+`contact_redacted`) with a short gloss, and keeps "pattern-based" twice. Template prose words
+1338 → 1348 (cap < 1350). `tests/test_participant_guide.py`: `CONTENT_NOTE` updated; the five
+flag values added to `TOKEN_ALLOWLIST` as cell values; new
+`test_content_note_names_exactly_the_flags_the_code_emits`, which failed when a sixth flag was
+planted in `content.py` (reverted). Full suite: 941 passed, 2 skipped, before the new test.

@@ -38,9 +38,10 @@ CONTENT_NOTE = (
     "and in investigation-team lists, along with the surname wherever it repeats. Other names "
     "may remain, because redaction is pattern-based. "
     "The source PDFs linked in `bsee_source_url` are not redacted. `content_flags.csv` marks "
-    "rows that describe a serious injury or someone losing consciousness. The flags are "
-    "pattern-based too, so they can miss some rows. If anything here is a problem, talk to a "
-    "mentor."
+    "rows by pattern: `serious_injury`; `near_fatal` (unconscious or resuscitated); "
+    "`death_mention` (mentions a death, such as a recommendation citing accidents elsewhere); "
+    "and `name_redacted` or `contact_redacted`. Flags are pattern-based too and can miss rows. "
+    "If anything here is a problem, talk to a mentor."
 )
 GOLD_SENTENCE = (
     "There are no independent (gold) labels: nothing in this bundle is validated. The cause "
@@ -527,6 +528,9 @@ TOKEN_ALLOWLIST = {
     "[name]": "redaction placeholder", "[company]": "redaction placeholder",
     # track tags
     "[no-code ok]": "track tag", "[code]": "track tag", "[AI tool]": "track tag",
+    # content_flags.csv flag values, named in the content note
+    "serious_injury": "a flag value", "near_fatal": "a flag value", "death_mention": "a flag value",
+    "name_redacted": "a flag value", "contact_redacted": "a flag value",
     # cell values and protocol text
     "modern_six": "a syn_regime value", "syn_regime == modern_six": "the filter, as code",
     # named in Known defects as not shipped
@@ -768,3 +772,13 @@ def test_no_unreproducible_recall_figure_is_shipped():
     for text in (path.read_text(encoding="utf-8"), template()):
         assert "0.98" not in text and "0.80" not in text and "of 61" not in text
         assert "median" not in text.lower()
+
+
+def test_content_note_names_exactly_the_flags_the_code_emits():
+    """A flag added to or renamed in content.flags() must be named in the content note."""
+    src = (REPO / "src/psm/content.py").read_text(encoding="utf-8")
+    emitted = set(re.findall(r'\("(\w+)", (?:_has_|bool\(|has_)', src))
+    named = {k for k, v in TOKEN_ALLOWLIST.items() if v == "a flag value"}
+    assert emitted == named == {"serious_injury", "near_fatal", "death_mention",
+                                "name_redacted", "contact_redacted"}
+    assert all(f"`{f}`" in CONTENT_NOTE for f in named)
