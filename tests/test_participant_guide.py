@@ -25,16 +25,18 @@ GUIDE = REPO / "docs/release/PARTICIPANT_GUIDE.md"
 FIRST_GUIDE_COMMIT = "d37ce7a"      # the guide before fix round 1: it had the mode-truth defects
 
 HEADINGS = [
-    "What this is", "Content note", "Choosing tools", "Folders", "Provenance tokens",
+    "What this is", "Content note", "Choosing tools", "Getting help", "Folders", "Provenance tokens",
     "Glossary", "Quick start", "Known defects", "Tracks", "Do not attempt",
     "About the companies", "How to report a result",
 ]
 CONTENT_NOTE = (
     "These are real US offshore incident reports, written in the plain, factual style of an "
     "investigation. Some describe workplace injuries such as cuts, broken bones, burns and "
-    "lost fingers. Incidents in which someone died were removed from this bundle. Names that "
-    "follow a title (Mr., Mrs., Ms., Miss, Dr.) were replaced with `[name]`, along with the "
-    "surname wherever it repeats. Other names may remain, because redaction is pattern-based. "
+    "lost fingers. Incidents in which someone died were removed from this bundle. Person names "
+    "were replaced with `[name]` where a pattern finds them: after a title (Mr., Mrs., Ms., "
+    "Miss, Dr.), a rank (Captain) or a role (inspector, investigator), after \"email from\", "
+    "and in investigation-team lists, along with the surname wherever it repeats. Other names "
+    "may remain, because redaction is pattern-based. "
     "The source PDFs linked in `bsee_source_url` are not redacted. `content_flags.csv` marks "
     "rows that describe a serious injury or someone losing consciousness. The flags are "
     "pattern-based too, so they can miss some rows. If anything here is a problem, talk to a "
@@ -134,7 +136,7 @@ def test_stub_is_gone():
     assert "STUB" not in template().split("\n", 1)[0]
 
 
-def test_twelve_headings_in_order():
+def test_thirteen_headings_in_order():
     assert re.findall(r"^## (.+)$", template(), re.M) == HEADINGS
 
 
@@ -169,13 +171,33 @@ def test_excel_sentence_is_verbatim():
     assert EXCEL_SENTENCE in section(template(), "Quick start")
 
 
-def test_choosing_tools_names_ai_studio_and_the_placeholder():
+def test_choosing_tools_names_ai_studio_and_holds_the_final_tool_guidance():
     text = section(template(), "Choosing tools")
     assert "AI Studio" in text
     assert "Gemini API" in text
     assert re.search(r"[Uu]nder-18 participants do not use Google AI Studio or the Gemini API "
                      r"themselves", text)
-    assert PLACEHOLDER in text
+    assert PLACEHOLDER not in text and not bundle.GUIDE_PLACEHOLDER_RE.search(template())
+    assert ("Follow each tool's own terms, including its age limits. Every track marked "
+            "`[no-code ok]` or `[code]` works without an AI model or an online account.") in text
+
+
+def test_committed_guide_passes_the_placeholder_guard():
+    bundle.check_guide(template(), allow_placeholder=False)
+
+
+def test_getting_help_follows_choosing_tools_verbatim():
+    heads = re.findall(r"^## (.+)$", template(), re.M)
+    assert heads[heads.index("Choosing tools") + 1] == "Getting help"
+    assert section(template(), "Getting help").strip() == (
+        "Your team email names your mentors. Write to them with your whole team and the "
+        "organiser copied, as that email explains. On the day, mentors are in the room.")
+
+
+def test_the_guide_points_at_the_licence():
+    text = template()
+    assert ("`TERMS.md` has the terms of use and the licence. Keep `LICENSE` with any copy "
+            "of this data.") in section(text, "What this is")
 
 
 def test_fences_are_balanced():
@@ -274,8 +296,9 @@ def test_template_claims_that_were_false():
     assert "The reports name real operators, so do not judge them." in text
     gl = section(text, "Glossary")
     assert "`real_only` holds only real values" not in gl
-    for must in ("`xw`", "`pseud`", "`key`", "generated cells left blank", "in `core/`, only `enriched` has provenance files"):
-        assert must in gl, must
+    fo = section(text, "Folders")       # the real_only/enriched facts live in Folders only
+    for must in ("`xw`", "`pseud`", "`key`", "generated cells left blank", "In `core/`, only `enriched` has provenance files"):
+        assert must in fo, must
     assert "recommendations with no close-out" not in text
     assert "Tracks 3 and 4" in section(text, "Folders")
     assert "very small n (19 and 13)" in section(text, "Tracks")
@@ -337,6 +360,11 @@ def test_fences_follow_the_mode(modes):
         assert ("no text" in text) is (not has_text), name
 
 
+def test_stamped_readme_says_to_keep_the_licence(modes):
+    for name, bd in modes.items():
+        assert "Keep `LICENSE`" in readme(bd), name
+
+
 def test_content_note_survives_stamping(modes):
     for bd in modes.values():
         assert "> " + CONTENT_NOTE in readme(bd)
@@ -354,26 +382,24 @@ def test_a_flag_built_bundle_says_it_is_a_preview(modes):
         assert readme(bd).split("\n")[2].startswith("# PSM incident dataset"), name
 
 
-def test_a_build_without_the_flag_has_no_preview_line(tmp_path, monkeypatch):
-    """Organiser text and terms supplied (stand-ins), no flag: it builds, with no preview line."""
-    guide = bundle.GUIDE_PLACEHOLDER_RE.sub("The organiser's own tool guidance.", template())
-    monkeypatch.setattr(bundle, "terms_text", lambda *a, **k: REAL_TERMS)
-    monkeypatch.setattr(bundle, "guide_text", lambda *a, **k: guide)
+def test_a_build_without_the_flag_has_no_preview_line(tmp_path):
+    """The committed terms and guide are final: no flag, it builds, with no preview line."""
     out = bundle.build_bundle(tmp_path / "x", include_companies=False, allow_dirty=True)
     text = readme(out)
-    assert "PREVIEW" not in text and "The organiser's own tool guidance." in text
+    assert "PREVIEW" not in text and "Follow each tool's own terms" in text
     assert text.startswith("# PSM incident dataset")
+    assert (out / "TERMS.md").read_bytes() == (REPO / "docs/release/TERMS.md").read_bytes()
 
 
 # ---- the Choosing-tools placeholder guard ----------------------------------
 
-REAL_TERMS = "Terms of use\n\nThese are the organiser's terms.\n"
-
-
 def test_builder_refuses_the_choosing_tools_placeholder(tmp_path, monkeypatch):
-    """Deliberate violation: real terms, but the guide still holds the placeholder comment."""
-    monkeypatch.setattr(bundle, "terms_text", lambda *a, **k: REAL_TERMS)
-    assert PLACEHOLDER in (REPO / "docs/release/PARTICIPANT_GUIDE.md").read_text(encoding="utf-8")
+    """Deliberate violation: the committed guide with the placeholder comment put back."""
+    committed = (REPO / "docs/release/PARTICIPANT_GUIDE.md").read_text(encoding="utf-8")
+    assert PLACEHOLDER not in committed
+    planted = committed.replace("\n## Getting help\n", f"\n{PLACEHOLDER}\n\n## Getting help\n", 1)
+    assert PLACEHOLDER in planted
+    monkeypatch.setattr(bundle, "guide_text", lambda *a, **k: planted)
     with pytest.raises(SystemExit, match="Choosing tools"):
         bundle.build_bundle(tmp_path / "x", allow_dirty=True)
     assert not (tmp_path / "x").exists()

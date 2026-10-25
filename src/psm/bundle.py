@@ -16,11 +16,12 @@ nothing else under ``data/`` can reach the bundle. Transforms, in this order:
                  a row in ``redactions.csv``;
 4. reduce        withheld columns and the ``bsee_unmapped`` reduction.
 
-The builder refuses to run on a dirty or untracked input tree, while
-``docs/release/TERMS.md`` is a placeholder, and while the Choosing tools section of the
-participant guide still holds the organiser placeholder comment (``allow_placeholder_terms``
-lifts both for a preview; the comment is then dropped and README_FIRST.md starts with a
-PREVIEW BUILD line). Time comes only from the commit
+The builder refuses to run on a dirty or untracked input tree, and, as a guard against
+a regression, if ``docs/release/TERMS.md`` is ever a placeholder again or the Choosing tools
+section of the participant guide holds an organiser placeholder comment (both are final text
+now; ``allow_placeholder_terms`` lifts the guards for a preview, the comment is then dropped
+and README_FIRST.md starts with a PREVIEW BUILD line). The repo ``LICENSE`` ships at the
+bundle root, byte for byte, in every mode. Time comes only from the commit
 (``git log -1 --format=%ct``), converted with ``time.gmtime``; the output is
 byte-identical for the same commit and mode.
 
@@ -60,6 +61,7 @@ E19 = "data/processed/e19"
 SCHEMA = "schema"
 GUIDE = "docs/release/PARTICIPANT_GUIDE.md"
 TERMS = "docs/release/TERMS.md"
+LICENSE = "LICENSE"
 NOTES = "schema/data_dictionary_notes.yaml"
 EXCLUSIONS = "schema/bundle_exclusions.yaml"
 DISPOSITION = "schema/e19_disposition.yaml"
@@ -150,7 +152,7 @@ def _specs(include_companies: bool) -> list[Spec]:
 
 def source_paths(specs: list[Spec]) -> list[str]:
     """Every repo file the bundle reads, sorted."""
-    out = {SPLITS, GUIDE, TERMS, NOTES, EXCLUSIONS, DISPOSITION}
+    out = {SPLITS, GUIDE, TERMS, LICENSE, NOTES, EXCLUSIONS, DISPOSITION}
     out |= {f"{SCHEMA}/{n}.yaml" for n in SCHEMA_FILES}
     for sp in specs:
         out.add(sp.src)
@@ -651,6 +653,7 @@ def build_bundle(out_root: Path = Path("deliverables/release"),
     for n in SCHEMA_FILES:
         files[f"advanced/schema/{n}.yaml"] = (repo / SCHEMA / f"{n}.yaml").read_bytes()
     files["TERMS.md"] = (repo / TERMS).read_bytes()
+    files["LICENSE"] = (repo / LICENSE).read_bytes()
 
     cells = _cells_long(by_rel)
     files["core/cells_long.csv"] = _csv_bytes(

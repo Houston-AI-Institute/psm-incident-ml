@@ -75,7 +75,7 @@ def zip_bytes(b: Path) -> bytes:
 
 
 def expected_allowlist(companies: bool) -> list[str]:
-    s = ["README_FIRST.md", "TERMS.md", "BASELINE.md", "SHA256SUMS"]
+    s = ["README_FIRST.md", "TERMS.md", "LICENSE", "BASELINE.md", "SHA256SUMS"]
     s += [f"core/real_only/{n}.csv" for n in ("incidents", "causes", "recommendations", "closeout")]
     s += ["core/real_only/splits.json"]
     s += [f"core/enriched/{n}.csv" for n in ("incidents", "provenance", "causes", "causes_provenance")]
@@ -924,6 +924,25 @@ def test_terms_copied_verbatim(b):
     assert (b / "TERMS.md").read_bytes() == (REPO / "docs/release/TERMS.md").read_bytes()
 
 
+def test_license_is_in_every_mode_and_equals_the_repo_file(any_b):
+    """The MIT notice must travel with every copy: directory and zip, text-light included."""
+    want = (REPO / "LICENSE").read_bytes()
+    assert (any_b / "LICENSE").read_bytes() == want
+    with zipfile.ZipFile(zip_path(any_b)) as z:
+        assert z.read(f"{any_b.name}/LICENSE") == want
+    sums = dict(reversed(ln.split("  ", 1)) for ln in
+                (any_b / "SHA256SUMS").read_text(encoding="utf-8").splitlines())
+    assert sums["LICENSE"] == hashlib.sha256(want).hexdigest()
+
+
+def test_the_committed_terms_are_final_and_cover_the_licence():
+    text = (REPO / "docs/release/TERMS.md").read_text(encoding="utf-8")
+    bundle.check_terms(text, allow_placeholder=False)       # not a placeholder
+    assert not text.startswith("PLACEHOLDER")
+    for must in ("`LICENSE`", "MIT", "event rules"):
+        assert must in text, must
+
+
 # ---- refusals --------------------------------------------------------------
 
 def _git(cwd, *args):
@@ -1002,6 +1021,11 @@ def test_refuses_placeholder_terms(tmp_path, monkeypatch):
     with pytest.raises(SystemExit):
         bundle.build_bundle(tmp_path / "x", allow_dirty=True)
     assert not (tmp_path / "x").exists()
+
+
+def test_the_license_is_a_bundle_source_so_the_clean_inputs_check_covers_it():
+    assert "LICENSE" in bundle.source_paths(bundle._specs(True))
+    assert "LICENSE" in bundle.source_paths(bundle._specs(False))
 
 
 def test_check_terms():

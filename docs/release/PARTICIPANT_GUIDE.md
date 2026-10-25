@@ -6,7 +6,7 @@ Built from commit `{commit}` ({commit_date}).
 
 This bundle holds real US offshore accident reports, laid out as tables in the style of the Energy Institute's PSM Framework, Element 19. It is for practice. This project makes no claims about any operator or person. The reports name real operators, so do not judge them.
 
-The data mixes real and generated values. Every cell says which: see **Provenance tokens**. Read the **Content note**<!-- text --> before any narrative text<!-- /text -->. `TERMS.md` has the rules.
+The data mixes real and generated values. Every cell says which: see **Provenance tokens**. Read the **Content note**<!-- text --> before any narrative text<!-- /text -->. `TERMS.md` has the terms of use and the licence. Keep `LICENSE` with any copy of this data.
 
 <!-- text -->
 **Narrative text.** Incident narratives, cause descriptions and `src_text_stripped` are included.
@@ -27,7 +27,7 @@ Track numbers are the same in every bundle, so a track can be missing from yours
 
 ## Content note
 
-> These are real US offshore incident reports, written in the plain, factual style of an investigation. Some describe workplace injuries such as cuts, broken bones, burns and lost fingers. Incidents in which someone died were removed from this bundle. Names that follow a title (Mr., Mrs., Ms., Miss, Dr.) were replaced with `[name]`, along with the surname wherever it repeats. Other names may remain, because redaction is pattern-based. The source PDFs linked in `bsee_source_url` are not redacted. `content_flags.csv` marks rows that describe a serious injury or someone losing consciousness. The flags are pattern-based too, so they can miss some rows. If anything here is a problem, talk to a mentor.
+> These are real US offshore incident reports, written in the plain, factual style of an investigation. Some describe workplace injuries such as cuts, broken bones, burns and lost fingers. Incidents in which someone died were removed from this bundle. Person names were replaced with `[name]` where a pattern finds them: after a title (Mr., Mrs., Ms., Miss, Dr.), a rank (Captain) or a role (inspector, investigator), after "email from", and in investigation-team lists, along with the surname wherever it repeats. Other names may remain, because redaction is pattern-based. The source PDFs linked in `bsee_source_url` are not redacted. `content_flags.csv` marks rows that describe a serious injury or someone losing consciousness. The flags are pattern-based too, so they can miss some rows. If anything here is a problem, talk to a mentor.
 
 You can stop reading at any time.
 
@@ -35,16 +35,20 @@ You can stop reading at any time.
 
 Under-18 participants do not use Google AI Studio or the Gemini API themselves.
 
-<!-- organiser text: under-18 tool guidance -->
+Follow each tool's own terms, including its age limits. Every track marked `[no-code ok]` or `[code]` works without an AI model or an online account.
 
 <!-- text -->
 Tracks marked `[AI tool]` use an AI model. Follow the tool rules above, and ask a mentor if unsure.
 <!-- /text -->
 
+## Getting help
+
+Your team email names your mentors. Write to them with your whole team and the organiser copied, as that email explains. On the day, mentors are in the room.
+
 ## Folders
 
-- `core/` is the main data. `real_only/` has the four tables with generated cells left blank. `enriched/` fills them in, with a `provenance` file that tags every cell. <!-- text -->`cause_task.csv` is for Tracks 3 and 4. <!-- /text --><!-- no-text -->`cause_task.csv` has the labels and folds but no text. <!-- /no-text -->`cells_long.csv` is one row per cell. `content_flags.csv` marks sensitive rows. `redactions.csv` lists the redacted cells in tables with no provenance file. In the others, redacted cells are marked `mod` in the provenance file. `data_dictionary.csv` describes every column.
-- `advanced/` has extra cause files, `bsee_unmapped.csv` and `schema/`, the crosswalk files. The crosswalk is an opinion.
+- `core/` is the main data. `real_only/` has the four tables with real, `xw`, `pseud` and `key` values and generated cells left blank. `enriched/` fills them in. In `core/`, only `enriched` has provenance files, which tag every cell. <!-- text -->`cause_task.csv` is for Tracks 3 and 4. <!-- /text --><!-- no-text -->`cause_task.csv` has the labels and folds but no text. <!-- /no-text -->`cells_long.csv` is one row per cell. `redactions.csv` lists redacted cells in tables with no provenance file. In the others, they are marked `mod` in the provenance file. `data_dictionary.csv` describes every column.
+- `advanced/` has extra cause files, `bsee_unmapped.csv` and `schema/`, the crosswalk files.
 <!-- companies -->
 - `companies/`: one folder per fictional company.
 <!-- /companies -->
@@ -61,7 +65,7 @@ Each cell in a `provenance` file holds one token. Empty means an empty cell.
 - `key`: a join identifier this project built (`Incident Number`).
 - `pseud`: a stable pseudonym for a real person's name.
 - `llm`: assigned by a language model. Never ground truth. None in this bundle.
-- `gold`: assigned by a human. None in this bundle.
+- `gold`: assigned by a human.
 
 There are no independent (gold) labels: nothing in this bundle is validated. The cause labels are the investigator's own category, relabelled through the repo's crosswalk, which is an opinion.
 
@@ -71,10 +75,8 @@ There are no independent (gold) labels: nothing in this bundle is validated. The
 - **OCS**: Outer Continental Shelf, US federal waters offshore.
 - **PSM**: process safety management.
 - **EI**: Energy Institute.
-- **E19**: Element 19 of the EI PSM Framework, incident reporting and investigation. The tables follow its layout.
-- **Incident, cause, recommendation and close-out tables**: one row per incident, cause statement, recommended action, and recommendation closing.
+- **E19**: Element 19 of the EI PSM Framework, incident reporting and investigation.
 - **TLI / LTA**: injury levels. LTA is BSEE's code for an injury with days away from work. This project does not know what TLI stands for.
-- **`real_only` vs `enriched`**: `real_only` has real values, rule-derived (`xw`) values, pseudonyms (`pseud`) and keys (`key`), with generated cells left blank. `enriched` adds the generated (`syn`) cells, and in `core/`, only `enriched` has provenance files.
 
 ## Quick start
 
@@ -100,16 +102,16 @@ Excel: use Data → From Text/CSV and choose UTF-8, or accented characters and d
 
 ## Known defects
 
-- `Approval Date` is generated (`syn`), not a real approval date.
+- `Approval Date` is generated (`syn`).
 - `Description` is not shipped, and where BSEE text exists it is partial.
-- Investigator and approver names are pseudonyms per field string, not per person: the same real person can get different pseudonyms in different fields.
+- Investigator and approver names are pseudonyms per field string, not per person: the same real person can get different pseudonyms.
 - The three consequence columns (Health & Safety, Environment & Reputation, Financial Cost & Business Interruption) come from an assumed matrix, `advanced/schema/xw_consequence_tiers.yaml`, not from BSEE.
 <!-- text -->
-- Cause text can drop words. This affects `Cause Description` and `src_text_stripped`.
-- The leak: in `causes.csv`, `Cause Description` begins with its own category, which is the label. For classification use `cause_task.csv`, where the category is removed.
+- Cause text can drop words, in `Cause Description` and `src_text_stripped`.
+- The leak: in `causes.csv`, `Cause Description` begins with its own category, the label. For classification use `cause_task.csv`, where the category is removed.
 <!-- /text -->
 - In `bsee_operator`, representative, city, state and telephone blocks have been removed. A "CONTRACTOR:" label and the name after it can remain.
-- `syn_regime` comes from a real year (`src_year`), using the splits in `core/real_only/splits.json`.
+- `syn_regime` comes from a real year (`src_year`), via `core/real_only/splits.json`.
 
 ## Tracks
 
@@ -126,8 +128,8 @@ Tags: `[no-code ok]` works in a spreadsheet. `[code]` needs programming.<!-- tex
    - Report n, a bootstrap confidence interval over incidents, and per-class n and F1.
    - Compare against `BASELINE.md`.
    - Don't use `src_year`, `syn_regime`, `src_category` or `Incident Number` as features.
-4. **Era drift** `[code]`. A check, not a contest. Train on `modern_six` and test on the earlier regimes. `BASELINE.md` prints n, classes and majority rate for each. The regime boundaries were drawn where the label vocabulary changed, so a change in label mix between regimes is not a finding. The earlier regimes have very small n (19 and 13).
-5. **LLM structured extraction** `[code]` `[AI tool]`. Choose the field and the rows (at least 30, by a stated rule) before you run anything. Two teammates label the rows independently, then compare and resolve. Only then run the model. Report "agreement with our n hand labels: k/n" with an interval. Never call it accuracy. It shows agreement with your own labels, not truth.
+4. **Era drift** `[code]`. A check, not a contest. Train on `modern_six` and test on the earlier regimes. `BASELINE.md` prints n, classes and majority rate for each. Regime boundaries follow label-vocabulary changes, so a change in label mix between regimes is not a finding. The earlier regimes have very small n (19 and 13).
+5. **LLM structured extraction** `[code]` `[AI tool]`. Choose the field and the rows (at least 30, by a stated rule) before you run anything. Two teammates label the rows independently, then compare and resolve. Only then run the model. Report "agreement with our n hand labels: k/n" with an interval. Never call it accuracy.
 <!-- /text -->
 <!-- companies -->
 6. **Company register audit** `[no-code ok]`. Look for gaps or oddities in a fictional company's generated tables, such as close-outs marked "Behind".
@@ -150,7 +152,6 @@ Alder, Hazel and Hornbeam are fictional. Their process records (dates, owners, a
 <!-- text -->
 Their narratives are real BSEE text from other operators, with dates shifted and operator names pattern-masked as `[company]`, so a few may remain. Contractor and rig names are not masked. The same unmasked narratives appear in `core/`, so the masking is about attribution, not secrecy.
 <!-- /text -->
-They describe no real company's conduct.
 <!-- /companies -->
 
 ## How to report a result

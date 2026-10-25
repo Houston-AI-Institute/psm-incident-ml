@@ -4013,3 +4013,57 @@ all-or-nothing team-list rule. Test changes in the same commit: the colon-header
 now uses the real header and has a companion that can fail, a possessive case, a
 surname-recurrence guard, and bundle-level tests for recurrence and for a cell holding
 both an untitled name and a contact.
+
+## 2026-10-24 — Terms of use and tool guidance replaced; LICENSE ships in the bundle
+
+**Replaced.** `docs/release/TERMS.md` (was a one-line placeholder) now holds the
+final terms of use (copy supplied by the owner), with the MIT licence statement for the tables, the
+fictional company data and the code. The guide's `<!-- organiser text: under-18 tool
+guidance -->` comment is replaced by the line "Follow each tool's own terms, including its
+age limits ...". The line "Under-18 participants do not use Google AI Studio or the Gemini
+API themselves." stays. New guide section `## Getting help` (after Choosing tools). The
+guide's pointer to `TERMS.md` now says it holds the terms of use and the licence, and to
+keep `LICENSE` with any copy.
+
+**`LICENSE` now ships.** The repo-root file is copied byte for byte to the bundle root in
+every mode (directory and zip, text-light included), is in `source_paths` (so the
+clean-inputs check covers it) and in `SHA256SUMS`. Tests: present and byte-equal in the
+full, no-companies and text-light bundles and in each zip; in the allowlist; in
+`source_paths`.
+
+**Guards kept.** `check_terms`, `check_guide`, `PLACEHOLDER_FIRST_LINE`, `GUIDE_PLACEHOLDER`
+and the PREVIEW line stay as regression guards. Tests that asserted the committed files hold
+a placeholder now assert they do not; each refusal test injects the placeholder into a copy
+or a monkeypatch. Checked that they can fail: with both guards disabled in `bundle.py`, 8
+tests failed (placeholder terms, `check_terms`, the Choosing-tools refusal, `check_guide`,
+four comment spellings); the file was restored afterwards.
+
+**Content note.** The sentence about names after a title now also lists a rank (Captain), a
+role (inspector, investigator), "email from" and investigation-team lists, matching the
+redaction rules added earlier today. Awaiting the owner's approval of this wording; the
+tests pin it, so a reword changes `CONTENT_NOTE` in `tests/test_participant_guide.py`.
+
+**Word counts** (prose words outside code fences; caps: template < 1,350, stamped
+README <= 1,600). Before the edits, template 1,343; stamped core 1,342, text-light 1,097,
+companies 1,570, text-light+companies 1,280. The new copy added 83 words (template 1,426 before trimming); after
+trimming, template 1,329; stamped core 1,341, text-light 1,113, companies 1,563,
+text-light+companies 1,290. `MAX_WORDS` unchanged. Longest mode (companies) has 37 words of
+headroom; the template has 20.
+
+**Cut to fit** (no fact pinned by a test or `data_dictionary_notes.yaml` was dropped):
+the Glossary table-name item (one row per incident, cause, recommendation, close-out); the
+Glossary `real_only` vs `enriched` item, its content moved into the `core/` bullet in
+Folders (the test that pinned it now reads Folders); "The crosswalk is an opinion." in
+Folders (the Provenance tokens paragraph says it); "It shows agreement with your own labels,
+not truth." (Track 5); "`content_flags.csv` marks sensitive rows." in Folders (the Content
+note says it); "The tables follow its layout." (E19 glossary item); "not a real approval
+date" (Approval Date defect); "They describe no real company's conduct." (About the
+companies); "None in this bundle." on the `gold` token line (the next paragraph says it);
+"in different fields" (pseudonym defect); and short rewordings in Folders, Track 4,
+the `syn_regime` defect and the leak defect. A first attempt also cut the `mod` token line
+and the "Company tables" fence, which tests pin; both were put back.
+
+**Open.** Whether teams may redistribute the Element 19 column labels is Houston AI
+Institute's decision; TERMS.md states the labels are published with its permission
+(recorded 2026-10-18). Redistribution of the labels by teams, in public repositories, is
+pending HAI's answer.
