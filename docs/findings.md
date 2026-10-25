@@ -4200,3 +4200,40 @@ incident's real BSEE recommendation was measured and dropped:
 - The action-type measure needs the template text.
 
 Real recommendations linked to their own incident are in `core/real_only/recommendations.csv`.
+
+## 2026-10-25 — Correction to "Company registers as of 2025-12-31"
+
+Found by a whole-branch review of 10ee5dc..9ad8266. The entry above is left as written.
+
+- **"949 of the 1,230 real recommendations are in the regulator's voice" does not reproduce.**
+  The words that entry names (District, BSEE, MMS), matched as whole words with case kept,
+  give **904**. Adding `Office` gives **946**. The rule behind 949 was not recorded. Command:
+  `re.search(r"\b(District|BSEE|MMS|Office)\b", text)` over `Recommendation Description` in
+  `data/processed/e19/real_only/recommendations.csv`. This is a word match, not a reading of
+  each row. Either count leaves the deferral reason unchanged: most real recommendations are
+  addressed by or to the regulator.
+- **Censoring affects more than `median_closeout_days`.**
+  - `overdue_rate` cannot yet see 9 open actions (all companies together) that are due on or
+    after 2025-12-31 and whose drawn completion is later than their due date. The manifest's
+    `analytic_expectations.overdue_rate` is computed without the as-of date, so it describes
+    the uncensored rate. The planted tests still pass within their tolerance.
+  - `median_report_lag` leaves out the 2 incidents whose report date is after the as-of date.
+- **Those 2 incidents are artefacts of the generator.** They already have an investigation
+  leader, causes and not-yet-due actions, but no report date. A real register extracted that
+  day would not list them.
+- **The test count was imprecise.** At 738fc18 the suite was 955 passed, 2 skipped and
+  **1 xfailed**: the Track 6 test, marked xfail until 9ad8266 rewrote it. At 9ad8266 it is
+  956 passed, 2 skipped.
+- **The redraw check named above does not test the as-of mapping.**
+  `test_rename_check_catches_a_redraw` compares `Date of Incident` only, so it does not
+  exercise `_as_of_view`. In a one-off mutation run on scratch copies (not committed),
+  `test_rename_preserves_draws` failed on six kinds of planted change:
+  - a shifted `Date Completed`;
+  - a blanked `Date Completed`;
+  - an open `Date Completed` filled in;
+  - an approver filled in;
+  - a `Close out Date` filled in;
+  - a shifted `Agreed Completion Date`.
+
+  It does not catch an open action's status flipped between the two open values. That case is
+  covered by `test_schedule_status_follows_as_of`, and by the byte-identical regeneration test.
