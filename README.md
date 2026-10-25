@@ -287,10 +287,12 @@ test coverage.
 
 ## Sources and licensing
 
-Source documents are US federal government works (BSEE), public domain. The
-derived tables, schema files and code in this repo are released under the
-repository licence. The Energy Institute PSM Framework element *names* are
-referenced with attribution. The E19 workbook's field labels, picklist vocabularies and cell references (`schema/e19_labels.yaml`) are published with the permission of Houston AI Institute, which owns the workbook schema (confirmed 2026-10-18). The workbook file itself is not committed.
+Source documents are US federal government works (BSEE), public domain. Code,
+hand-written schema files and the values this project adds to the tables (`xw_`,
+`syn_`, provenance, pseudonyms, the fictional company data) are released under the
+repository licence (MIT); the BSEE text and values inside the tables are not (see
+`DATA_SOURCES.md`). The Energy Institute PSM Framework element *names* are
+referenced with attribution. The workbook was provided by the Energy track's challenge partner, who gave permission to publish its field labels, picklist vocabularies and cell references (`schema/e19_labels.yaml`) in this public repository. The labels are not confidential. The workbook file itself is not committed.
 
 ## Repo layout
 

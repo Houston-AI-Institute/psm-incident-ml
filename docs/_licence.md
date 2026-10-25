@@ -284,6 +284,12 @@ instruction and left that way.
 (2026-08-02) and stopped being true on 2026-08-29, when `schema/e19_labels.yaml` was
 extracted mechanically from the workbook (commit bc84583). The E19 workbook's field labels, picklist vocabularies and cell references (`schema/e19_labels.yaml`) are published with the permission of Houston AI Institute, which owns the workbook schema (confirmed 2026-10-18). The workbook file itself is not committed.]
 
+[Correction 2026-10-25: the bracket above names the wrong party. The workbook was
+provided by the Energy track's challenge partner, who gave permission to publish its
+field labels, picklist vocabularies and cell references in this public repository.
+Houston AI Institute does not own the workbook schema. See `DATA_SOURCES.md`, *The
+workbook*.]
+
 ---
 
 ## Open items for whoever picks this up

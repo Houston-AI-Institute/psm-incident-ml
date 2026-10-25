@@ -128,7 +128,7 @@ Gitignored: `data/raw/`, `data/interim/`.
 
 ## Do not commit
 
-- `E19 Investigation Report - Rev2.xlsx` — a workplace document. The E19 workbook's field labels, picklist vocabularies and cell references (`schema/e19_labels.yaml`) are published with the permission of Houston AI Institute, which owns the workbook schema (confirmed 2026-10-18). The workbook file itself is not committed.
+- `E19 Investigation Report - Rev2.xlsx` — a workplace document. The workbook was provided by the Energy track's challenge partner, who gave permission to publish its field labels, picklist vocabularies and cell references (`schema/e19_labels.yaml`) in this public repository. The labels are not confidential. The workbook file itself is not committed.
   `schema/e19_labels.yaml` was extracted mechanically from the workbook
   (`src/psm/e19_schema.py`, commit bc84583); `schema/e19_target.yaml` is
   hand-written. Permitted derivative: `schema/e19_labels.yaml` only. Nothing else

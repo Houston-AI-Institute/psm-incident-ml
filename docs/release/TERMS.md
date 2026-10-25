@@ -8,14 +8,14 @@ This data is for learning and practice at the Houston AI Institute Hackathon 202
 
 **Company names.** In the fictional company tables, real operator names are replaced with `[company]` where a pattern finds them. Do not try to work out which real company is meant.
 
-**Licence.**
+**Licence.** The tables mix content under different terms. The provenance files say which cell is which.
 
-- The BSEE source reports are US federal government works, which this project treats as public domain.
-- The tables, the fictional company data and the code in this bundle are released under the MIT License. The full text is in `LICENSE`. You may copy, change and include them in your project, including a public repository, as long as `LICENSE` goes with the copy.
-- The column labels follow the Element 19 investigation workbook schema of Houston AI Institute, which owns it, and are published with its permission.
-- The PSM Framework element names belong to the Energy Institute and are used with attribution.
+- Report text and BSEE values (cells marked `src` or `mod`, and columns starting `src_` or `bsee_`) come from reports published by BSEE, a US government agency. This project treats them as public domain. Please credit them as: "Source: Bureau of Safety and Environmental Enforcement, US Department of the Interior."
+- What this project added (the generated, crosswalked and pseudonym values, the fictional companies, the provenance files, the schema files and the code) is released under the MIT License. The full text is in `LICENSE`. You may copy, change and include it in your project, including a public repository, as long as `LICENSE` goes with the copy.
+- The column names and category values follow an Element 19 investigation workbook and are published with its provider's permission. You may use them in your project, including a public repository.
+- The PSM Framework element names (in comments in `advanced/schema/crosswalk.yaml`) belong to the Energy Institute. If you use one, credit the Energy Institute.
 
-**Your project.** Who owns what you make, and how it is released, is set by the event rules, not by these terms.
+**Your project.** Who owns what you make, and how it is released, is set by the event rules, not by these terms. If you put it in a public repository, link to this bundle instead of uploading its data files, because real names may remain in the report text. Put the BSEE credit in your README.
 
 **No warranty.** The data has known defects (see `README_FIRST.md`). It is provided as is, for practice.
 

@@ -943,6 +943,20 @@ def test_the_committed_terms_are_final_and_cover_the_licence():
         assert must in text, must
 
 
+def test_licence_wording_names_what_mit_does_not_cover():
+    terms = (REPO / "docs/release/TERMS.md").read_text(encoding="utf-8")
+    assert "Source: Bureau of Safety and Environmental Enforcement, US Department of the Interior." in terms
+    assert "The tables, the fictional company data and the code in this bundle are released under the MIT" not in terms
+    assert "provider's permission" in terms
+    lic = (REPO / "LICENSE").read_text(encoding="utf-8")
+    assert "CODE in this repository only" not in lic
+    assert "It does not cover BSEE source text and values" in lic
+    # Wrong owner claim (corrected 2026-10-25). Only the dated records keep it, with a correction.
+    out = subprocess.run(["git", "grep", "-l", "which owns the " + "workbook schema"],
+                         cwd=REPO, capture_output=True, text=True).stdout.split()
+    assert set(out) <= {"docs/findings.md", "docs/_licence.md"}, out
+
+
 # ---- refusals --------------------------------------------------------------
 
 def _git(cwd, *args):

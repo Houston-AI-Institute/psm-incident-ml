@@ -4094,3 +4094,29 @@ word counter counts HTML fence markers as words, so inline fences cost headroom.
 **Open.** Licence wording: `DATA_SOURCES.md` says the BSEE source data is not relicensed
 and has no row for the bundle tables, while `TERMS.md` puts the tables under MIT. Not
 reconciled here; the owner decides the wording.
+
+## 2026-10-25 — Licence wording, and the workbook owner corrected
+
+**Correction.** Entries from 2026-10-19 and 2026-10-24 say Houston AI Institute owns the E19
+workbook schema. That is wrong. The workbook was provided by the Energy track's challenge
+partner, who gave permission to publish its field labels, picklist vocabularies and cell
+references in this public repository. The labels are not confidential. The dated text above
+stays as written; `docs/_licence.md` gains a bracketed correction.
+
+**What changed.**
+
+| File | Change |
+|---|---|
+| `docs/release/TERMS.md` | Licence block split by source: BSEE text and values (`src`, `mod`, `src_`, `bsee_`) treated as public domain, with a credit line; what this project added under MIT; labels used with the provider's permission; EI element names credited. *Your project* adds: link to the bundle instead of uploading its data files (real names may remain), and put the BSEE credit in the README. |
+| `LICENSE` | The data note no longer says "CODE in this repository only"; it names what MIT covers and what it does not. The bundle ships this file byte-equal. |
+| `DATA_SOURCES.md` | The "What this repo does about it" table gains rows for our table additions, the E19 labels and the EI names; *The workbook* names the provider. |
+| `README.md`, `CLAUDE.md` | Same owner correction; README no longer says the derived tables are MIT as a whole. |
+
+**Verified.** `tests/test_bundle.py::test_licence_wording_names_what_mit_does_not_cover` pins
+the BSEE credit line, the LICENSE note and that no tracked file outside `docs/findings.md`
+and `docs/_licence.md` repeats the owner claim; the TERMS and LICENSE assertions fail on
+529919a. Full suite: 941 passed, 2 skipped.
+
+**Not verified here.** The permission itself rests on the owner's statement of 2026-10-25;
+its written record is not in this repo. The crosswalk's element-name comments still conflict
+with the "numbers only" rule for schema files in `DATA_SOURCES.md` §6; TERMS now credits them.
